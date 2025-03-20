@@ -42,27 +42,27 @@ foreign import ccall "SDL.h SDL_GetPrefPath" getPrefPathFFI :: CString -> CStrin
 
 foreign import ccall "SDL.h SDL_AllocRW" allocRWFFI :: IO (Ptr RWops)
 foreign import ccall "SDL.h SDL_FreeRW" freeRWFFI :: Ptr RWops -> IO ()
-foreign import ccall "SDL.h SDL_RWFromConstMem" rwFromConstMemFFI :: Ptr () -> CInt -> IO (Ptr RWops)
+foreign import ccall "SDL.h SDL_IOFromConstMem" rwFromConstMemFFI :: Ptr () -> CInt -> IO (Ptr RWops)
 foreign import ccall "SDL.h SDL_RWFromFP" rwFromFPFFI :: Ptr () -> Bool -> IO (Ptr RWops)
-foreign import ccall "SDL.h SDL_RWFromFile" rwFromFileFFI :: CString -> CString -> IO (Ptr RWops)
-foreign import ccall "SDL.h SDL_RWFromMem" rwFromMemFFI :: Ptr () -> CInt -> IO (Ptr RWops)
+foreign import ccall "SDL.h SDL_IOFromFile" rwFromFileFFI :: CString -> CString -> IO (Ptr RWops)
+foreign import ccall "SDL.h SDL_IOFromMem" rwFromMemFFI :: Ptr () -> CInt -> IO (Ptr RWops)
 foreign import ccall "sdlhelper.h SDLHelper_RWclose" rwCloseFFI :: Ptr RWops -> IO CInt
 foreign import ccall "sdlhelper.h SDLHelper_RWread" rwReadFFI :: Ptr RWops -> Ptr () -> CSize -> CSize -> IO CSize
 foreign import ccall "sdlhelper.h SDLHelper_RWseek" rwSeekFFI :: Ptr RWops -> Int64 -> CInt -> IO Int64
 foreign import ccall "sdlhelper.h SDLHelper_RWtell" rwTellFFI :: Ptr RWops -> IO Int64
 foreign import ccall "sdlhelper.h SDLHelper_RWwrite" rwWriteFFI :: Ptr RWops -> Ptr () -> CSize -> CSize -> IO CSize
-foreign import ccall "SDL.h SDL_ReadBE16" readBE16FFI :: Ptr RWops -> IO Word16
-foreign import ccall "SDL.h SDL_ReadBE32" readBE32FFI :: Ptr RWops -> IO Word32
-foreign import ccall "SDL.h SDL_ReadBE64" readBE64FFI :: Ptr RWops -> IO Word64
-foreign import ccall "SDL.h SDL_ReadLE16" readLE16FFI :: Ptr RWops -> IO Word16
-foreign import ccall "SDL.h SDL_ReadLE32" readLE32FFI :: Ptr RWops -> IO Word32
-foreign import ccall "SDL.h SDL_ReadLE64" readLE64FFI :: Ptr RWops -> IO Word64
-foreign import ccall "SDL.h SDL_WriteBE16" writeBE16FFI :: Ptr RWops -> Word16 -> IO CSize
-foreign import ccall "SDL.h SDL_WriteBE32" writeBE32FFI :: Ptr RWops -> Word32 -> IO CSize
-foreign import ccall "SDL.h SDL_WriteBE64" writeBE64FFI :: Ptr RWops -> Word64 -> IO CSize
-foreign import ccall "SDL.h SDL_WriteLE16" writeLE16FFI :: Ptr RWops -> Word16 -> IO CSize
-foreign import ccall "SDL.h SDL_WriteLE32" writeLE32FFI :: Ptr RWops -> Word32 -> IO CSize
-foreign import ccall "SDL.h SDL_WriteLE64" writeLE64FFI :: Ptr RWops -> Word64 -> IO CSize
+foreign import ccall "SDL.h SDL_ReadU16BE" readBE16FFI :: Ptr RWops -> IO Word16
+foreign import ccall "SDL.h SDL_ReadU32BE" readBE32FFI :: Ptr RWops -> IO Word32
+foreign import ccall "SDL.h SDL_ReadU64BE" readBE64FFI :: Ptr RWops -> IO Word64
+foreign import ccall "SDL.h SDL_ReadU16LE" readLE16FFI :: Ptr RWops -> IO Word16
+foreign import ccall "SDL.h SDL_ReadU32LE" readLE32FFI :: Ptr RWops -> IO Word32
+foreign import ccall "SDL.h SDL_ReadU64LE" readLE64FFI :: Ptr RWops -> IO Word64
+foreign import ccall "SDL.h SDL_WriteU16BE" writeBE16FFI :: Ptr RWops -> Word16 -> IO CSize
+foreign import ccall "SDL.h SDL_WriteU32BE" writeBE32FFI :: Ptr RWops -> Word32 -> IO CSize
+foreign import ccall "SDL.h SDL_WriteU64BE" writeBE64FFI :: Ptr RWops -> Word64 -> IO CSize
+foreign import ccall "SDL.h SDL_WriteU16LE" writeLE16FFI :: Ptr RWops -> Word16 -> IO CSize
+foreign import ccall "SDL.h SDL_WriteU32LE" writeLE32FFI :: Ptr RWops -> Word32 -> IO CSize
+foreign import ccall "SDL.h SDL_WriteU64LE" writeLE64FFI :: Ptr RWops -> Word64 -> IO CSize
 
 getBasePath :: MonadIO m => m CString
 getBasePath = liftIO getBasePathFFI

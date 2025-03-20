@@ -238,222 +238,222 @@ import SDL.Raw.Enum
 import SDL.Raw.Filesystem
 import SDL.Raw.Types
 
-foreign import ccall "SDL.h SDL_CreateWindow" createWindowFFI :: CString -> CInt -> CInt -> CInt -> CInt -> Word32 -> IO Window
-foreign import ccall "SDL.h SDL_CreateWindowAndRenderer" createWindowAndRendererFFI :: CInt -> CInt -> Word32 -> Ptr Window -> Ptr Renderer -> IO CInt
-foreign import ccall "SDL.h SDL_CreateWindowFrom" createWindowFromFFI :: Ptr () -> IO Window
-foreign import ccall "SDL.h SDL_DestroyWindow" destroyWindowFFI :: Window -> IO ()
-foreign import ccall "SDL.h SDL_DisableScreenSaver" disableScreenSaverFFI :: IO ()
-foreign import ccall "SDL.h SDL_EnableScreenSaver" enableScreenSaverFFI :: IO ()
-foreign import ccall "SDL.h SDL_GL_BindTexture" glBindTextureFFI :: Texture -> Ptr CFloat -> Ptr CFloat -> IO CInt
-foreign import ccall "SDL.h SDL_GL_CreateContext" glCreateContextFFI :: Window -> IO GLContext
-foreign import ccall "SDL.h SDL_GL_DeleteContext" glDeleteContextFFI :: GLContext -> IO ()
-foreign import ccall "SDL.h SDL_GL_ExtensionSupported" glExtensionSupportedFFI :: CString -> IO Bool
-foreign import ccall "SDL.h SDL_GL_GetAttribute" glGetAttributeFFI :: GLattr -> Ptr CInt -> IO CInt
-foreign import ccall "SDL.h SDL_GL_GetCurrentContext" glGetCurrentContextFFI :: IO GLContext
-foreign import ccall "SDL.h SDL_GL_GetCurrentWindow" glGetCurrentWindowFFI :: IO Window
-foreign import ccall "SDL.h SDL_GL_GetDrawableSize" glGetDrawableSizeFFI :: Window -> Ptr CInt -> Ptr CInt -> IO ()
-foreign import ccall "SDL.h SDL_GL_GetProcAddress" glGetProcAddressFFI :: CString -> IO (Ptr ())
-foreign import ccall "SDL.h SDL_GL_GetSwapInterval" glGetSwapIntervalFFI :: IO CInt
-foreign import ccall "SDL.h SDL_GL_LoadLibrary" glLoadLibraryFFI :: CString -> IO CInt
-foreign import ccall "SDL.h SDL_GL_MakeCurrent" glMakeCurrentFFI :: Window -> GLContext -> IO CInt
-foreign import ccall "SDL.h SDL_GL_ResetAttributes" glResetAttributesFFI :: IO ()
-foreign import ccall "SDL.h SDL_GL_SetAttribute" glSetAttributeFFI :: GLattr -> CInt -> IO CInt
-foreign import ccall "SDL.h SDL_GL_SetSwapInterval" glSetSwapIntervalFFI :: CInt -> IO CInt
-foreign import ccall "SDL.h SDL_GL_SwapWindow" glSwapWindowFFI :: Window -> IO ()
-foreign import ccall "SDL.h SDL_GL_UnbindTexture" glUnbindTextureFFI :: Texture -> IO CInt
-foreign import ccall "SDL.h SDL_GL_UnloadLibrary" glUnloadLibraryFFI :: IO ()
-foreign import ccall "SDL.h SDL_GetClosestDisplayMode" getClosestDisplayModeFFI :: CInt -> Ptr DisplayMode -> Ptr DisplayMode -> IO (Ptr DisplayMode)
-foreign import ccall "SDL.h SDL_GetCurrentDisplayMode" getCurrentDisplayModeFFI :: CInt -> Ptr DisplayMode -> IO CInt
-foreign import ccall "SDL.h SDL_GetCurrentVideoDriver" getCurrentVideoDriverFFI :: IO CString
-foreign import ccall "SDL.h SDL_GetDesktopDisplayMode" getDesktopDisplayModeFFI :: CInt -> Ptr DisplayMode -> IO CInt
-foreign import ccall "SDL.h SDL_GetDisplayBounds" getDisplayBoundsFFI :: CInt -> Ptr Rect -> IO CInt
-foreign import ccall "SDL.h SDL_GetDisplayDPI" getDisplayDPIFFI :: CInt -> Ptr CFloat -> Ptr CFloat -> Ptr CFloat -> IO CInt
-foreign import ccall "SDL.h SDL_GetDisplayMode" getDisplayModeFFI :: CInt -> CInt -> Ptr DisplayMode -> IO CInt
-foreign import ccall "SDL.h SDL_GetDisplayName" getDisplayNameFFI :: CInt -> IO CString
-foreign import ccall "SDL.h SDL_GetDisplayUsableBounds" getDisplayUsableBoundsFFI :: CInt -> Ptr Rect -> IO CInt
-foreign import ccall "SDL.h SDL_GetGrabbedWindow" getGrabbedWindowFFI :: IO Window
-foreign import ccall "SDL.h SDL_GetNumDisplayModes" getNumDisplayModesFFI :: CInt -> IO CInt
-foreign import ccall "SDL.h SDL_GetNumVideoDisplays" getNumVideoDisplaysFFI :: IO CInt
-foreign import ccall "SDL.h SDL_GetNumVideoDrivers" getNumVideoDriversFFI :: IO CInt
-foreign import ccall "SDL.h SDL_GetVideoDriver" getVideoDriverFFI :: CInt -> IO CString
-foreign import ccall "SDL.h SDL_GetWindowBordersSize" getWindowBordersSizeFFI :: Window -> Ptr CInt -> Ptr CInt -> Ptr CInt -> Ptr CInt -> IO CInt
-foreign import ccall "SDL.h SDL_GetWindowBrightness" getWindowBrightnessFFI :: Window -> IO CFloat
-foreign import ccall "SDL.h SDL_GetWindowData" getWindowDataFFI :: Window -> CString -> IO (Ptr ())
-foreign import ccall "SDL.h SDL_GetWindowDisplayIndex" getWindowDisplayIndexFFI :: Window -> IO CInt
-foreign import ccall "SDL.h SDL_GetWindowDisplayMode" getWindowDisplayModeFFI :: Window -> Ptr DisplayMode -> IO CInt
-foreign import ccall "SDL.h SDL_GetWindowFlags" getWindowFlagsFFI :: Window -> IO Word32
-foreign import ccall "SDL.h SDL_GetWindowFromID" getWindowFromIDFFI :: Word32 -> IO Window
-foreign import ccall "SDL.h SDL_GetWindowGammaRamp" getWindowGammaRampFFI :: Window -> Ptr Word16 -> Ptr Word16 -> Ptr Word16 -> IO CInt
-foreign import ccall "SDL.h SDL_GetWindowGrab" getWindowGrabFFI :: Window -> IO Bool
-foreign import ccall "SDL.h SDL_GetWindowID" getWindowIDFFI :: Window -> IO Word32
-foreign import ccall "SDL.h SDL_GetWindowMaximumSize" getWindowMaximumSizeFFI :: Window -> Ptr CInt -> Ptr CInt -> IO ()
-foreign import ccall "SDL.h SDL_GetWindowMinimumSize" getWindowMinimumSizeFFI :: Window -> Ptr CInt -> Ptr CInt -> IO ()
-foreign import ccall "SDL.h SDL_GetWindowOpacity" getWindowOpacityFFI :: Window -> Ptr CFloat -> IO ()
-foreign import ccall "SDL.h SDL_GetWindowPixelFormat" getWindowPixelFormatFFI :: Window -> IO Word32
-foreign import ccall "SDL.h SDL_GetWindowPosition" getWindowPositionFFI :: Window -> Ptr CInt -> Ptr CInt -> IO ()
-foreign import ccall "SDL.h SDL_GetWindowSize" getWindowSizeFFI :: Window -> Ptr CInt -> Ptr CInt -> IO ()
-foreign import ccall "SDL.h SDL_GetWindowSurface" getWindowSurfaceFFI :: Window -> IO (Ptr Surface)
-foreign import ccall "SDL.h SDL_GetWindowTitle" getWindowTitleFFI :: Window -> IO CString
-foreign import ccall "SDL.h SDL_HideWindow" hideWindowFFI :: Window -> IO ()
-foreign import ccall "SDL.h SDL_IsScreenSaverEnabled" isScreenSaverEnabledFFI :: IO Bool
-foreign import ccall "SDL.h SDL_MaximizeWindow" maximizeWindowFFI :: Window -> IO ()
-foreign import ccall "SDL.h SDL_MinimizeWindow" minimizeWindowFFI :: Window -> IO ()
-foreign import ccall "SDL.h SDL_RaiseWindow" raiseWindowFFI :: Window -> IO ()
-foreign import ccall "SDL.h SDL_RestoreWindow" restoreWindowFFI :: Window -> IO ()
-foreign import ccall "SDL.h SDL_SetWindowBordered" setWindowBorderedFFI :: Window -> Bool -> IO ()
-foreign import ccall "SDL.h SDL_SetWindowBrightness" setWindowBrightnessFFI :: Window -> CFloat -> IO CInt
-foreign import ccall "SDL.h SDL_SetWindowData" setWindowDataFFI :: Window -> CString -> Ptr () -> IO (Ptr ())
-foreign import ccall "SDL.h SDL_SetWindowDisplayMode" setWindowDisplayModeFFI :: Window -> Ptr DisplayMode -> IO CInt
-foreign import ccall "SDL.h SDL_SetWindowFullscreen" setWindowFullscreenFFI :: Window -> Word32 -> IO CInt
-foreign import ccall "SDL.h SDL_SetWindowGammaRamp" setWindowGammaRampFFI :: Window -> Ptr Word16 -> Ptr Word16 -> Ptr Word16 -> IO CInt
-foreign import ccall "SDL.h SDL_SetWindowGrab" setWindowGrabFFI :: Window -> Bool -> IO ()
-foreign import ccall "SDL.h SDL_SetWindowIcon" setWindowIconFFI :: Window -> Ptr Surface -> IO ()
-foreign import ccall "SDL.h SDL_SetWindowMaximumSize" setWindowMaximumSizeFFI :: Window -> CInt -> CInt -> IO ()
-foreign import ccall "SDL.h SDL_SetWindowMinimumSize" setWindowMinimumSizeFFI :: Window -> CInt -> CInt -> IO ()
-foreign import ccall "SDL.h SDL_SetWindowOpacity" setWindowOpacityFFI :: Window -> CFloat -> IO ()
-foreign import ccall "SDL.h SDL_SetWindowPosition" setWindowPositionFFI :: Window -> CInt -> CInt -> IO ()
-foreign import ccall "SDL.h SDL_SetWindowSize" setWindowSizeFFI :: Window -> CInt -> CInt -> IO ()
-foreign import ccall "SDL.h SDL_SetWindowTitle" setWindowTitleFFI :: Window -> CString -> IO ()
-foreign import ccall "SDL.h SDL_ShowMessageBox" showMessageBoxFFI :: Ptr MessageBoxData -> Ptr CInt -> IO CInt
-foreign import ccall "SDL.h SDL_ShowSimpleMessageBox" showSimpleMessageBoxFFI :: Word32 -> CString -> CString -> Window -> IO CInt
-foreign import ccall "SDL.h SDL_ShowWindow" showWindowFFI :: Window -> IO ()
-foreign import ccall "SDL.h SDL_UpdateWindowSurface" updateWindowSurfaceFFI :: Window -> IO CInt
-foreign import ccall "SDL.h SDL_UpdateWindowSurfaceRects" updateWindowSurfaceRectsFFI :: Window -> Ptr Rect -> CInt -> IO CInt
-foreign import ccall "SDL.h SDL_VideoInit" videoInitFFI :: CString -> IO CInt
-foreign import ccall "SDL.h SDL_VideoQuit" videoQuitFFI :: IO ()
+foreign import ccall "SDL3/SDL.h SDL_CreateWindow" createWindowFFI :: CString -> CInt -> CInt -> CInt -> CInt -> Word32 -> IO Window
+foreign import ccall "SDL3/SDL.h SDL_CreateWindowAndRenderer" createWindowAndRendererFFI :: CInt -> CInt -> Word32 -> Ptr Window -> Ptr Renderer -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_CreateWindowFrom" createWindowFromFFI :: Ptr () -> IO Window
+foreign import ccall "SDL3/SDL.h SDL_DestroyWindow" destroyWindowFFI :: Window -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_DisableScreenSaver" disableScreenSaverFFI :: IO ()
+foreign import ccall "SDL3/SDL.h SDL_EnableScreenSaver" enableScreenSaverFFI :: IO ()
+foreign import ccall "SDL3/SDL.h SDL_GL_BindTexture" glBindTextureFFI :: Texture -> Ptr CFloat -> Ptr CFloat -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_GL_CreateContext" glCreateContextFFI :: Window -> IO GLContext
+foreign import ccall "SDL3/SDL.h SDL_GL_DestroyContext" glDeleteContextFFI :: GLContext -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_GL_ExtensionSupported" glExtensionSupportedFFI :: CString -> IO Bool
+foreign import ccall "SDL3/SDL.h SDL_GL_GetAttribute" glGetAttributeFFI :: GLattr -> Ptr CInt -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_GL_GetCurrentContext" glGetCurrentContextFFI :: IO GLContext
+foreign import ccall "SDL3/SDL.h SDL_GL_GetCurrentWindow" glGetCurrentWindowFFI :: IO Window
+foreign import ccall "SDL3/SDL.h SDL_GL_GetDrawableSize" glGetDrawableSizeFFI :: Window -> Ptr CInt -> Ptr CInt -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_GL_GetProcAddress" glGetProcAddressFFI :: CString -> IO (Ptr ())
+foreign import ccall "SDL3/SDL.h SDL_GL_GetSwapInterval" glGetSwapIntervalFFI :: IO CInt
+foreign import ccall "SDL3/SDL.h SDL_GL_LoadLibrary" glLoadLibraryFFI :: CString -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_GL_MakeCurrent" glMakeCurrentFFI :: Window -> GLContext -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_GL_ResetAttributes" glResetAttributesFFI :: IO ()
+foreign import ccall "SDL3/SDL.h SDL_GL_SetAttribute" glSetAttributeFFI :: GLattr -> CInt -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_GL_SetSwapInterval" glSetSwapIntervalFFI :: CInt -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_GL_SwapWindow" glSwapWindowFFI :: Window -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_GL_UnbindTexture" glUnbindTextureFFI :: Texture -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_GL_UnloadLibrary" glUnloadLibraryFFI :: IO ()
+foreign import ccall "SDL3/SDL.h SDL_GetClosestFullscreenDisplayMode" getClosestDisplayModeFFI :: CInt -> Ptr DisplayMode -> Ptr DisplayMode -> IO (Ptr DisplayMode)
+foreign import ccall "SDL3/SDL.h SDL_GetCurrentDisplayMode" getCurrentDisplayModeFFI :: CInt -> Ptr DisplayMode -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_GetCurrentVideoDriver" getCurrentVideoDriverFFI :: IO CString
+foreign import ccall "SDL3/SDL.h SDL_GetDesktopDisplayMode" getDesktopDisplayModeFFI :: CInt -> Ptr DisplayMode -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_GetDisplayBounds" getDisplayBoundsFFI :: CInt -> Ptr Rect -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_GetDisplayDPI" getDisplayDPIFFI :: CInt -> Ptr CFloat -> Ptr CFloat -> Ptr CFloat -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_GetDisplayMode" getDisplayModeFFI :: CInt -> CInt -> Ptr DisplayMode -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_GetDisplayName" getDisplayNameFFI :: CInt -> IO CString
+foreign import ccall "SDL3/SDL.h SDL_GetDisplayUsableBounds" getDisplayUsableBoundsFFI :: CInt -> Ptr Rect -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_GetGrabbedWindow" getGrabbedWindowFFI :: IO Window
+foreign import ccall "SDL3/SDL.h SDL_GetNumDisplayModes" getNumDisplayModesFFI :: CInt -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_GetNumVideoDisplays" getNumVideoDisplaysFFI :: IO CInt
+foreign import ccall "SDL3/SDL.h SDL_GetNumVideoDrivers" getNumVideoDriversFFI :: IO CInt
+foreign import ccall "SDL3/SDL.h SDL_GetVideoDriver" getVideoDriverFFI :: CInt -> IO CString
+foreign import ccall "SDL3/SDL.h SDL_GetWindowBordersSize" getWindowBordersSizeFFI :: Window -> Ptr CInt -> Ptr CInt -> Ptr CInt -> Ptr CInt -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_GetWindowBrightness" getWindowBrightnessFFI :: Window -> IO CFloat
+foreign import ccall "SDL3/SDL.h SDL_GetWindowData" getWindowDataFFI :: Window -> CString -> IO (Ptr ())
+foreign import ccall "SDL3/SDL.h SDL_GetDisplayForWindow" getWindowDisplayIndexFFI :: Window -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_GetWindowFullscreenMode" getWindowDisplayModeFFI :: Window -> Ptr DisplayMode -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_GetWindowFlags" getWindowFlagsFFI :: Window -> IO Word32
+foreign import ccall "SDL3/SDL.h SDL_GetWindowFromID" getWindowFromIDFFI :: Word32 -> IO Window
+foreign import ccall "SDL3/SDL.h SDL_GetWindowGammaRamp" getWindowGammaRampFFI :: Window -> Ptr Word16 -> Ptr Word16 -> Ptr Word16 -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_GetWindowGrab" getWindowGrabFFI :: Window -> IO Bool
+foreign import ccall "SDL3/SDL.h SDL_GetWindowID" getWindowIDFFI :: Window -> IO Word32
+foreign import ccall "SDL3/SDL.h SDL_GetWindowMaximumSize" getWindowMaximumSizeFFI :: Window -> Ptr CInt -> Ptr CInt -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_GetWindowMinimumSize" getWindowMinimumSizeFFI :: Window -> Ptr CInt -> Ptr CInt -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_GetWindowOpacity" getWindowOpacityFFI :: Window -> Ptr CFloat -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_GetWindowPixelFormat" getWindowPixelFormatFFI :: Window -> IO Word32
+foreign import ccall "SDL3/SDL.h SDL_GetWindowPosition" getWindowPositionFFI :: Window -> Ptr CInt -> Ptr CInt -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_GetWindowSize" getWindowSizeFFI :: Window -> Ptr CInt -> Ptr CInt -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_GetWindowSurface" getWindowSurfaceFFI :: Window -> IO (Ptr Surface)
+foreign import ccall "SDL3/SDL.h SDL_GetWindowTitle" getWindowTitleFFI :: Window -> IO CString
+foreign import ccall "SDL3/SDL.h SDL_HideWindow" hideWindowFFI :: Window -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_ScreenSaverEnabled" isScreenSaverEnabledFFI :: IO Bool
+foreign import ccall "SDL3/SDL.h SDL_MaximizeWindow" maximizeWindowFFI :: Window -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_MinimizeWindow" minimizeWindowFFI :: Window -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_RaiseWindow" raiseWindowFFI :: Window -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_RestoreWindow" restoreWindowFFI :: Window -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_SetWindowBordered" setWindowBorderedFFI :: Window -> Bool -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_SetWindowBrightness" setWindowBrightnessFFI :: Window -> CFloat -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_SetWindowData" setWindowDataFFI :: Window -> CString -> Ptr () -> IO (Ptr ())
+foreign import ccall "SDL3/SDL.h SDL_SetWindowFullscreenMode" setWindowDisplayModeFFI :: Window -> Ptr DisplayMode -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_SetWindowFullscreen" setWindowFullscreenFFI :: Window -> Word32 -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_SetWindowGammaRamp" setWindowGammaRampFFI :: Window -> Ptr Word16 -> Ptr Word16 -> Ptr Word16 -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_SetWindowGrab" setWindowGrabFFI :: Window -> Bool -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_SetWindowIcon" setWindowIconFFI :: Window -> Ptr Surface -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_SetWindowMaximumSize" setWindowMaximumSizeFFI :: Window -> CInt -> CInt -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_SetWindowMinimumSize" setWindowMinimumSizeFFI :: Window -> CInt -> CInt -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_SetWindowOpacity" setWindowOpacityFFI :: Window -> CFloat -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_SetWindowPosition" setWindowPositionFFI :: Window -> CInt -> CInt -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_SetWindowSize" setWindowSizeFFI :: Window -> CInt -> CInt -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_SetWindowTitle" setWindowTitleFFI :: Window -> CString -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_ShowMessageBox" showMessageBoxFFI :: Ptr MessageBoxData -> Ptr CInt -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_ShowSimpleMessageBox" showSimpleMessageBoxFFI :: Word32 -> CString -> CString -> Window -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_ShowWindow" showWindowFFI :: Window -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_UpdateWindowSurface" updateWindowSurfaceFFI :: Window -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_UpdateWindowSurfaceRects" updateWindowSurfaceRectsFFI :: Window -> Ptr Rect -> CInt -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_VideoInit" videoInitFFI :: CString -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_VideoQuit" videoQuitFFI :: IO ()
 
-foreign import ccall "SDL.h SDL_ComposeCustomBlendMode" composeCustomBlendModeFFI :: BlendFactor -> BlendFactor -> BlendOperation -> BlendFactor -> BlendFactor -> BlendOperation -> IO BlendMode
-foreign import ccall "SDL.h SDL_CreateRenderer" createRendererFFI :: Window -> CInt -> Word32 -> IO Renderer
-foreign import ccall "SDL.h SDL_CreateSoftwareRenderer" createSoftwareRendererFFI :: Ptr Surface -> IO Renderer
-foreign import ccall "SDL.h SDL_CreateTexture" createTextureFFI :: Renderer -> Word32 -> CInt -> CInt -> CInt -> IO Texture
-foreign import ccall "SDL.h SDL_CreateTextureFromSurface" createTextureFromSurfaceFFI :: Renderer -> Ptr Surface -> IO Texture
-foreign import ccall "SDL.h SDL_DestroyRenderer" destroyRendererFFI :: Renderer -> IO ()
-foreign import ccall "SDL.h SDL_DestroyTexture" destroyTextureFFI :: Texture -> IO ()
-foreign import ccall "SDL.h SDL_GetNumRenderDrivers" getNumRenderDriversFFI :: IO CInt
-foreign import ccall "SDL.h SDL_GetRenderDrawBlendMode" getRenderDrawBlendModeFFI :: Renderer -> Ptr BlendMode -> IO Int
-foreign import ccall "SDL.h SDL_GetRenderDrawColor" getRenderDrawColorFFI :: Renderer -> Ptr Word8 -> Ptr Word8 -> Ptr Word8 -> Ptr Word8 -> IO CInt
-foreign import ccall "SDL.h SDL_GetRenderDriverInfo" getRenderDriverInfoFFI :: CInt -> Ptr RendererInfo -> IO CInt
-foreign import ccall "SDL.h SDL_GetRenderTarget" getRenderTargetFFI :: Renderer -> IO Texture
-foreign import ccall "SDL.h SDL_GetRenderer" getRendererFFI :: Window -> IO Renderer
-foreign import ccall "SDL.h SDL_GetRendererInfo" getRendererInfoFFI :: Renderer -> Ptr RendererInfo -> IO CInt
-foreign import ccall "SDL.h SDL_GetRendererOutputSize" getRendererOutputSizeFFI :: Renderer -> Ptr CInt -> Ptr CInt -> IO CInt
-foreign import ccall "SDL.h SDL_GetTextureAlphaMod" getTextureAlphaModFFI :: Texture -> Ptr Word8 -> IO CInt
-foreign import ccall "SDL.h SDL_GetTextureBlendMode" getTextureBlendModeFFI :: Texture -> Ptr BlendMode -> IO CInt
-foreign import ccall "SDL.h SDL_GetTextureColorMod" getTextureColorModFFI :: Texture -> Ptr Word8 -> Ptr Word8 -> Ptr Word8 -> IO CInt
-foreign import ccall "SDL.h SDL_LockTexture" lockTextureFFI :: Texture -> Ptr Rect -> Ptr (Ptr ()) -> Ptr CInt -> IO CInt
-foreign import ccall "SDL.h SDL_QueryTexture" queryTextureFFI :: Texture -> Ptr Word32 -> Ptr CInt -> Ptr CInt -> Ptr CInt -> IO CInt
-foreign import ccall "SDL.h SDL_RenderClear" renderClearFFI :: Renderer -> IO CInt
-foreign import ccall "SDL.h SDL_RenderCopy" renderCopyFFI :: Renderer -> Texture -> Ptr Rect -> Ptr Rect -> IO CInt
-foreign import ccall "SDL.h SDL_RenderCopyEx" renderCopyExFFI :: Renderer -> Texture -> Ptr Rect -> Ptr Rect -> CDouble -> Ptr Point -> RendererFlip -> IO CInt
-foreign import ccall "SDL.h SDL_RenderDrawLine" renderDrawLineFFI :: Renderer -> CInt -> CInt -> CInt -> CInt -> IO CInt
-foreign import ccall "SDL.h SDL_RenderDrawLines" renderDrawLinesFFI :: Renderer -> Ptr Point -> CInt -> IO CInt
-foreign import ccall "SDL.h SDL_RenderDrawPoint" renderDrawPointFFI :: Renderer -> CInt -> CInt -> IO CInt
-foreign import ccall "SDL.h SDL_RenderDrawPoints" renderDrawPointsFFI :: Renderer -> Ptr Point -> CInt -> IO CInt
-foreign import ccall "SDL.h SDL_RenderDrawRect" renderDrawRectFFI :: Renderer -> Ptr Rect -> IO CInt
-foreign import ccall "SDL.h SDL_RenderDrawRects" renderDrawRectsFFI :: Renderer -> Ptr Rect -> CInt -> IO CInt
-foreign import ccall "SDL.h SDL_RenderFillRect" renderFillRectFFI :: Renderer -> Ptr Rect -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_ComposeCustomBlendMode" composeCustomBlendModeFFI :: BlendFactor -> BlendFactor -> BlendOperation -> BlendFactor -> BlendFactor -> BlendOperation -> IO BlendMode
+foreign import ccall "SDL3/SDL.h SDL_CreateRenderer" createRendererFFI :: Window -> CInt -> Word32 -> IO Renderer
+foreign import ccall "SDL3/SDL.h SDL_CreateSoftwareRenderer" createSoftwareRendererFFI :: Ptr Surface -> IO Renderer
+foreign import ccall "SDL3/SDL.h SDL_CreateTexture" createTextureFFI :: Renderer -> Word32 -> CInt -> CInt -> CInt -> IO Texture
+foreign import ccall "SDL3/SDL.h SDL_CreateTextureFromSurface" createTextureFromSurfaceFFI :: Renderer -> Ptr Surface -> IO Texture
+foreign import ccall "SDL3/SDL.h SDL_DestroyRenderer" destroyRendererFFI :: Renderer -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_DestroyTexture" destroyTextureFFI :: Texture -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_GetNumRenderDrivers" getNumRenderDriversFFI :: IO CInt
+foreign import ccall "SDL3/SDL.h SDL_GetRenderDrawBlendMode" getRenderDrawBlendModeFFI :: Renderer -> Ptr BlendMode -> IO Int
+foreign import ccall "SDL3/SDL.h SDL_GetRenderDrawColor" getRenderDrawColorFFI :: Renderer -> Ptr Word8 -> Ptr Word8 -> Ptr Word8 -> Ptr Word8 -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_GetRenderDriverInfo" getRenderDriverInfoFFI :: CInt -> Ptr RendererInfo -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_GetRenderTarget" getRenderTargetFFI :: Renderer -> IO Texture
+foreign import ccall "SDL3/SDL.h SDL_GetRenderer" getRendererFFI :: Window -> IO Renderer
+foreign import ccall "SDL3/SDL.h SDL_GetRendererInfo" getRendererInfoFFI :: Renderer -> Ptr RendererInfo -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_GetCurrentRenderOutputSize" getRendererOutputSizeFFI :: Renderer -> Ptr CInt -> Ptr CInt -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_GetTextureAlphaMod" getTextureAlphaModFFI :: Texture -> Ptr Word8 -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_GetTextureBlendMode" getTextureBlendModeFFI :: Texture -> Ptr BlendMode -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_GetTextureColorMod" getTextureColorModFFI :: Texture -> Ptr Word8 -> Ptr Word8 -> Ptr Word8 -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_LockTexture" lockTextureFFI :: Texture -> Ptr Rect -> Ptr (Ptr ()) -> Ptr CInt -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_QueryTexture" queryTextureFFI :: Texture -> Ptr Word32 -> Ptr CInt -> Ptr CInt -> Ptr CInt -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_RenderClear" renderClearFFI :: Renderer -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_RenderTexture" renderCopyFFI :: Renderer -> Texture -> Ptr Rect -> Ptr Rect -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_RenderTextureRotated" renderCopyExFFI :: Renderer -> Texture -> Ptr Rect -> Ptr Rect -> CDouble -> Ptr Point -> RendererFlip -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_RenderLine" renderDrawLineFFI :: Renderer -> CInt -> CInt -> CInt -> CInt -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_RenderLines" renderDrawLinesFFI :: Renderer -> Ptr Point -> CInt -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_RenderPoint" renderDrawPointFFI :: Renderer -> CInt -> CInt -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_RenderPoints" renderDrawPointsFFI :: Renderer -> Ptr Point -> CInt -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_RenderRect" renderDrawRectFFI :: Renderer -> Ptr Rect -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_RenderRects" renderDrawRectsFFI :: Renderer -> Ptr Rect -> CInt -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_RenderFillRect" renderFillRectFFI :: Renderer -> Ptr Rect -> IO CInt
 #ifdef RECENT_ISH
-foreign import ccall "SDL.h SDL_RenderCopyF" renderCopyFFFI :: Renderer -> Texture -> Ptr Rect -> Ptr FRect -> IO CInt
-foreign import ccall "SDL.h SDL_RenderCopyExF" renderCopyExFFFI :: Renderer -> Texture -> Ptr Rect -> Ptr FRect -> CDouble -> Ptr FPoint -> RendererFlip -> IO CInt
-foreign import ccall "SDL.h SDL_RenderDrawLineF" renderDrawLineFFFI :: Renderer -> CFloat -> CFloat -> CFloat -> CFloat -> IO CInt
-foreign import ccall "SDL.h SDL_RenderDrawLinesF" renderDrawLinesFFFI :: Renderer -> Ptr FPoint -> CInt -> IO CInt
-foreign import ccall "SDL.h SDL_RenderDrawPointF" renderDrawPointFFFI :: Renderer -> CFloat -> CFloat -> IO CInt
-foreign import ccall "SDL.h SDL_RenderDrawPointsF" renderDrawPointsFFFI :: Renderer -> Ptr FPoint -> CInt -> IO CInt
-foreign import ccall "SDL.h SDL_RenderDrawRectF" renderDrawRectFFFI :: Renderer -> Ptr FRect -> IO CInt
-foreign import ccall "SDL.h SDL_RenderDrawRectsF" renderDrawRectsFFFI :: Renderer -> Ptr FRect -> CInt -> IO CInt
-foreign import ccall "SDL.h SDL_RenderFillRectF" renderFillRectFFFI :: Renderer -> Ptr FRect -> IO CInt
-foreign import ccall "SDL.h SDL_RenderFillRectsF" renderFillRectsFFFI :: Renderer -> Ptr FRect -> CInt -> IO CInt
-foreign import ccall "SDL.h SDL_RenderGeometry" renderGeometryFFI :: Renderer -> Texture -> Ptr Vertex -> CInt -> Ptr CInt -> CInt -> IO CInt
-foreign import ccall "SDL.h SDL_RenderGeometryRaw" renderGeometryRawFFI :: Renderer -> Texture -> Ptr FPoint -> CInt -> Ptr Color -> CInt -> Ptr FPoint -> CInt -> CInt -> Ptr () -> CInt -> CInt -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_RenderTexture" renderCopyFFFI :: Renderer -> Texture -> Ptr Rect -> Ptr FRect -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_RenderTextureRotated" renderCopyExFFFI :: Renderer -> Texture -> Ptr Rect -> Ptr FRect -> CDouble -> Ptr FPoint -> RendererFlip -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_RenderLine" renderDrawLineFFFI :: Renderer -> CFloat -> CFloat -> CFloat -> CFloat -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_RenderLines" renderDrawLinesFFFI :: Renderer -> Ptr FPoint -> CInt -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_RenderPoint" renderDrawPointFFFI :: Renderer -> CFloat -> CFloat -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_RenderPoints" renderDrawPointsFFFI :: Renderer -> Ptr FPoint -> CInt -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_RenderRect" renderDrawRectFFFI :: Renderer -> Ptr FRect -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_RenderRects" renderDrawRectsFFFI :: Renderer -> Ptr FRect -> CInt -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_RenderFillRect" renderFillRectFFFI :: Renderer -> Ptr FRect -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_RenderFillRects" renderFillRectsFFFI :: Renderer -> Ptr FRect -> CInt -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_RenderGeometry" renderGeometryFFI :: Renderer -> Texture -> Ptr Vertex -> CInt -> Ptr CInt -> CInt -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_RenderGeometryRaw" renderGeometryRawFFI :: Renderer -> Texture -> Ptr FPoint -> CInt -> Ptr Color -> CInt -> Ptr FPoint -> CInt -> CInt -> Ptr () -> CInt -> CInt -> IO CInt
 #endif
 foreign import ccall "sqlhelper.c SDLHelper_RenderFillRectEx" renderFillRectExFFI :: Renderer -> CInt -> CInt -> CInt -> CInt -> IO CInt
-foreign import ccall "SDL.h SDL_RenderFillRects" renderFillRectsFFI :: Renderer -> Ptr Rect -> CInt -> IO CInt
-foreign import ccall "SDL.h SDL_RenderGetClipRect" renderGetClipRectFFI :: Renderer -> Ptr Rect -> IO ()
-foreign import ccall "SDL.h SDL_RenderGetIntegerScale" renderGetIntegerScaleFFI :: Renderer -> IO CInt
-foreign import ccall "SDL.h SDL_RenderGetLogicalSize" renderGetLogicalSizeFFI :: Renderer -> Ptr CInt -> Ptr CInt -> IO ()
-foreign import ccall "SDL.h SDL_RenderGetScale" renderGetScaleFFI :: Renderer -> Ptr CFloat -> Ptr CFloat -> IO ()
-foreign import ccall "SDL.h SDL_RenderGetViewport" renderGetViewportFFI :: Renderer -> Ptr Rect -> IO ()
-foreign import ccall "SDL.h SDL_RenderIsClipEnabled" renderIsClipEnabledFFI :: Renderer -> IO Bool
-foreign import ccall "SDL.h SDL_RenderPresent" renderPresentFFI :: Renderer -> IO ()
-foreign import ccall "SDL.h SDL_RenderReadPixels" renderReadPixelsFFI :: Renderer -> Ptr Rect -> Word32 -> Ptr () -> CInt -> IO CInt
-foreign import ccall "SDL.h SDL_RenderSetClipRect" renderSetClipRectFFI :: Renderer -> Ptr Rect -> IO CInt
-foreign import ccall "SDL.h SDL_RenderSetIntegerScale" renderSetIntegerScaleFFI :: Renderer -> CInt -> IO CInt
-foreign import ccall "SDL.h SDL_RenderSetLogicalSize" renderSetLogicalSizeFFI :: Renderer -> CInt -> CInt -> IO CInt
-foreign import ccall "SDL.h SDL_RenderSetScale" renderSetScaleFFI :: Renderer -> CFloat -> CFloat -> IO CInt
-foreign import ccall "SDL.h SDL_RenderSetViewport" renderSetViewportFFI :: Renderer -> Ptr Rect -> IO CInt
-foreign import ccall "SDL.h SDL_RenderTargetSupported" renderTargetSupportedFFI :: Renderer -> IO Bool
-foreign import ccall "SDL.h SDL_SetRenderDrawBlendMode" setRenderDrawBlendModeFFI :: Renderer -> BlendMode -> IO CInt
-foreign import ccall "SDL.h SDL_SetRenderDrawColor" setRenderDrawColorFFI :: Renderer -> Word8 -> Word8 -> Word8 -> Word8 -> IO CInt
-foreign import ccall "SDL.h SDL_SetRenderTarget" setRenderTargetFFI :: Renderer -> Texture -> IO CInt
-foreign import ccall "SDL.h SDL_SetTextureAlphaMod" setTextureAlphaModFFI :: Texture -> Word8 -> IO CInt
-foreign import ccall "SDL.h SDL_SetTextureBlendMode" setTextureBlendModeFFI :: Texture -> BlendMode -> IO CInt
-foreign import ccall "SDL.h SDL_SetTextureColorMod" setTextureColorModFFI :: Texture -> Word8 -> Word8 -> Word8 -> IO CInt
-foreign import ccall "SDL.h SDL_UnlockTexture" unlockTextureFFI :: Texture -> IO ()
-foreign import ccall "SDL.h SDL_UpdateTexture" updateTextureFFI :: Texture -> Ptr Rect -> Ptr () -> CInt -> IO CInt
-foreign import ccall "SDL.h SDL_UpdateYUVTexture" updateYUVTextureFFI :: Texture -> Ptr Rect -> Ptr Word8 -> CInt -> Ptr Word8 -> CInt -> Ptr Word8 -> CInt -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_RenderFillRects" renderFillRectsFFI :: Renderer -> Ptr Rect -> CInt -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_GetRenderClipRect" renderGetClipRectFFI :: Renderer -> Ptr Rect -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_RenderGetIntegerScale" renderGetIntegerScaleFFI :: Renderer -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_GetRenderLogicalPresentation" renderGetLogicalSizeFFI :: Renderer -> Ptr CInt -> Ptr CInt -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_GetRenderScale" renderGetScaleFFI :: Renderer -> Ptr CFloat -> Ptr CFloat -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_GetRenderViewport" renderGetViewportFFI :: Renderer -> Ptr Rect -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_RenderClipEnabled" renderIsClipEnabledFFI :: Renderer -> IO Bool
+foreign import ccall "SDL3/SDL.h SDL_RenderPresent" renderPresentFFI :: Renderer -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_RenderReadPixels" renderReadPixelsFFI :: Renderer -> Ptr Rect -> Word32 -> Ptr () -> CInt -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_SetRenderClipRect" renderSetClipRectFFI :: Renderer -> Ptr Rect -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_RenderSetIntegerScale" renderSetIntegerScaleFFI :: Renderer -> CInt -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_SetRenderLogicalPresentation" renderSetLogicalSizeFFI :: Renderer -> CInt -> CInt -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_SetRenderScale" renderSetScaleFFI :: Renderer -> CFloat -> CFloat -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_SetRenderViewport" renderSetViewportFFI :: Renderer -> Ptr Rect -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_RenderTargetSupported" renderTargetSupportedFFI :: Renderer -> IO Bool
+foreign import ccall "SDL3/SDL.h SDL_SetRenderDrawBlendMode" setRenderDrawBlendModeFFI :: Renderer -> BlendMode -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_SetRenderDrawColor" setRenderDrawColorFFI :: Renderer -> Word8 -> Word8 -> Word8 -> Word8 -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_SetRenderTarget" setRenderTargetFFI :: Renderer -> Texture -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_SetTextureAlphaMod" setTextureAlphaModFFI :: Texture -> Word8 -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_SetTextureBlendMode" setTextureBlendModeFFI :: Texture -> BlendMode -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_SetTextureColorMod" setTextureColorModFFI :: Texture -> Word8 -> Word8 -> Word8 -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_UnlockTexture" unlockTextureFFI :: Texture -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_UpdateTexture" updateTextureFFI :: Texture -> Ptr Rect -> Ptr () -> CInt -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_UpdateYUVTexture" updateYUVTextureFFI :: Texture -> Ptr Rect -> Ptr Word8 -> CInt -> Ptr Word8 -> CInt -> Ptr Word8 -> CInt -> IO CInt
 
-foreign import ccall "SDL.h SDL_AllocFormat" allocFormatFFI :: Word32 -> IO (Ptr PixelFormat)
-foreign import ccall "SDL.h SDL_AllocPalette" allocPaletteFFI :: CInt -> IO (Ptr Palette)
-foreign import ccall "SDL.h SDL_CalculateGammaRamp" calculateGammaRampFFI :: CFloat -> Ptr Word16 -> IO ()
-foreign import ccall "SDL.h SDL_FreeFormat" freeFormatFFI :: Ptr PixelFormat -> IO ()
-foreign import ccall "SDL.h SDL_FreePalette" freePaletteFFI :: Ptr Palette -> IO ()
-foreign import ccall "SDL.h SDL_GetPixelFormatName" getPixelFormatNameFFI :: Word32 -> IO CString
-foreign import ccall "SDL.h SDL_GetRGB" getRGBFFI :: Word32 -> Ptr PixelFormat -> Ptr Word8 -> Ptr Word8 -> Ptr Word8 -> IO ()
-foreign import ccall "SDL.h SDL_GetRGBA" getRGBAFFI :: Word32 -> Ptr PixelFormat -> Ptr Word8 -> Ptr Word8 -> Ptr Word8 -> Ptr Word8 -> IO ()
-foreign import ccall "SDL.h SDL_MapRGB" mapRGBFFI :: Ptr PixelFormat -> Word8 -> Word8 -> Word8 -> IO Word32
-foreign import ccall "SDL.h SDL_MapRGBA" mapRGBAFFI :: Ptr PixelFormat -> Word8 -> Word8 -> Word8 -> Word8 -> IO Word32
-foreign import ccall "SDL.h SDL_MasksToPixelFormatEnum" masksToPixelFormatEnumFFI :: CInt -> Word32 -> Word32 -> Word32 -> Word32 -> IO Word32
-foreign import ccall "SDL.h SDL_PixelFormatEnumToMasks" pixelFormatEnumToMasksFFI :: Word32 -> Ptr CInt -> Ptr Word32 -> Ptr Word32 -> Ptr Word32 -> Ptr Word32 -> IO Bool
-foreign import ccall "SDL.h SDL_SetPaletteColors" setPaletteColorsFFI :: Ptr Palette -> Ptr Color -> CInt -> CInt -> IO CInt
-foreign import ccall "SDL.h SDL_SetPixelFormatPalette" setPixelFormatPaletteFFI :: Ptr PixelFormat -> Ptr Palette -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_GetPixelFormatDetails" allocFormatFFI :: Word32 -> IO (Ptr PixelFormat)
+foreign import ccall "SDL3/SDL.h SDL_CreatePalette" allocPaletteFFI :: CInt -> IO (Ptr Palette)
+foreign import ccall "SDL3/SDL.h SDL_CalculateGammaRamp" calculateGammaRampFFI :: CFloat -> Ptr Word16 -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_FreeFormat" freeFormatFFI :: Ptr PixelFormat -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_DestroyPalette" freePaletteFFI :: Ptr Palette -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_GetPixelFormatName" getPixelFormatNameFFI :: Word32 -> IO CString
+foreign import ccall "SDL3/SDL.h SDL_GetRGB" getRGBFFI :: Word32 -> Ptr PixelFormat -> Ptr Word8 -> Ptr Word8 -> Ptr Word8 -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_GetRGBA" getRGBAFFI :: Word32 -> Ptr PixelFormat -> Ptr Word8 -> Ptr Word8 -> Ptr Word8 -> Ptr Word8 -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_MapRGB" mapRGBFFI :: Ptr PixelFormat -> Word8 -> Word8 -> Word8 -> IO Word32
+foreign import ccall "SDL3/SDL.h SDL_MapRGBA" mapRGBAFFI :: Ptr PixelFormat -> Word8 -> Word8 -> Word8 -> Word8 -> IO Word32
+foreign import ccall "SDL3/SDL.h SDL_GetPixelFormatForMasks" masksToPixelFormatEnumFFI :: CInt -> Word32 -> Word32 -> Word32 -> Word32 -> IO Word32
+foreign import ccall "SDL3/SDL.h SDL_GetMasksForPixelFormat" pixelFormatEnumToMasksFFI :: Word32 -> Ptr CInt -> Ptr Word32 -> Ptr Word32 -> Ptr Word32 -> Ptr Word32 -> IO Bool
+foreign import ccall "SDL3/SDL.h SDL_SetPaletteColors" setPaletteColorsFFI :: Ptr Palette -> Ptr Color -> CInt -> CInt -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_SetPixelFormatPalette" setPixelFormatPaletteFFI :: Ptr PixelFormat -> Ptr Palette -> IO CInt
 
-foreign import ccall "SDL.h SDL_EnclosePoints" enclosePointsFFI :: Ptr Point -> CInt -> Ptr Rect -> Ptr Rect -> IO Bool
-foreign import ccall "SDL.h SDL_HasIntersection" hasIntersectionFFI :: Ptr Rect -> Ptr Rect -> IO Bool
-foreign import ccall "SDL.h SDL_IntersectRect" intersectRectFFI :: Ptr Rect -> Ptr Rect -> Ptr Rect -> IO Bool
-foreign import ccall "SDL.h SDL_IntersectRectAndLine" intersectRectAndLineFFI :: Ptr Rect -> Ptr CInt -> Ptr CInt -> Ptr CInt -> Ptr CInt -> IO Bool
-foreign import ccall "SDL.h SDL_UnionRect" unionRectFFI :: Ptr Rect -> Ptr Rect -> Ptr Rect -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_GetRectEnclosingPoints" enclosePointsFFI :: Ptr Point -> CInt -> Ptr Rect -> Ptr Rect -> IO Bool
+foreign import ccall "SDL3/SDL.h SDL_HasRectIntersection" hasIntersectionFFI :: Ptr Rect -> Ptr Rect -> IO Bool
+foreign import ccall "SDL3/SDL.h SDL_GetRectIntersection" intersectRectFFI :: Ptr Rect -> Ptr Rect -> Ptr Rect -> IO Bool
+foreign import ccall "SDL3/SDL.h SDL_GetRectAndLineIntersection" intersectRectAndLineFFI :: Ptr Rect -> Ptr CInt -> Ptr CInt -> Ptr CInt -> Ptr CInt -> IO Bool
+foreign import ccall "SDL3/SDL.h SDL_GetRectUnion" unionRectFFI :: Ptr Rect -> Ptr Rect -> Ptr Rect -> IO ()
 
-foreign import ccall "SDL.h SDL_UpperBlitScaled" blitScaledFFI :: Ptr Surface -> Ptr Rect -> Ptr Surface -> Ptr Rect -> IO CInt
-foreign import ccall "SDL.h SDL_UpperBlit" blitSurfaceFFI :: Ptr Surface -> Ptr Rect -> Ptr Surface -> Ptr Rect -> IO CInt
-foreign import ccall "SDL.h SDL_ConvertPixels" convertPixelsFFI :: CInt -> CInt -> Word32 -> Ptr () -> CInt -> Word32 -> Ptr () -> CInt -> IO CInt
-foreign import ccall "SDL.h SDL_ConvertSurface" convertSurfaceFFI :: Ptr Surface -> Ptr PixelFormat -> Word32 -> IO (Ptr Surface)
-foreign import ccall "SDL.h SDL_ConvertSurfaceFormat" convertSurfaceFormatFFI :: Ptr Surface -> Word32 -> Word32 -> IO (Ptr Surface)
-foreign import ccall "SDL.h SDL_CreateRGBSurface" createRGBSurfaceFFI :: Word32 -> CInt -> CInt -> CInt -> Word32 -> Word32 -> Word32 -> Word32 -> IO (Ptr Surface)
-foreign import ccall "SDL.h SDL_CreateRGBSurfaceFrom" createRGBSurfaceFromFFI :: Ptr () -> CInt -> CInt -> CInt -> CInt -> Word32 -> Word32 -> Word32 -> Word32 -> IO (Ptr Surface)
-foreign import ccall "SDL.h SDL_FillRect" fillRectFFI :: Ptr Surface -> Ptr Rect -> Word32 -> IO CInt
-foreign import ccall "SDL.h SDL_FillRects" fillRectsFFI :: Ptr Surface -> Ptr Rect -> CInt -> Word32 -> IO CInt
-foreign import ccall "SDL.h SDL_FreeSurface" freeSurfaceFFI :: Ptr Surface -> IO ()
-foreign import ccall "SDL.h SDL_GetClipRect" getClipRectFFI :: Ptr Surface -> Ptr Rect -> IO ()
-foreign import ccall "SDL.h SDL_GetColorKey" getColorKeyFFI :: Ptr Surface -> Ptr Word32 -> IO CInt
-foreign import ccall "SDL.h SDL_GetSurfaceAlphaMod" getSurfaceAlphaModFFI :: Ptr Surface -> Ptr Word8 -> IO CInt
-foreign import ccall "SDL.h SDL_GetSurfaceBlendMode" getSurfaceBlendModeFFI :: Ptr Surface -> Ptr BlendMode -> IO CInt
-foreign import ccall "SDL.h SDL_GetSurfaceColorMod" getSurfaceColorModFFI :: Ptr Surface -> Ptr Word8 -> Ptr Word8 -> Ptr Word8 -> IO CInt
-foreign import ccall "SDL.h SDL_LoadBMP_RW" loadBMP_RWFFI :: Ptr RWops -> CInt -> IO (Ptr Surface)
-foreign import ccall "SDL.h SDL_LockSurface" lockSurfaceFFI :: Ptr Surface -> IO CInt
-foreign import ccall "SDL.h SDL_LowerBlit" lowerBlitFFI :: Ptr Surface -> Ptr Rect -> Ptr Surface -> Ptr Rect -> IO CInt
-foreign import ccall "SDL.h SDL_LowerBlitScaled" lowerBlitScaledFFI :: Ptr Surface -> Ptr Rect -> Ptr Surface -> Ptr Rect -> IO CInt
-foreign import ccall "SDL.h SDL_SaveBMP_RW" saveBMP_RWFFI :: Ptr Surface -> Ptr RWops -> CInt -> IO CInt
-foreign import ccall "SDL.h SDL_SetClipRect" setClipRectFFI :: Ptr Surface -> Ptr Rect -> IO Bool
-foreign import ccall "SDL.h SDL_SetColorKey" setColorKeyFFI :: Ptr Surface -> CInt -> Word32 -> IO CInt
-foreign import ccall "SDL.h SDL_SetSurfaceAlphaMod" setSurfaceAlphaModFFI :: Ptr Surface -> Word8 -> IO CInt
-foreign import ccall "SDL.h SDL_SetSurfaceBlendMode" setSurfaceBlendModeFFI :: Ptr Surface -> BlendMode -> IO CInt
-foreign import ccall "SDL.h SDL_SetSurfaceColorMod" setSurfaceColorModFFI :: Ptr Surface -> Word8 -> Word8 -> Word8 -> IO CInt
-foreign import ccall "SDL.h SDL_SetSurfacePalette" setSurfacePaletteFFI :: Ptr Surface -> Ptr Palette -> IO CInt
-foreign import ccall "SDL.h SDL_SetSurfaceRLE" setSurfaceRLEFFI :: Ptr Surface -> CInt -> IO CInt
-foreign import ccall "SDL.h SDL_UnlockSurface" unlockSurfaceFFI :: Ptr Surface -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_BlitSurfaceScaled" blitScaledFFI :: Ptr Surface -> Ptr Rect -> Ptr Surface -> Ptr Rect -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_BlitSurface" blitSurfaceFFI :: Ptr Surface -> Ptr Rect -> Ptr Surface -> Ptr Rect -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_ConvertPixels" convertPixelsFFI :: CInt -> CInt -> Word32 -> Ptr () -> CInt -> Word32 -> Ptr () -> CInt -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_ConvertSurface" convertSurfaceFFI :: Ptr Surface -> Ptr PixelFormat -> Word32 -> IO (Ptr Surface)
+foreign import ccall "SDL3/SDL.h SDL_ConvertSurface" convertSurfaceFormatFFI :: Ptr Surface -> Word32 -> Word32 -> IO (Ptr Surface)
+foreign import ccall "SDL3/SDL.h SDL_CreateRGBSurface" createRGBSurfaceFFI :: Word32 -> CInt -> CInt -> CInt -> Word32 -> Word32 -> Word32 -> Word32 -> IO (Ptr Surface)
+foreign import ccall "SDL3/SDL.h SDL_CreateRGBSurfaceFrom" createRGBSurfaceFromFFI :: Ptr () -> CInt -> CInt -> CInt -> CInt -> Word32 -> Word32 -> Word32 -> Word32 -> IO (Ptr Surface)
+foreign import ccall "SDL3/SDL.h SDL_FillSurfaceRect" fillRectFFI :: Ptr Surface -> Ptr Rect -> Word32 -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_FillSurfaceRects" fillRectsFFI :: Ptr Surface -> Ptr Rect -> CInt -> Word32 -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_DestroySurface" freeSurfaceFFI :: Ptr Surface -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_GetSurfaceClipRect" getClipRectFFI :: Ptr Surface -> Ptr Rect -> IO ()
+foreign import ccall "SDL3/SDL.h SDL_GetSurfaceColorKey" getColorKeyFFI :: Ptr Surface -> Ptr Word32 -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_GetSurfaceAlphaMod" getSurfaceAlphaModFFI :: Ptr Surface -> Ptr Word8 -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_GetSurfaceBlendMode" getSurfaceBlendModeFFI :: Ptr Surface -> Ptr BlendMode -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_GetSurfaceColorMod" getSurfaceColorModFFI :: Ptr Surface -> Ptr Word8 -> Ptr Word8 -> Ptr Word8 -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_LoadBMP_IO" loadBMP_RWFFI :: Ptr RWops -> CInt -> IO (Ptr Surface)
+foreign import ccall "SDL3/SDL.h SDL_LockSurface" lockSurfaceFFI :: Ptr Surface -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_BlitSurfaceUnchecked" lowerBlitFFI :: Ptr Surface -> Ptr Rect -> Ptr Surface -> Ptr Rect -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_BlitSurfaceUncheckedScaled" lowerBlitScaledFFI :: Ptr Surface -> Ptr Rect -> Ptr Surface -> Ptr Rect -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_SaveBMP_IO" saveBMP_RWFFI :: Ptr Surface -> Ptr RWops -> CInt -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_SetSurfaceClipRect" setClipRectFFI :: Ptr Surface -> Ptr Rect -> IO Bool
+foreign import ccall "SDL3/SDL.h SDL_SetSurfaceColorKey" setColorKeyFFI :: Ptr Surface -> CInt -> Word32 -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_SetSurfaceAlphaMod" setSurfaceAlphaModFFI :: Ptr Surface -> Word8 -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_SetSurfaceBlendMode" setSurfaceBlendModeFFI :: Ptr Surface -> BlendMode -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_SetSurfaceColorMod" setSurfaceColorModFFI :: Ptr Surface -> Word8 -> Word8 -> Word8 -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_SetSurfacePalette" setSurfacePaletteFFI :: Ptr Surface -> Ptr Palette -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_SetSurfaceRLE" setSurfaceRLEFFI :: Ptr Surface -> CInt -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_UnlockSurface" unlockSurfaceFFI :: Ptr Surface -> IO ()
 
-foreign import ccall "SDL.h SDL_GetWindowWMInfo" getWindowWMInfoFFI :: Window -> SysWMinfo -> IO Bool
+foreign import ccall "SDL3/SDL.h SDL_GetWindowWMInfo" getWindowWMInfoFFI :: Window -> SysWMinfo -> IO Bool
 
-foreign import ccall "SDL.h SDL_GetClipboardText" getClipboardTextFFI :: IO CString
-foreign import ccall "SDL.h SDL_HasClipboardText" hasClipboardTextFFI :: IO Bool
-foreign import ccall "SDL.h SDL_SetClipboardText" setClipboardTextFFI :: CString -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_GetClipboardText" getClipboardTextFFI :: IO CString
+foreign import ccall "SDL3/SDL.h SDL_HasClipboardText" hasClipboardTextFFI :: IO Bool
+foreign import ccall "SDL3/SDL.h SDL_SetClipboardText" setClipboardTextFFI :: CString -> IO CInt
 
-foreign import ccall "SDL_vulkan.h SDL_Vulkan_LoadLibrary" vkLoadLibraryFFI :: CString -> IO CInt
-foreign import ccall "SDL_vulkan.h SDL_Vulkan_GetVkGetInstanceProcAddr" vkGetVkGetInstanceProcAddrFFI :: IO (FunPtr VkGetInstanceProcAddrFunc)
-foreign import ccall "SDL_vulkan.h SDL_Vulkan_UnloadLibrary" vkUnloadLibraryFFI :: IO ()
-foreign import ccall "SDL_vulkan.h SDL_Vulkan_GetInstanceExtensions" vkGetInstanceExtensionsFFI :: Window -> Ptr CUInt -> Ptr CString -> IO Bool
-foreign import ccall "SDL_vulkan.h SDL_Vulkan_CreateSurface" vkCreateSurfaceFFI :: Window -> VkInstance -> Ptr VkSurfaceKHR -> IO Bool
-foreign import ccall "SDL_vulkan.h SDL_Vulkan_GetDrawableSize" vkGetDrawableSizeFFI :: Window -> Ptr CInt -> Ptr CInt -> IO ()
+foreign import ccall "SDL3/SDL_vulkan.h SDL_Vulkan_LoadLibrary" vkLoadLibraryFFI :: CString -> IO CInt
+foreign import ccall "SDL3/SDL_vulkan.h SDL_Vulkan_GetVkGetInstanceProcAddr" vkGetVkGetInstanceProcAddrFFI :: IO (FunPtr VkGetInstanceProcAddrFunc)
+foreign import ccall "SDL3/SDL_vulkan.h SDL_Vulkan_UnloadLibrary" vkUnloadLibraryFFI :: IO ()
+foreign import ccall "SDL3/SDL_vulkan.h SDL_Vulkan_GetInstanceExtensions" vkGetInstanceExtensionsFFI :: Window -> Ptr CUInt -> Ptr CString -> IO Bool
+foreign import ccall "SDL3/SDL_vulkan.h SDL_Vulkan_CreateSurface" vkCreateSurfaceFFI :: Window -> VkInstance -> Ptr VkSurfaceKHR -> IO Bool
+foreign import ccall "SDL3/SDL_vulkan.h SDL_Vulkan_GetDrawableSize" vkGetDrawableSizeFFI :: Window -> Ptr CInt -> Ptr CInt -> IO ()
 
 createWindow :: MonadIO m => CString -> CInt -> CInt -> CInt -> CInt -> Word32 -> m Window
 createWindow v1 v2 v3 v4 v5 v6 = liftIO $ createWindowFFI v1 v2 v3 v4 v5 v6

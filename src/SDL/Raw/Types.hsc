@@ -25,6 +25,8 @@ module SDL.Raw.Types (
   AudioFormat,
   Cond,
   Cursor,
+  DisplayID,
+  EventType,
   FingerID,
   GameController,
   GestureID,
@@ -47,10 +49,10 @@ module SDL.Raw.Types (
   VkInstance,
   VkSurfaceKHR,
   Window,
-
+  WindowID
+  
   -- * Data Structures
   Atomic(..),
-  AudioCVT(..),
   AudioSpec(..),
   Color(..),
   DisplayMode(..),
@@ -80,7 +82,7 @@ module SDL.Raw.Types (
   Version(..)
 ) where
 
-#include "SDL.h"
+#include "SDL3/SDL.h"
 
 import Data.Int
 import Data.Typeable
@@ -134,6 +136,8 @@ foreign import ccall "wrapper"
 type AudioDeviceID = Word32
 type Cond = Ptr ()
 type Cursor = Ptr ()
+type DisplayID = Word32
+type EventType = Word32
 type FingerID = Int64
 type GameController = Ptr ()
 type GestureID = Int64
@@ -156,91 +160,40 @@ type TouchID = Int64
 type VkInstance = Ptr ()
 type VkSurfaceKHR = Word64
 type Window = Ptr ()
+type WindowID = Word32
 
 data Atomic = Atomic
   { atomicValue :: !CInt
   } deriving (Eq, Show, Typeable)
 
 instance Storable Atomic where
-  sizeOf _ = (#size SDL_atomic_t)
-  alignment _ = (#alignment SDL_atomic_t)
+  sizeOf _ = (#size SDL_AtomicInt)
+  alignment _ = (#alignment SDL_AtomicInt)
   peek ptr = do
-    value <- (#peek SDL_atomic_t, value) ptr
+    value <- (#peek SDL_AtomicInt, value) ptr
     return $! Atomic value
   poke ptr (Atomic value) = do
-    (#poke SDL_atomic_t, value) ptr value
-
-data AudioCVT = AudioCVT
-  { audioCVTNeeded :: !CInt
-  , audioCVTSrcFormat :: !AudioFormat
-  , audioCVTDstFormat :: !AudioFormat
-  , audioCVTRateIncr :: !CDouble
-  , audioCVTBuf :: !(Ptr Word8)
-  , audioCVTLen :: !CInt
-  , audioCVTLenCvt :: !CInt
-  , audioCVTLenMult :: !CInt
-  , audioCVTLenRatio :: !CDouble
-  } deriving (Eq, Show, Typeable)
-
-instance Storable AudioCVT where
-  sizeOf _ = (#size SDL_AudioCVT)
-  alignment _ = (#alignment SDL_AudioCVT)
-  peek ptr = do
-    needed <- (#peek SDL_AudioCVT, needed) ptr
-    src_format <- (#peek SDL_AudioCVT, src_format) ptr
-    dst_format <- (#peek SDL_AudioCVT, dst_format) ptr
-    rate_incr <- (#peek SDL_AudioCVT, rate_incr) ptr
-    buf <- (#peek SDL_AudioCVT, buf) ptr
-    len <- (#peek SDL_AudioCVT, len) ptr
-    len_cvt <- (#peek SDL_AudioCVT, len_cvt) ptr
-    len_mult <- (#peek SDL_AudioCVT, len_mult) ptr
-    len_ratio <- (#peek SDL_AudioCVT, len_ratio) ptr
-    return $! AudioCVT needed src_format dst_format rate_incr buf len len_cvt len_mult len_ratio
-  poke ptr (AudioCVT needed src_format dst_format rate_incr buf len len_cvt len_mult len_ratio) = do
-    (#poke SDL_AudioCVT, needed) ptr needed
-    (#poke SDL_AudioCVT, src_format) ptr src_format
-    (#poke SDL_AudioCVT, dst_format) ptr dst_format
-    (#poke SDL_AudioCVT, rate_incr) ptr rate_incr
-    (#poke SDL_AudioCVT, buf) ptr buf
-    (#poke SDL_AudioCVT, len) ptr len
-    (#poke SDL_AudioCVT, len_cvt) ptr len_cvt
-    (#poke SDL_AudioCVT, len_mult) ptr len_mult
-    (#poke SDL_AudioCVT, len_ratio) ptr len_ratio
+    (#poke SDL_AtomicInt, value) ptr value
 
 data AudioSpec = AudioSpec
-  { audioSpecFreq :: !CInt
-  , audioSpecFormat :: !AudioFormat
-  , audioSpecChannels :: !Word8
-  , audioSpecSilence :: !Word8
-  , audioSpecSamples :: !Word16
-  , audioSpecSize :: !Word32
-  , audioSpecCallback :: !AudioCallback
-  , audioSpecUserdata :: !(Ptr ())
+  { audioSpecFormat :: !AudioFormat
+  , audioSpecChannels :: !CInt
+  , audioSpecFreq :: !CInt
   } deriving (Eq, Show, Typeable)
 
 instance Storable AudioSpec where
   sizeOf _ = (#size SDL_AudioSpec)
   alignment _ = (#alignment SDL_AudioSpec)
   peek ptr = do
-    freq <- (#peek SDL_AudioSpec, freq) ptr
     format <- (#peek SDL_AudioSpec, format) ptr
     channels <- (#peek SDL_AudioSpec, channels) ptr
-    silence <- (#peek SDL_AudioSpec, silence) ptr
-    samples <- (#peek SDL_AudioSpec, samples) ptr
-    size <- (#peek SDL_AudioSpec, size) ptr
-    callback <- (#peek SDL_AudioSpec, callback) ptr
-    userdata <- (#peek SDL_AudioSpec, userdata) ptr
-    return $! AudioSpec freq format channels silence samples size callback userdata
-  poke ptr (AudioSpec freq format channels silence samples size callback userdata) = do
+    freq <- (#peek SDL_AudioSpec, freq) ptr
+    return $! AudioSpec format channels freq
+  poke ptr (AudioSpec format channels freq) = do
     (#poke SDL_AudioSpec, freq) ptr freq
     (#poke SDL_AudioSpec, format) ptr format
     (#poke SDL_AudioSpec, channels) ptr channels
-    (#poke SDL_AudioSpec, silence) ptr silence
-    (#poke SDL_AudioSpec, samples) ptr samples
-    (#poke SDL_AudioSpec, size) ptr size
-    (#poke SDL_AudioSpec, callback) ptr callback
-    (#poke SDL_AudioSpec, userdata) ptr userdata
-
+ 
 data Color = Color
   { colorR :: !Word8
   , colorG :: !Word8
@@ -264,10 +217,14 @@ instance Storable Color where
     (#poke SDL_Color, a) ptr a
 
 data DisplayMode = DisplayMode
-  { displayModeFormat :: !Word32
+  { displayID :: !DisplayID
+  , displayFormat :: !PixelFormat
   , displayModeW :: !CInt
   , displayModeH :: !CInt
-  , displayModeRefreshRate :: !CInt
+  , displayPixelDensity :: !CFloat
+  , displayModeRefreshRate :: !CFloat
+  , displayRefreshRateNumerator :: !CInt
+  , displayRefreshRateDenominator :: !CInt
   , displayModeDriverData :: !(Ptr ())
   } deriving (Eq, Show, Typeable)
 
@@ -275,25 +232,33 @@ instance Storable DisplayMode where
   sizeOf _ = (#size SDL_DisplayMode)
   alignment _ = (#alignment SDL_DisplayMode)
   peek ptr = do
+    displayID <- (#peek SDL_DisplayMode, displayID) ptr
     format <- (#peek SDL_DisplayMode, format) ptr
     w <- (#peek SDL_DisplayMode, w) ptr
     h <- (#peek SDL_DisplayMode, h) ptr
+    pixel_density <- (#peek SDL_DisplayMode, pixel_density) ptr
     refresh_rate <- (#peek SDL_DisplayMode, refresh_rate) ptr
-    driverdata <- (#peek SDL_DisplayMode, driverdata) ptr
-    return $! DisplayMode format w h refresh_rate driverdata
-  poke ptr (DisplayMode format w h refresh_rate driverdata) = do
+    refresh_rate_numerator <- (#peek SDL_DisplayMode, refresh_rate_numerator) ptr
+    refresh_rate_denominator <- (#peek SDL_DisplayMode, refresh_rate_denominator) ptr
+    internal <- (#peek SDL_DisplayMode, internal) ptr
+    return $! DisplayMode displayID format w h pixel_density refresh_rate refresh_rate_numerator refresh_rate_denominator internal
+  poke ptr (displayID format w h pixel_density refresh_rate refresh_rate_numerator refresh_rate_denominator internal) = do
+    (#poke SDL_DisplayMode, displayID) ptr displayID 
     (#poke SDL_DisplayMode, format) ptr format
     (#poke SDL_DisplayMode, w) ptr w
     (#poke SDL_DisplayMode, h) ptr h
+    (#poke SDL_DisplayMode, pixel_density) ptr pixel_density
     (#poke SDL_DisplayMode, refresh_rate) ptr refresh_rate
-    (#poke SDL_DisplayMode, driverdata) ptr driverdata
+    (#poke SDL_DisplayMode, refresh_rate_numerator) ptr refresh_rate_numerator
+    (#poke SDL_DisplayMode, refresh_rate_denominator) ptr refresh_rate_denominator
+    (#poke SDL_DisplayMode, internal) ptr internal
 
 data Event
   = WindowEvent
-    { eventType :: !Word32
-    , eventTimestamp :: !Word32
-    , windowEventWindowID :: !Word32
-    , windowEventEvent :: !Word8
+    { eventType :: !EventType
+    , eventReserved :: !Word32
+    , eventTimestamp :: !Word64
+    , windowEventWindowID :: !WindowID
     , windowEventData1 :: !Int32
     , windowEventData2 :: !Int32
     }
@@ -462,9 +427,14 @@ data Event
     , dollarGestureEventY :: !CFloat
     }
   | DropEvent
-    { eventType :: !Word32
-    , eventTimestamp :: !Word32
-    , dropEventFile :: !CString
+    { eventType :: !EventType
+    , eventReserved :: !Word32
+    , eventTimestamp :: !Word64
+    , eventWindowID :: !WindowID
+    , eventX :: !CFloat
+    , eventY :: !CFloat
+    , dropEventSource :: !CString
+    , dropEventData :: !CString
     }
   | ClipboardUpdateEvent
     { eventType :: !Word32
@@ -481,36 +451,34 @@ instance Storable Event where
   alignment _ = (#alignment SDL_Event)
   peek ptr = do
     typ <- (#peek SDL_Event, common.type) ptr
+    reserved <- (#peek SDL_Event, common.reserved) ptr
     timestamp <- (#peek SDL_Event, common.timestamp) ptr
     case typ of
-      (#const SDL_QUIT) ->
+      (#const SDL_EVENT_QUIT) ->
         return $! QuitEvent typ timestamp
-      (#const SDL_WINDOWEVENT) -> do
+      (typ >= 0x202 && typ <= 0x300) -> do -- Window events are defined within this range.
+        event <- (#peek SDL_Event, window.type) ptr -- Should be the same as typ (in theory)
         wid <- (#peek SDL_Event, window.windowID) ptr
-        event <- (#peek SDL_Event, window.event) ptr
         data1 <- (#peek SDL_Event, window.data1) ptr
         data2 <- (#peek SDL_Event, window.data2) ptr
-        return $! WindowEvent typ timestamp wid event data1 data2
-      (#const SDL_SYSWMEVENT) -> do
-        msg <- (#peek SDL_Event, syswm.msg) ptr
-        return $! SysWMEvent typ timestamp msg
-      (#const SDL_KEYDOWN) -> key $ KeyboardEvent typ timestamp
-      (#const SDL_KEYUP) -> key $ KeyboardEvent typ timestamp
-      (#const SDL_TEXTEDITING) -> do
-        wid <- (#peek SDL_Event, edit.windowID) ptr
-        text <- peekArray (#const SDL_TEXTEDITINGEVENT_TEXT_SIZE) $ (#ptr SDL_Event, edit.text) ptr
-        start <- (#peek SDL_Event, edit.start) ptr
-        len <- (#peek SDL_Event, edit.length) ptr
-        let upToNull = takeWhile (/= 0) text
-        return $! TextEditingEvent typ timestamp wid upToNull start len
-      (#const SDL_TEXTINPUT) -> do
+        return $! WindowEvent event reserved timestamp wid data1 data2
+      (#const SDL_EVENT_KEY_DOWN) -> key $ KeyboardEvent typ timestamp
+      (#const SDL_EVENT_KEY_UP) -> key $ KeyboardEvent typ timestamp
+      -- (#const SDL_EVENT_TEXT_EDITING) -> do
+      --   wid <- (#peek SDL_Event, edit.windowID) ptr
+      --   text <- peekArray (#const SDL_TEXTEDITINGEVENT_TEXT_SIZE) $ (#ptr SDL_Event, edit.text) ptr
+      --   start <- (#peek SDL_Event, edit.start) ptr
+      --   len <- (#peek SDL_Event, edit.length) ptr
+      --   let upToNull = takeWhile (/= 0) text
+      --   return $! TextEditingEvent typ timestamp wid upToNull start len
+      (#const SDL_EVENT_TEXT_INPUT) -> do
         wid <- (#peek SDL_Event, text.windowID) ptr
-        text <- peekArray (#const SDL_TEXTINPUTEVENT_TEXT_SIZE) $ (#ptr SDL_Event, text.text) ptr
+        text <- peekArray (#ptr SDL_Event, text.text) ptr
         let upToNull = takeWhile (/= 0) text
         return $! TextInputEvent typ timestamp wid upToNull
-      (#const SDL_KEYMAPCHANGED) ->
+      (#const SDL_EVENT_KEYMAP_CHANGED) ->
         return $! KeymapChangedEvent typ timestamp
-      (#const SDL_MOUSEMOTION) -> do
+      (#const SDL_EVENT_MOUSE_MOTION) -> do
         wid <- (#peek SDL_Event, motion.windowID) ptr
         which <- (#peek SDL_Event, motion.which) ptr
         state <- (#peek SDL_Event, motion.state) ptr
@@ -519,66 +487,60 @@ instance Storable Event where
         xrel <- (#peek SDL_Event, motion.xrel) ptr
         yrel <- (#peek SDL_Event, motion.yrel) ptr
         return $! MouseMotionEvent typ timestamp wid which state x y xrel yrel
-      (#const SDL_MOUSEBUTTONDOWN) -> mouse $ MouseButtonEvent typ timestamp
-      (#const SDL_MOUSEBUTTONUP) -> mouse $ MouseButtonEvent typ timestamp
-      (#const SDL_MOUSEWHEEL) -> do
+      (#const SDL_EVENT_MOUSE_BUTTON_DOWN) -> mouse $ MouseButtonEvent typ timestamp
+      (#const SDL_EVENT_MOUSE_BUTTON_UP) -> mouse $ MouseButtonEvent typ timestamp
+      (#const SDL_EVENT_MOUSE_WHEEL) -> do
         wid <- (#peek SDL_Event, wheel.windowID) ptr
         which <- (#peek SDL_Event, wheel.which) ptr
         x <- (#peek SDL_Event, wheel.x) ptr
         y <- (#peek SDL_Event, wheel.y) ptr
         direction <- (#peek SDL_Event, wheel.direction) ptr
         return $! MouseWheelEvent typ timestamp wid which x y direction
-      (#const SDL_JOYAXISMOTION) -> do
+      (#const SDL_EVENT_JOYSTICK_AXIS_MOTION) -> do
         which <- (#peek SDL_Event, jaxis.which) ptr
         axis <- (#peek SDL_Event, jaxis.axis) ptr
         value <- (#peek SDL_Event, jaxis.value) ptr
         return $! JoyAxisEvent typ timestamp which axis value
-      (#const SDL_JOYBALLMOTION) -> do
+      (#const SDL_EVENT_JOYSTICK_BALL_MOTION) -> do
         which <- (#peek SDL_Event, jball.which) ptr
         ball <- (#peek SDL_Event, jball.ball) ptr
         xrel <- (#peek SDL_Event, jball.xrel) ptr
         yrel <- (#peek SDL_Event, jball.yrel) ptr
         return $! JoyBallEvent typ timestamp which ball xrel yrel
-      (#const SDL_JOYHATMOTION) -> do
+      (#const SDL_EVENT_JOYSTICK_HAT_MOTION) -> do
         which <- (#peek SDL_Event, jhat.which) ptr
         hat <- (#peek SDL_Event, jhat.hat) ptr
         value <- (#peek SDL_Event, jhat.value) ptr
         return $! JoyHatEvent typ timestamp which hat value
-      (#const SDL_JOYBUTTONDOWN) -> joybutton $ JoyButtonEvent typ timestamp
-      (#const SDL_JOYBUTTONUP) -> joybutton $ JoyButtonEvent typ timestamp
-      (#const SDL_JOYDEVICEADDED) -> joydevice $ JoyDeviceEvent typ timestamp
-      (#const SDL_JOYDEVICEREMOVED) -> joydevice $ JoyDeviceEvent typ timestamp
-      (#const SDL_CONTROLLERAXISMOTION) -> do
-        which <- (#peek SDL_Event, caxis.which) ptr
-        axis <- (#peek SDL_Event, caxis.axis) ptr
-        value <- (#peek SDL_Event, caxis.value) ptr
+      (#const SDL_EVENT_JOYSTICK_BUTTON_DOWN) -> joybutton $ JoyButtonEvent typ timestamp
+      (#const SDL_EVENT_JOYSTICK_BUTTON_UP) -> joybutton $ JoyButtonEvent typ timestamp
+      (#const SDL_EVENT_JOYSTICK_ADDED) -> joydevice $ JoyDeviceEvent typ timestamp
+      (#const SDL_EVENT_JOYSTICK_REMOVED) -> joydevice $ JoyDeviceEvent typ timestamp
+      (#const SDL_EVENT_GAMEPAD_AXIS_MOTION) -> do
+        which <- (#peek SDL_Event, gaxis.which) ptr
+        axis <- (#peek SDL_Event, gaxis.axis) ptr
+        value <- (#peek SDL_Event, gaxis.value) ptr
         return $! ControllerAxisEvent typ timestamp which axis value
-      (#const SDL_CONTROLLERBUTTONDOWN) -> controllerbutton $ ControllerButtonEvent typ timestamp
-      (#const SDL_CONTROLLERBUTTONUP) -> controllerbutton $ ControllerButtonEvent typ timestamp
-      (#const SDL_CONTROLLERDEVICEADDED) -> controllerdevice $ ControllerDeviceEvent typ timestamp
-      (#const SDL_CONTROLLERDEVICEREMOVED) -> controllerdevice $ ControllerDeviceEvent typ timestamp
-      (#const SDL_CONTROLLERDEVICEREMAPPED) -> controllerdevice $ ControllerDeviceEvent typ timestamp
-      (#const SDL_AUDIODEVICEADDED) -> audiodevice $ AudioDeviceEvent typ timestamp
-      (#const SDL_AUDIODEVICEREMOVED) -> audiodevice $ AudioDeviceEvent typ timestamp
-      (#const SDL_FINGERDOWN) -> finger $ TouchFingerEvent typ timestamp
-      (#const SDL_FINGERUP) -> finger $ TouchFingerEvent typ timestamp
-      (#const SDL_FINGERMOTION) -> finger $ TouchFingerEvent typ timestamp
-      (#const SDL_DOLLARGESTURE) -> dollargesture $ DollarGestureEvent typ timestamp
-      (#const SDL_DOLLARRECORD) -> dollargesture $ DollarGestureEvent typ timestamp
-      (#const SDL_MULTIGESTURE) -> do
-        touchId <- (#peek SDL_Event, mgesture.touchId) ptr
-        dTheta <- (#peek SDL_Event, mgesture.dTheta) ptr
-        dDist <- (#peek SDL_Event, mgesture.dDist) ptr
-        x <- (#peek SDL_Event, mgesture.x) ptr
-        y <- (#peek SDL_Event, mgesture.y) ptr
-        numFingers <- (#peek SDL_Event, mgesture.numFingers) ptr
-        return $! MultiGestureEvent typ timestamp touchId dTheta dDist x y numFingers
-      (#const SDL_CLIPBOARDUPDATE) ->
+      (#const SDL_EVENT_GAMEPAD_BUTTON_DOWN) -> controllerbutton $ ControllerButtonEvent typ timestamp
+      (#const SDL_EVENT_GAMEPAD_BUTTON_UP) -> controllerbutton $ ControllerButtonEvent typ timestamp
+      (#const SDL_EVENT_GAMEPAD_ADDED) -> controllerdevice $ ControllerDeviceEvent typ timestamp
+      (#const SDL_EVENT_GAMEPAD_REMOVED) -> controllerdevice $ ControllerDeviceEvent typ timestamp
+      (#const SDL_EVENT_GAMEPAD_REMAPPED) -> controllerdevice $ ControllerDeviceEvent typ timestamp
+      (#const SDL_EVENT_AUDIO_DEVICE_ADDED) -> audiodevice $ AudioDeviceEvent typ timestamp
+      (#const SDL_EVENT_AUDIO_DEVICE_REMOVED) -> audiodevice $ AudioDeviceEvent typ timestamp
+      (#const SDL_EVENT_FINGER_DOWN) -> finger $ TouchFingerEvent typ timestamp
+      (#const SDL_EVENT_FINGER_UP) -> finger $ TouchFingerEvent typ timestamp
+      (#const SDL_EVENT_FINGER_MOTION) -> finger $ TouchFingerEvent typ timestamp
+      (#const SDL_EVENT_CLIPBOARD_UPDATE) ->
         return $! ClipboardUpdateEvent typ timestamp
-      (#const SDL_DROPFILE) -> do
-        file <- (#peek SDL_Event, drop.file) ptr
-        return $! DropEvent typ timestamp file
-      x | x >= (#const SDL_USEREVENT) -> do
+      (#const SDL_EVENT_DROP_FILE) -> do
+        wid <- (#peek SDL_Event, drop.windowID) ptr
+        x <- (#peek SDL_Event, drop.x) ptr
+        y <- (#peek SDL_Event, drop.y) ptr
+        src <- (#peek SDL_Event, drop.source) ptr
+        data <- (#peek SDL_Event, drop.data) ptr
+        return $! DropEvent typ reserved timestamp wid x y src data
+      x | x >= (#const SDL_EVENT_USER) -> do
         wid <- (#peek SDL_Event, user.windowID) ptr
         code <- (#peek SDL_Event, user.code) ptr
         data1 <- (#peek SDL_Event, user.data1) ptr
@@ -647,11 +609,13 @@ instance Storable Event where
       y <- (#peek SDL_Event, dgesture.y) ptr
       return $! f touchId gestureId numFingers err x y
   poke ptr ev = case ev of
-    WindowEvent typ timestamp wid event data1 data2 -> do
+    WindowEvent typ reserved timestamp wid data1 data2 -> do
       (#poke SDL_Event, common.type) ptr typ
+      (#poke SDL_Event, commond.reserved) ptr reserved
       (#poke SDL_Event, common.timestamp) ptr timestamp
+      (#poke SDL_Event, window.type) ptr typ
       (#poke SDL_Event, window.windowID) ptr wid
-      (#poke SDL_Event, window.event) ptr event
+      (#poke SDL_Event, window.timestamp) ptr timestamp
       (#poke SDL_Event, window.data1) ptr data1
       (#poke SDL_Event, window.data2) ptr data2
     KeyboardEvent typ timestamp wid state repeat' keysym -> do
@@ -736,9 +700,9 @@ instance Storable Event where
     ControllerAxisEvent typ timestamp which axis value -> do
       (#poke SDL_Event, common.type) ptr typ
       (#poke SDL_Event, common.timestamp) ptr timestamp
-      (#poke SDL_Event, caxis.which) ptr which
-      (#poke SDL_Event, caxis.axis) ptr axis
-      (#poke SDL_Event, caxis.value) ptr value
+      (#poke SDL_Event, gaxis.which) ptr which
+      (#poke SDL_Event, gaxis.axis) ptr axis
+      (#poke SDL_Event, gaxis.value) ptr value
     ControllerButtonEvent typ timestamp which button state -> do
       (#poke SDL_Event, common.type) ptr typ
       (#poke SDL_Event, common.timestamp) ptr timestamp
@@ -764,10 +728,6 @@ instance Storable Event where
       (#poke SDL_Event, user.code) ptr code
       (#poke SDL_Event, user.data1) ptr data1
       (#poke SDL_Event, user.data2) ptr data2
-    SysWMEvent typ timestamp msg -> do
-      (#poke SDL_Event, common.type) ptr typ
-      (#poke SDL_Event, common.timestamp) ptr timestamp
-      (#poke SDL_Event, syswm.msg) ptr msg
     TouchFingerEvent typ timestamp touchid fingerid x y dx dy pressure -> do
       (#poke SDL_Event, common.type) ptr typ
       (#poke SDL_Event, common.timestamp) ptr timestamp
@@ -778,31 +738,23 @@ instance Storable Event where
       (#poke SDL_Event, tfinger.dx) ptr dx
       (#poke SDL_Event, tfinger.dy) ptr dy
       (#poke SDL_Event, tfinger.pressure) ptr pressure
-    MultiGestureEvent typ timestamp touchid dtheta ddist x y numfingers -> do
-      (#poke SDL_Event, common.type) ptr typ
-      (#poke SDL_Event, common.timestamp) ptr timestamp
-      (#poke SDL_Event, mgesture.touchId) ptr touchid
-      (#poke SDL_Event, mgesture.dTheta) ptr dtheta
-      (#poke SDL_Event, mgesture.dDist) ptr ddist
-      (#poke SDL_Event, mgesture.x) ptr x
-      (#poke SDL_Event, mgesture.y) ptr y
-      (#poke SDL_Event, mgesture.numFingers) ptr numfingers
-    DollarGestureEvent typ timestamp touchid gestureid numfingers err x y -> do
-      (#poke SDL_Event, common.type) ptr typ
-      (#poke SDL_Event, common.timestamp) ptr timestamp
-      (#poke SDL_Event, dgesture.touchId) ptr touchid
-      (#poke SDL_Event, dgesture.gestureId) ptr gestureid
-      (#poke SDL_Event, dgesture.numFingers) ptr numfingers
-      (#poke SDL_Event, dgesture.error) ptr err
-      (#poke SDL_Event, dgesture.x) ptr x
-      (#poke SDL_Event, dgesture.y) ptr y
     ClipboardUpdateEvent typ timestamp -> do
       (#poke SDL_Event, common.type) ptr typ
       (#poke SDL_Event, common.timestamp) ptr timestamp
-    DropEvent typ timestamp file -> do
-      (#poke SDL_Event, common.type) ptr typ
+    DropEvent typ reserved timestamp wid x y source file -> do
+      (#poke SDL_Event, common.type) ptr typ 
+      (#poke SDL_Event, common.reserved) pt reserved
       (#poke SDL_Event, common.timestamp) ptr timestamp
+
+      (#poke SDL_Event, drop.type) ptr typ
+      (#poke SDL_Event, drop.reserved) ptr reserved
+      (#poke SDL_Event, drop.timestamp) ptr timestamp
+      (#poke SDL_Event, drop.windowID) ptr wid
+      (#poke SDL_Event, drop.x) ptr x
+      (#poke SDL_Event, drop.y) ptr y
+      (#poke SDL_Event, drop.source) ptr source
       (#poke SDL_Event, drop.file) ptr file
+      
     UnknownEvent typ timestamp -> do
       (#poke SDL_Event, common.type) ptr typ
       (#poke SDL_Event, common.timestamp) ptr timestamp
@@ -848,31 +800,31 @@ instance Storable GameControllerButtonBind where
   alignment _ = (#alignment SDL_GameControllerButtonBind)
   peek ptr = do
     bind_type <- (#peek SDL_GameControllerButtonBind, bindType) ptr
-    case bind_type :: (#type SDL_GameControllerBindType) of
-      (#const SDL_CONTROLLER_BINDTYPE_NONE) -> do
+    case bind_type :: (#type SDL_GamepadBindingType) of
+      (#const SDL_GAMEPAD_BINDTYPE_NONE) -> do
         return $! GameControllerButtonBindNone
-      (#const SDL_CONTROLLER_BINDTYPE_BUTTON) -> do
+      (#const SDL_GAMEPAD_BINDTYPE_BUTTON) -> do
         button <- (#peek SDL_GameControllerButtonBind, value.button) ptr
         return $! GameControllerButtonBindButton button
-      (#const SDL_CONTROLLER_BINDTYPE_AXIS) -> do
+      (#const SDL_GAMEPAD_BINDTYPE_AXIS) -> do
         axis <- (#peek SDL_GameControllerButtonBind, value.axis) ptr
         return $! GameControllerButtonBindAxis axis
-      (#const SDL_CONTROLLER_BINDTYPE_HAT) -> do
+      (#const SDL_GAMEPAD_BINDTYPE_HAT) -> do
         hat <- (#peek SDL_GameControllerButtonBind, value.hat.hat) ptr
         hat_mask <- (#peek SDL_GameControllerButtonBind, value.hat.hat_mask) ptr
         return $! GameControllerButtonBindHat hat hat_mask
       _ -> error $ "Unknown type " ++ show bind_type ++ " for SDL_GameControllerButtonBind"
   poke ptr bind = case bind of
     GameControllerButtonBindNone -> do
-      (#poke SDL_GameControllerButtonBind, bindType) ptr ((#const SDL_CONTROLLER_BINDTYPE_NONE) :: (#type SDL_GameControllerBindType))
+      (#poke SDL_GameControllerButtonBind, bindType) ptr ((#const SDL_GAMEPAD_BINDTYPE_NONE) :: (#type SDL_GamepadBindingType))
     GameControllerButtonBindButton button -> do
-      (#poke SDL_GameControllerButtonBind, bindType) ptr ((#const SDL_CONTROLLER_BINDTYPE_BUTTON) :: (#type SDL_GameControllerBindType))
+      (#poke SDL_GameControllerButtonBind, bindType) ptr ((#const SDL_GAMEPAD_BINDTYPE_BUTTON) :: (#type SDL_GamepadBindingType))
       (#poke SDL_GameControllerButtonBind, value.button) ptr button
     GameControllerButtonBindAxis axis -> do
-      (#poke SDL_GameControllerButtonBind, bindType) ptr ((#const SDL_CONTROLLER_BINDTYPE_AXIS) :: (#type SDL_GameControllerBindType))
+      (#poke SDL_GameControllerButtonBind, bindType) ptr ((#const SDL_GAMEPAD_BINDTYPE_AXIS) :: (#type SDL_GamepadBindingType))
       (#poke SDL_GameControllerButtonBind, value.axis) ptr axis
     GameControllerButtonBindHat hat hat_mask -> do
-      (#poke SDL_GameControllerButtonBind, bindType) ptr ((#const SDL_CONTROLLER_BINDTYPE_HAT) :: (#type SDL_GameControllerBindType))
+      (#poke SDL_GameControllerButtonBind, bindType) ptr ((#const SDL_GAMEPAD_BINDTYPE_HAT) :: (#type SDL_GamepadBindingType))
       (#poke SDL_GameControllerButtonBind, value.hat.hat) ptr hat
       (#poke SDL_GameControllerButtonBind, value.hat.hat_mask) ptr hat_mask
 
@@ -1152,13 +1104,13 @@ data JoystickGUID = JoystickGUID
   } deriving (Eq, Show, Typeable)
 
 instance Storable JoystickGUID where
-  sizeOf _ = (#size SDL_JoystickGUID)
-  alignment _ = (#alignment SDL_JoystickGUID)
+  sizeOf _ = (#size SDL_GUID)
+  alignment _ = (#alignment SDL_GUID)
   peek ptr = do
-    guid <- peekArray 16 $ (#ptr SDL_JoystickGUID, data) ptr
+    guid <- peekArray 16 $ (#ptr SDL_GUID, data) ptr
     return $! JoystickGUID guid
   poke ptr (JoystickGUID guid) =
-    pokeArray ((#ptr SDL_JoystickGUID, data) ptr) guid
+    pokeArray ((#ptr SDL_GUID, data) ptr) guid
 
 data Keysym = Keysym
   { keysymScancode :: !Scancode
@@ -1459,23 +1411,23 @@ data RWops = RWops
   } deriving (Eq, Show, Typeable)
 
 instance Storable RWops where
-  sizeOf _ = (#size SDL_RWops)
-  alignment _ = (#alignment SDL_RWops)
+  sizeOf _ = (#size SDL_IOStream)
+  alignment _ = (#alignment SDL_IOStream)
   peek ptr = do
-    size <- (#peek SDL_RWops, size) ptr
-    seek <- (#peek SDL_RWops, seek) ptr
-    read' <- (#peek SDL_RWops, read) ptr
-    write <- (#peek SDL_RWops, write) ptr
-    close <- (#peek SDL_RWops, close) ptr
-    typ <- (#peek SDL_RWops, type) ptr
+    size <- (#peek SDL_IOStream, size) ptr
+    seek <- (#peek SDL_IOStream, seek) ptr
+    read' <- (#peek SDL_IOStream, read) ptr
+    write <- (#peek SDL_IOStream, write) ptr
+    close <- (#peek SDL_IOStream, close) ptr
+    typ <- (#peek SDL_IOStream, type) ptr
     return $! RWops size seek read' write close typ
   poke ptr (RWops size seek read' write close typ) = do
-    (#poke SDL_RWops, size) ptr size
-    (#poke SDL_RWops, seek) ptr seek
-    (#poke SDL_RWops, read) ptr read'
-    (#poke SDL_RWops, write) ptr write
-    (#poke SDL_RWops, close) ptr close
-    (#poke SDL_RWops, type) ptr typ
+    (#poke SDL_IOStream, size) ptr size
+    (#poke SDL_IOStream, seek) ptr seek
+    (#poke SDL_IOStream, read) ptr read'
+    (#poke SDL_IOStream, write) ptr write
+    (#poke SDL_IOStream, close) ptr close
+    (#poke SDL_IOStream, type) ptr typ
 
 data Surface = Surface
   { surfaceFormat :: !(Ptr PixelFormat)

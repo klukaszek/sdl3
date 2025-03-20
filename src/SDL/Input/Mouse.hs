@@ -232,18 +232,18 @@ data SystemCursor
 
 
 instance ToNumber SystemCursor Word32 where
-  toNumber SystemCursorArrow        = Raw.SDL_SYSTEM_CURSOR_ARROW
-  toNumber SystemCursorIBeam        = Raw.SDL_SYSTEM_CURSOR_IBEAM
+  toNumber SystemCursorArrow        = Raw.SDL_SYSTEM_CURSOR_DEFAULT
+  toNumber SystemCursorIBeam        = Raw.SDL_SYSTEM_CURSOR_TEXT
   toNumber SystemCursorWait         = Raw.SDL_SYSTEM_CURSOR_WAIT
   toNumber SystemCursorCrossHair    = Raw.SDL_SYSTEM_CURSOR_CROSSHAIR
-  toNumber SystemCursorWaitArrow    = Raw.SDL_SYSTEM_CURSOR_WAITARROW
-  toNumber SystemCursorSizeNWSE     = Raw.SDL_SYSTEM_CURSOR_SIZENWSE
-  toNumber SystemCursorSizeNESW     = Raw.SDL_SYSTEM_CURSOR_SIZENESW
-  toNumber SystemCursorSizeWE       = Raw.SDL_SYSTEM_CURSOR_SIZEWE
-  toNumber SystemCursorSizeNS       = Raw.SDL_SYSTEM_CURSOR_SIZENS
-  toNumber SystemCursorSizeAll      = Raw.SDL_SYSTEM_CURSOR_SIZEALL
-  toNumber SystemCursorNo           = Raw.SDL_SYSTEM_CURSOR_NO
-  toNumber SystemCursorHand         = Raw.SDL_SYSTEM_CURSOR_HAND
+  toNumber SystemCursorWaitArrow    = Raw.SDL_SYSTEM_CURSOR_PROGRESS
+  toNumber SystemCursorSizeNWSE     = Raw.SDL_SYSTEM_CURSOR_NWSE_RESIZE
+  toNumber SystemCursorSizeNESW     = Raw.SDL_SYSTEM_CURSOR_NESW_RESIZE
+  toNumber SystemCursorSizeWE       = Raw.SDL_SYSTEM_CURSOR_EW_RESIZE
+  toNumber SystemCursorSizeNS       = Raw.SDL_SYSTEM_CURSOR_NS_RESIZE
+  toNumber SystemCursorSizeAll      = Raw.SDL_SYSTEM_CURSOR_MOVE
+  toNumber SystemCursorNo           = Raw.SDL_SYSTEM_CURSOR_NOT_ALLOWED
+  toNumber SystemCursorHand         = Raw.SDL_SYSTEM_CURSOR_POINTER
 
 -- | Get or set the currently active cursor. You can create new 'Cursor's with 'createCursor'.
 --
@@ -345,7 +345,7 @@ createCursorFrom point source = do
 
 -- | Free a cursor created with 'createCursor', 'createColorCusor' and 'createSystemCursor'.
 --
--- See @<https://wiki.libsdl.org/SDL_FreeCursor SDL_FreeCursor>@ for C documentation.
+-- See @<https://wiki.libsdl.org/SDL_DestroyCursor SDL_DestroyCursor>@ for C documentation.
 freeCursor :: MonadIO m => Cursor -> m ()
 freeCursor = Raw.freeCursor . unwrapCursor
 

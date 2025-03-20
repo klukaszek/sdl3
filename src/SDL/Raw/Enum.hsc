@@ -3,9 +3,9 @@
 {-# LANGUAGE PatternSynonyms #-}
 
 #if MIN_VERSION_base(4,11,0)
-{-# OPTIONS_GHC -fno-warn-missing-pattern-synonym-signatures #-}
+-- OPTIONS_GHC -fno-warn-missing-pattern-synonym-signatures #
 #endif
-{-# OPTIONS_GHC -fno-warn-missing-signatures #-}
+-- OPTIONS_GHC -fno-warn-missing-signatures #
 
 module SDL.Raw.Enum (
   -- * Enumerations
@@ -14,12 +14,9 @@ module SDL.Raw.Enum (
   AudioFormat,
   pattern SDL_AUDIO_S8,
   pattern SDL_AUDIO_U8,
-  pattern SDL_AUDIO_S16LSB,
   pattern SDL_AUDIO_S16MSB,
   pattern SDL_AUDIO_S16SYS,
   pattern SDL_AUDIO_U16LSB,
-  pattern SDL_AUDIO_U16MSB,
-  pattern SDL_AUDIO_U16SYS,
   pattern SDL_AUDIO_S32LSB,
   pattern SDL_AUDIO_S32MSB,
   pattern SDL_AUDIO_S32SYS,
@@ -74,34 +71,34 @@ module SDL.Raw.Enum (
 
   -- ** Game Controller Axis
   GameControllerAxis,
-  pattern SDL_CONTROLLER_AXIS_INVALID,
-  pattern SDL_CONTROLLER_AXIS_LEFTX,
-  pattern SDL_CONTROLLER_AXIS_LEFTY,
-  pattern SDL_CONTROLLER_AXIS_RIGHTX,
-  pattern SDL_CONTROLLER_AXIS_RIGHTY,
-  pattern SDL_CONTROLLER_AXIS_TRIGGERLEFT,
-  pattern SDL_CONTROLLER_AXIS_TRIGGERRIGHT,
-  pattern SDL_CONTROLLER_AXIS_MAX,
+  pattern SDL_GAMEPAD_AXIS_INVALID,
+  pattern SDL_GAMEPAD_AXIS_LEFTX,
+  pattern SDL_GAMEPAD_AXIS_LEFTY,
+  pattern SDL_GAMEPAD_AXIS_RIGHTX,
+  pattern SDL_GAMEPAD_AXIS_RIGHTY,
+  pattern SDL_GAMEPAD_AXIS_LEFT_TRIGGER,
+  pattern SDL_GAMEPAD_AXIS_RIGHT_TRIGGER,
+  pattern SDL_GAMEPAD_AXIS_COUNT,
 
   -- ** Game Controller Button
   GameControllerButton,
-  pattern SDL_CONTROLLER_BUTTON_INVALID,
-  pattern SDL_CONTROLLER_BUTTON_A,
-  pattern SDL_CONTROLLER_BUTTON_B,
-  pattern SDL_CONTROLLER_BUTTON_X,
-  pattern SDL_CONTROLLER_BUTTON_Y,
-  pattern SDL_CONTROLLER_BUTTON_BACK,
-  pattern SDL_CONTROLLER_BUTTON_GUIDE,
-  pattern SDL_CONTROLLER_BUTTON_START,
-  pattern SDL_CONTROLLER_BUTTON_LEFTSTICK,
-  pattern SDL_CONTROLLER_BUTTON_RIGHTSTICK,
-  pattern SDL_CONTROLLER_BUTTON_LEFTSHOULDER,
-  pattern SDL_CONTROLLER_BUTTON_RIGHTSHOULDER,
-  pattern SDL_CONTROLLER_BUTTON_DPAD_UP,
-  pattern SDL_CONTROLLER_BUTTON_DPAD_DOWN,
-  pattern SDL_CONTROLLER_BUTTON_DPAD_LEFT,
-  pattern SDL_CONTROLLER_BUTTON_DPAD_RIGHT,
-  pattern SDL_CONTROLLER_BUTTON_MAX,
+  pattern SDL_GAMEPAD_BUTTON_INVALID,
+  pattern SDL_GAMEPAD_BUTTON_SOUTH,
+  pattern SDL_GAMEPAD_BUTTON_EAST,
+  pattern SDL_GAMEPAD_BUTTON_WEST,
+  pattern SDL_GAMEPAD_BUTTON_NORTH,
+  pattern SDL_GAMEPAD_BUTTON_BACK,
+  pattern SDL_GAMEPAD_BUTTON_GUIDE,
+  pattern SDL_GAMEPAD_BUTTON_START,
+  pattern SDL_GAMEPAD_BUTTON_LEFT_STICK,
+  pattern SDL_GAMEPAD_BUTTON_RIGHT_STICK,
+  pattern SDL_GAMEPAD_BUTTON_LEFT_SHOULDER,
+  pattern SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER,
+  pattern SDL_GAMEPAD_BUTTON_DPAD_UP,
+  pattern SDL_GAMEPAD_BUTTON_DPAD_DOWN,
+  pattern SDL_GAMEPAD_BUTTON_DPAD_LEFT,
+  pattern SDL_GAMEPAD_BUTTON_DPAD_RIGHT,
+  pattern SDL_GAMEPAD_BUTTON_COUNT,
 
   -- ** OpenGL Attribute
   GLattr,
@@ -124,7 +121,6 @@ module SDL.Raw.Enum (
   pattern SDL_GL_RETAINED_BACKING,
   pattern SDL_GL_CONTEXT_MAJOR_VERSION,
   pattern SDL_GL_CONTEXT_MINOR_VERSION,
-  pattern SDL_GL_CONTEXT_EGL,
   pattern SDL_GL_CONTEXT_FLAGS,
   pattern SDL_GL_CONTEXT_PROFILE_MASK,
   pattern SDL_GL_SHARE_WITH_CURRENT_CONTEXT,
@@ -139,25 +135,22 @@ module SDL.Raw.Enum (
 
   -- ** Initialization Flag
   InitFlag,
-  pattern SDL_INIT_TIMER,
   pattern SDL_INIT_AUDIO,
   pattern SDL_INIT_VIDEO,
   pattern SDL_INIT_JOYSTICK,
   pattern SDL_INIT_HAPTIC,
-  pattern SDL_INIT_GAMECONTROLLER,
+  pattern SDL_INIT_GAMEPAD,
   pattern SDL_INIT_EVENTS,
-  pattern SDL_INIT_NOPARACHUTE,
-  pattern SDL_INIT_EVERYTHING,
 
   -- ** Joystick Power Level
-  JoystickPowerLevel,
-  pattern SDL_JOYSTICK_POWER_UNKNOWN,
-  pattern SDL_JOYSTICK_POWER_EMPTY,
-  pattern SDL_JOYSTICK_POWER_LOW,
-  pattern SDL_JOYSTICK_POWER_MEDIUM,
-  pattern SDL_JOYSTICK_POWER_FULL,
-  pattern SDL_JOYSTICK_POWER_WIRED,
-  pattern SDL_JOYSTICK_POWER_MAX,
+  -- JoystickPowerLevel,
+  -- pattern SDL_JOYSTICK_POWER_UNKNOWN,
+  -- pattern SDL_JOYSTICK_POWER_EMPTY,
+  -- pattern SDL_JOYSTICK_POWER_LOW,
+  -- pattern SDL_JOYSTICK_POWER_MEDIUM,
+  -- pattern SDL_JOYSTICK_POWER_FULL,
+  -- pattern SDL_JOYSTICK_POWER_WIRED,
+  -- pattern SDL_JOYSTICK_POWER_MAX,
 
   -- ** Keycode
   Keycode,
@@ -168,12 +161,12 @@ module SDL.Raw.Enum (
   pattern SDLK_TAB,
   pattern SDLK_SPACE,
   pattern SDLK_EXCLAIM,
-  pattern SDLK_QUOTEDBL,
+  pattern SDLK_DBLAPOSTROPHE,
   pattern SDLK_HASH,
   pattern SDLK_PERCENT,
   pattern SDLK_DOLLAR,
   pattern SDLK_AMPERSAND,
-  pattern SDLK_QUOTE,
+  pattern SDLK_APOSTROPHE,
   pattern SDLK_LEFTPAREN,
   pattern SDLK_RIGHTPAREN,
   pattern SDLK_ASTERISK,
@@ -204,33 +197,33 @@ module SDL.Raw.Enum (
   pattern SDLK_RIGHTBRACKET,
   pattern SDLK_CARET,
   pattern SDLK_UNDERSCORE,
-  pattern SDLK_BACKQUOTE,
-  pattern SDLK_a,
-  pattern SDLK_b,
-  pattern SDLK_c,
-  pattern SDLK_d,
-  pattern SDLK_e,
-  pattern SDLK_f,
-  pattern SDLK_g,
-  pattern SDLK_h,
-  pattern SDLK_i,
-  pattern SDLK_j,
-  pattern SDLK_k,
-  pattern SDLK_l,
-  pattern SDLK_m,
-  pattern SDLK_n,
-  pattern SDLK_o,
-  pattern SDLK_p,
-  pattern SDLK_q,
-  pattern SDLK_r,
-  pattern SDLK_s,
-  pattern SDLK_t,
-  pattern SDLK_u,
-  pattern SDLK_v,
-  pattern SDLK_w,
-  pattern SDLK_x,
-  pattern SDLK_y,
-  pattern SDLK_z,
+  pattern SDLK_GRAVE,
+  pattern SDLK_A,
+  pattern SDLK_B,
+  pattern SDLK_C,
+  pattern SDLK_D,
+  pattern SDLK_E,
+  pattern SDLK_F,
+  pattern SDLK_G,
+  pattern SDLK_H,
+  pattern SDLK_I,
+  pattern SDLK_J,
+  pattern SDLK_K,
+  pattern SDLK_L,
+  pattern SDLK_M,
+  pattern SDLK_N,
+  pattern SDLK_O,
+  pattern SDLK_P,
+  pattern SDLK_Q,
+  pattern SDLK_R,
+  pattern SDLK_S,
+  pattern SDLK_T,
+  pattern SDLK_U,
+  pattern SDLK_V,
+  pattern SDLK_W,
+  pattern SDLK_X,
+  pattern SDLK_Y,
+  pattern SDLK_Z,
   pattern SDLK_CAPSLOCK,
   pattern SDLK_F1,
   pattern SDLK_F2,
@@ -372,16 +365,12 @@ module SDL.Raw.Enum (
   pattern SDLK_RALT,
   pattern SDLK_RGUI,
   pattern SDLK_MODE,
-  pattern SDLK_AUDIONEXT,
-  pattern SDLK_AUDIOPREV,
-  pattern SDLK_AUDIOSTOP,
-  pattern SDLK_AUDIOPLAY,
-  pattern SDLK_AUDIOMUTE,
-  pattern SDLK_MEDIASELECT,
-  pattern SDLK_WWW,
-  pattern SDLK_MAIL,
-  pattern SDLK_CALCULATOR,
-  pattern SDLK_COMPUTER,
+  pattern SDLK_MEDIA_NEXT_TRACK,
+  pattern SDLK_MEDIA_PREVIOUS_TRACK,
+  pattern SDLK_MEDIA_STOP,
+  pattern SDLK_MEDIA_PLAY,
+  pattern SDLK_MUTE,
+  pattern SDLK_MEDIA_SELECT,
   pattern SDLK_AC_SEARCH,
   pattern SDLK_AC_HOME,
   pattern SDLK_AC_BACK,
@@ -389,34 +378,27 @@ module SDL.Raw.Enum (
   pattern SDLK_AC_STOP,
   pattern SDLK_AC_REFRESH,
   pattern SDLK_AC_BOOKMARKS,
-  pattern SDLK_BRIGHTNESSDOWN,
-  pattern SDLK_BRIGHTNESSUP,
-  pattern SDLK_DISPLAYSWITCH,
-  pattern SDLK_KBDILLUMTOGGLE,
-  pattern SDLK_KBDILLUMDOWN,
-  pattern SDLK_KBDILLUMUP,
-  pattern SDLK_EJECT,
+  pattern SDLK_MEDIA_EJECT,
   pattern SDLK_SLEEP,
 
   -- ** Key Modifier
   Keymod,
-  pattern KMOD_NONE,
-  pattern KMOD_LSHIFT,
-  pattern KMOD_RSHIFT,
-  pattern KMOD_SHIFT,
-  pattern KMOD_LCTRL,
-  pattern KMOD_RCTRL,
-  pattern KMOD_CTRL,
-  pattern KMOD_LALT,
-  pattern KMOD_RALT,
-  pattern KMOD_ALT,
-  pattern KMOD_LGUI,
-  pattern KMOD_RGUI,
-  pattern KMOD_GUI,
-  pattern KMOD_NUM,
-  pattern KMOD_CAPS,
-  pattern KMOD_MODE,
-  pattern KMOD_RESERVED,
+  pattern SDL_KMOD_NONE,
+  pattern SDL_KMOD_LSHIFT,
+  pattern SDL_KMOD_RSHIFT,
+  pattern SDL_KMOD_SHIFT,
+  pattern SDL_KMOD_LCTRL,
+  pattern SDL_KMOD_RCTRL,
+  pattern SDL_KMOD_CTRL,
+  pattern SDL_KMOD_LALT,
+  pattern SDL_KMOD_RALT,
+  pattern SDL_KMOD_ALT,
+  pattern SDL_KMOD_LGUI,
+  pattern SDL_KMOD_RGUI,
+  pattern SDL_KMOD_GUI,
+  pattern SDL_KMOD_NUM,
+  pattern SDL_KMOD_CAPS,
+  pattern SDL_KMOD_MODE,
 
   -- ** Log Priority
   LogPriority,
@@ -426,7 +408,7 @@ module SDL.Raw.Enum (
   pattern SDL_LOG_PRIORITY_WARN,
   pattern SDL_LOG_PRIORITY_ERROR,
   pattern SDL_LOG_PRIORITY_CRITICAL,
-  pattern SDL_NUM_LOG_PRIORITIES,
+  pattern SDL_LOG_PRIORITY_COUNT,
 
   -- ** Power State
   PowerState,
@@ -658,16 +640,12 @@ module SDL.Raw.Enum (
   pattern SDL_SCANCODE_RALT,
   pattern SDL_SCANCODE_RGUI,
   pattern SDL_SCANCODE_MODE,
-  pattern SDL_SCANCODE_AUDIONEXT,
-  pattern SDL_SCANCODE_AUDIOPREV,
-  pattern SDL_SCANCODE_AUDIOSTOP,
-  pattern SDL_SCANCODE_AUDIOPLAY,
-  pattern SDL_SCANCODE_AUDIOMUTE,
-  pattern SDL_SCANCODE_MEDIASELECT,
-  pattern SDL_SCANCODE_WWW,
-  pattern SDL_SCANCODE_MAIL,
-  pattern SDL_SCANCODE_CALCULATOR,
-  pattern SDL_SCANCODE_COMPUTER,
+  pattern SDL_SCANCODE_MEDIA_NEXT_TRACK,
+  pattern SDL_SCANCODE_MEDIA_PREVIOUS_TRACK,
+  pattern SDL_SCANCODE_MEDIA_STOP,
+  pattern SDL_SCANCODE_MEDIA_PLAY,
+  pattern SDL_SCANCODE_MUTE,
+  pattern SDL_SCANCODE_MEDIA_SELECT,
   pattern SDL_SCANCODE_AC_SEARCH,
   pattern SDL_SCANCODE_AC_HOME,
   pattern SDL_SCANCODE_AC_BACK,
@@ -675,34 +653,26 @@ module SDL.Raw.Enum (
   pattern SDL_SCANCODE_AC_STOP,
   pattern SDL_SCANCODE_AC_REFRESH,
   pattern SDL_SCANCODE_AC_BOOKMARKS,
-  pattern SDL_SCANCODE_BRIGHTNESSDOWN,
-  pattern SDL_SCANCODE_BRIGHTNESSUP,
-  pattern SDL_SCANCODE_DISPLAYSWITCH,
-  pattern SDL_SCANCODE_KBDILLUMTOGGLE,
-  pattern SDL_SCANCODE_KBDILLUMDOWN,
-  pattern SDL_SCANCODE_KBDILLUMUP,
-  pattern SDL_SCANCODE_EJECT,
+  pattern SDL_SCANCODE_MEDIA_EJECT,
   pattern SDL_SCANCODE_SLEEP,
-  pattern SDL_SCANCODE_APP1,
-  pattern SDL_SCANCODE_APP2,
-  pattern SDL_NUM_SCANCODES,
+  pattern SDL_SCANCODE_COUNT,
 
-  pattern SDL_SYSTEM_CURSOR_ARROW,
-  pattern SDL_SYSTEM_CURSOR_IBEAM,
+  pattern SDL_SYSTEM_CURSOR_DEFAULT,
+  pattern SDL_SYSTEM_CURSOR_TEXT,
   pattern SDL_SYSTEM_CURSOR_WAIT,
 
   -- ** System Cursor
   SystemCursor,
   pattern SDL_SYSTEM_CURSOR_CROSSHAIR,
-  pattern SDL_SYSTEM_CURSOR_WAITARROW,
-  pattern SDL_SYSTEM_CURSOR_SIZENWSE,
-  pattern SDL_SYSTEM_CURSOR_SIZENESW,
-  pattern SDL_SYSTEM_CURSOR_SIZEWE,
-  pattern SDL_SYSTEM_CURSOR_SIZENS,
-  pattern SDL_SYSTEM_CURSOR_SIZEALL,
-  pattern SDL_SYSTEM_CURSOR_NO,
-  pattern SDL_SYSTEM_CURSOR_HAND,
-  pattern SDL_NUM_SYSTEM_CURSORS,
+  pattern SDL_SYSTEM_CURSOR_PROGRESS,
+  pattern SDL_SYSTEM_CURSOR_NWSE_RESIZE,
+  pattern SDL_SYSTEM_CURSOR_NESW_RESIZE,
+  pattern SDL_SYSTEM_CURSOR_EW_RESIZE,
+  pattern SDL_SYSTEM_CURSOR_NS_RESIZE,
+  pattern SDL_SYSTEM_CURSOR_MOVE,
+  pattern SDL_SYSTEM_CURSOR_NOT_ALLOWED,
+  pattern SDL_SYSTEM_CURSOR_POINTER,
+  pattern SDL_SYSTEM_CURSOR_COUNT,
 
   -- ** Thread Priority
   ThreadPriority,
@@ -712,12 +682,6 @@ module SDL.Raw.Enum (
 
   -- * Miscellaneous Enumerations
   -- | These enumerations are not used directly by any SDL function, thus they have a polymorphic type.
-
-  -- ** Audio Allowed Changes
-  pattern SDL_AUDIO_ALLOW_FREQUENCY_CHANGE,
-  pattern SDL_AUDIO_ALLOW_FORMAT_CHANGE,
-  pattern SDL_AUDIO_ALLOW_CHANNELS_CHANGE,
-  pattern SDL_AUDIO_ALLOW_ANY_CHANGE,
 
   -- ** Mouse Buttons
   pattern SDL_BUTTON_LEFT,
@@ -738,52 +702,47 @@ module SDL.Raw.Enum (
   pattern SDL_MOUSEWHEEL_FLIPPED,
 
   -- ** Event Type
-  pattern SDL_FIRSTEVENT,
-  pattern SDL_QUIT,
-  pattern SDL_APP_TERMINATING,
-  pattern SDL_APP_LOWMEMORY,
-  pattern SDL_APP_WILLENTERBACKGROUND,
-  pattern SDL_APP_DIDENTERBACKGROUND,
-  pattern SDL_APP_WILLENTERFOREGROUND,
-  pattern SDL_APP_DIDENTERFOREGROUND,
-  pattern SDL_WINDOWEVENT,
-  pattern SDL_SYSWMEVENT,
-  pattern SDL_KEYDOWN,
-  pattern SDL_KEYUP,
-  pattern SDL_TEXTEDITING,
-  pattern SDL_TEXTINPUT,
-  pattern SDL_KEYMAPCHANGED,
-  pattern SDL_MOUSEMOTION,
-  pattern SDL_MOUSEBUTTONDOWN,
-  pattern SDL_MOUSEBUTTONUP,
-  pattern SDL_MOUSEWHEEL,
-  pattern SDL_JOYAXISMOTION,
-  pattern SDL_JOYBALLMOTION,
-  pattern SDL_JOYHATMOTION,
-  pattern SDL_JOYBUTTONDOWN,
-  pattern SDL_JOYBUTTONUP,
-  pattern SDL_JOYDEVICEADDED,
-  pattern SDL_JOYDEVICEREMOVED,
-  pattern SDL_CONTROLLERAXISMOTION,
-  pattern SDL_CONTROLLERBUTTONDOWN,
-  pattern SDL_CONTROLLERBUTTONUP,
-  pattern SDL_CONTROLLERDEVICEADDED,
-  pattern SDL_CONTROLLERDEVICEREMOVED,
-  pattern SDL_CONTROLLERDEVICEREMAPPED,
-  pattern SDL_FINGERDOWN,
-  pattern SDL_FINGERUP,
-  pattern SDL_FINGERMOTION,
-  pattern SDL_DOLLARGESTURE,
-  pattern SDL_DOLLARRECORD,
-  pattern SDL_MULTIGESTURE,
-  pattern SDL_CLIPBOARDUPDATE,
-  pattern SDL_DROPFILE,
-  pattern SDL_AUDIODEVICEADDED,
-  pattern SDL_AUDIODEVICEREMOVED,
-  pattern SDL_RENDER_TARGETS_RESET,
-  pattern SDL_RENDER_DEVICE_RESET,
-  pattern SDL_USEREVENT,
-  pattern SDL_LASTEVENT,
+  pattern SDL_EVENT_FIRST,
+  pattern SDL_EVENT_QUIT,
+  pattern SDL_EVENT_TERMINATING,
+  pattern SDL_EVENT_LOW_MEMORY,
+  pattern SDL_EVENT_WILL_ENTER_BACKGROUND,
+  pattern SDL_EVENT_DID_ENTER_BACKGROUND,
+  pattern SDL_EVENT_WILL_ENTER_FOREGROUND,
+  pattern SDL_EVENT_DID_ENTER_FOREGROUND,
+  pattern SDL_EVENT_KEY_DOWN,
+  pattern SDL_EVENT_KEY_UP,
+  pattern SDL_EVENT_TEXT_EDITING,
+  pattern SDL_EVENT_TEXT_INPUT,
+  pattern SDL_EVENT_KEYMAP_CHANGED,
+  pattern SDL_EVENT_MOUSE_MOTION,
+  pattern SDL_EVENT_MOUSE_BUTTON_DOWN,
+  pattern SDL_EVENT_MOUSE_BUTTON_UP,
+  pattern SDL_EVENT_MOUSE_WHEEL,
+  pattern SDL_EVENT_JOYSTICK_AXIS_MOTION,
+  pattern SDL_EVENT_JOYSTICK_BALL_MOTION,
+  pattern SDL_EVENT_JOYSTICK_HAT_MOTION,
+  pattern SDL_EVENT_JOYSTICK_BUTTON_DOWN,
+  pattern SDL_EVENT_JOYSTICK_BUTTON_UP,
+  pattern SDL_EVENT_JOYSTICK_ADDED,
+  pattern SDL_EVENT_JOYSTICK_REMOVED,
+  pattern SDL_EVENT_GAMEPAD_AXIS_MOTION,
+  pattern SDL_EVENT_GAMEPAD_BUTTON_DOWN,
+  pattern SDL_EVENT_GAMEPAD_BUTTON_UP,
+  pattern SDL_EVENT_GAMEPAD_ADDED,
+  pattern SDL_EVENT_GAMEPAD_REMOVED,
+  pattern SDL_EVENT_GAMEPAD_REMAPPED,
+  pattern SDL_EVENT_FINGER_DOWN,
+  pattern SDL_EVENT_FINGER_UP,
+  pattern SDL_EVENT_FINGER_MOTION,
+  pattern SDL_EVENT_CLIPBOARD_UPDATE,
+  pattern SDL_EVENT_DROP_FILE,
+  pattern SDL_EVENT_AUDIO_DEVICE_ADDED,
+  pattern SDL_EVENT_AUDIO_DEVICE_REMOVED,
+  pattern SDL_EVENT_RENDER_TARGETS_RESET,
+  pattern SDL_EVENT_RENDER_DEVICE_RESET,
+  pattern SDL_EVENT_USER,
+  pattern SDL_EVENT_LAST,
 
   -- ** Joystick Hat Position
   pattern SDL_HAT_CENTERED,
@@ -795,10 +754,6 @@ module SDL.Raw.Enum (
   pattern SDL_HAT_RIGHTDOWN,
   pattern SDL_HAT_LEFTUP,
   pattern SDL_HAT_LEFTDOWN,
-
-  -- ** Key States
-  pattern SDL_PRESSED,
-  pattern SDL_RELEASED,
 
   -- ** Log Category
   pattern SDL_LOG_CATEGORY_APPLICATION,
@@ -844,9 +799,9 @@ module SDL.Raw.Enum (
   pattern SDL_PIXELFORMAT_INDEX4MSB,
   pattern SDL_PIXELFORMAT_INDEX8,
   pattern SDL_PIXELFORMAT_RGB332,
-  pattern SDL_PIXELFORMAT_RGB444,
-  pattern SDL_PIXELFORMAT_RGB555,
-  pattern SDL_PIXELFORMAT_BGR555,
+  pattern SDL_PIXELFORMAT_XRGB4444,
+  pattern SDL_PIXELFORMAT_XRGB1555,
+  pattern SDL_PIXELFORMAT_XBGR1555,
   pattern SDL_PIXELFORMAT_ARGB4444,
   pattern SDL_PIXELFORMAT_RGBA4444,
   pattern SDL_PIXELFORMAT_ABGR4444,
@@ -859,9 +814,9 @@ module SDL.Raw.Enum (
   pattern SDL_PIXELFORMAT_BGR565,
   pattern SDL_PIXELFORMAT_RGB24,
   pattern SDL_PIXELFORMAT_BGR24,
-  pattern SDL_PIXELFORMAT_RGB888,
+  pattern SDL_PIXELFORMAT_XRGB8888,
   pattern SDL_PIXELFORMAT_RGBX8888,
-  pattern SDL_PIXELFORMAT_BGR888,
+  pattern SDL_PIXELFORMAT_XBGR8888,
   pattern SDL_PIXELFORMAT_BGRX8888,
   pattern SDL_PIXELFORMAT_ARGB8888,
   pattern SDL_PIXELFORMAT_RGBA8888,
@@ -885,30 +840,24 @@ module SDL.Raw.Enum (
   pattern SDL_TEXTUREACCESS_STREAMING,
   pattern SDL_TEXTUREACCESS_TARGET,
 
-  -- ** Texture Modulate
-  pattern SDL_TEXTUREMODULATE_NONE,
-  pattern SDL_TEXTUREMODULATE_COLOR,
-  pattern SDL_TEXTUREMODULATE_ALPHA,
-
-  -- ** Touch
+    -- ** Touch
   pattern SDL_TOUCH_MOUSEID,
 
   -- ** Window Event
-  pattern SDL_WINDOWEVENT_NONE,
-  pattern SDL_WINDOWEVENT_SHOWN,
-  pattern SDL_WINDOWEVENT_HIDDEN,
-  pattern SDL_WINDOWEVENT_EXPOSED,
-  pattern SDL_WINDOWEVENT_MOVED,
-  pattern SDL_WINDOWEVENT_RESIZED,
-  pattern SDL_WINDOWEVENT_SIZE_CHANGED,
-  pattern SDL_WINDOWEVENT_MINIMIZED,
-  pattern SDL_WINDOWEVENT_MAXIMIZED,
-  pattern SDL_WINDOWEVENT_RESTORED,
-  pattern SDL_WINDOWEVENT_ENTER,
-  pattern SDL_WINDOWEVENT_LEAVE,
-  pattern SDL_WINDOWEVENT_FOCUS_GAINED,
-  pattern SDL_WINDOWEVENT_FOCUS_LOST,
-  pattern SDL_WINDOWEVENT_CLOSE,
+  pattern SDL_EVENT_WINDOW_SHOWN,
+  pattern SDL_EVENT_WINDOW_HIDDEN,
+  pattern SDL_EVENT_WINDOW_EXPOSED,
+  pattern SDL_EVENT_WINDOW_MOVED,
+  pattern SDL_EVENT_WINDOW_RESIZED,
+  pattern SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED,
+  pattern SDL_EVENT_WINDOW_MINIMIZED,
+  pattern SDL_EVENT_WINDOW_MAXIMIZED,
+  pattern SDL_EVENT_WINDOW_RESTORED,
+  pattern SDL_EVENT_WINDOW_MOUSE_ENTER,
+  pattern SDL_EVENT_WINDOW_MOUSE_LEAVE,
+  pattern SDL_EVENT_WINDOW_FOCUS_GAINED,
+  pattern SDL_EVENT_WINDOW_FOCUS_LOST,
+  pattern SDL_EVENT_WINDOW_CLOSE_REQUESTED,
 
   -- ** Window Flags
   pattern SDL_WINDOW_FULLSCREEN,
@@ -919,12 +868,12 @@ module SDL.Raw.Enum (
   pattern SDL_WINDOW_RESIZABLE,
   pattern SDL_WINDOW_MINIMIZED,
   pattern SDL_WINDOW_MAXIMIZED,
-  pattern SDL_WINDOW_INPUT_GRABBED,
+  pattern SDL_WINDOW_MOUSE_GRABBED,
   pattern SDL_WINDOW_INPUT_FOCUS,
   pattern SDL_WINDOW_MOUSE_FOCUS,
   pattern SDL_WINDOW_FULLSCREEN_DESKTOP,
   pattern SDL_WINDOW_FOREIGN,
-  pattern SDL_WINDOW_ALLOW_HIGHDPI,
+  pattern SDL_WINDOW_HIGH_PIXEL_DENSITY,
   pattern SDL_WINDOW_MOUSE_CAPTURE,
   pattern SDL_WINDOW_VULKAN,
 
@@ -952,7 +901,7 @@ module SDL.Raw.Enum (
   pattern SDL_HAPTIC_CONSTANT
 ) where
 
-#include "SDL.h"
+#include "SDL3/SDL.h"
 
 import Data.Int
 import Data.Word
@@ -960,45 +909,36 @@ import Data.Word
 import Foreign.C.Types
 
 type AudioFormat = (#type SDL_AudioFormat)
-type AudioStatus = (#type SDL_AudioStatus)
 type BlendMode = (#type SDL_BlendMode)
 type BlendOperation = (#type SDL_BlendOperation)
 type BlendFactor = (#type SDL_BlendFactor)
 type Endian = CInt
-type EventAction = (#type SDL_eventaction)
-type GameControllerAxis = (#type SDL_GameControllerAxis)
-type GameControllerButton = (#type SDL_GameControllerButton)
-type GLattr = (#type SDL_GLattr)
+type EventAction = (#type SDL_EventAction)
+type GameControllerAxis = (#type SDL_GamepadAxis)
+type GameControllerButton = (#type SDL_GamepadButton)
+type GLattr = (#type SDL_GLAttr)
 type HintPriority = (#type SDL_HintPriority)
 type InitFlag = Word32
-type JoystickPowerLevel = (#type SDL_JoystickPowerLevel)
 type Keycode = (#type SDL_Keycode)
 type Keymod = (#type SDL_Keymod)
 type LogPriority = (#type SDL_LogPriority)
 type PowerState = (#type SDL_PowerState)
-type RendererFlip = (#type SDL_RendererFlip)
+type RendererFlip = (#type SDL_FlipMode)
 type Scancode = (#type SDL_Scancode)
 type SystemCursor = (#type SDL_SystemCursor)
 type ThreadPriority = (#type SDL_ThreadPriority)
 
-pattern SDL_AUDIO_S8 = (#const AUDIO_S8) :: AudioFormat
-pattern SDL_AUDIO_U8 = (#const AUDIO_U8) :: AudioFormat
-pattern SDL_AUDIO_S16LSB = (#const AUDIO_S16LSB) :: AudioFormat
-pattern SDL_AUDIO_S16MSB = (#const AUDIO_S16MSB) :: AudioFormat
-pattern SDL_AUDIO_S16SYS = (#const AUDIO_S16SYS) :: AudioFormat
-pattern SDL_AUDIO_U16LSB = (#const AUDIO_U16LSB) :: AudioFormat
-pattern SDL_AUDIO_U16MSB = (#const AUDIO_U16MSB) :: AudioFormat
-pattern SDL_AUDIO_U16SYS = (#const AUDIO_U16SYS) :: AudioFormat
-pattern SDL_AUDIO_S32LSB = (#const AUDIO_S32LSB) :: AudioFormat
-pattern SDL_AUDIO_S32MSB = (#const AUDIO_S32MSB) :: AudioFormat
-pattern SDL_AUDIO_S32SYS = (#const AUDIO_S32SYS) :: AudioFormat
-pattern SDL_AUDIO_F32LSB = (#const AUDIO_F32LSB) :: AudioFormat
-pattern SDL_AUDIO_F32MSB = (#const AUDIO_F32MSB) :: AudioFormat
-pattern SDL_AUDIO_F32SYS = (#const AUDIO_F32SYS) :: AudioFormat
-
-pattern SDL_AUDIO_STOPPED = (#const SDL_AUDIO_STOPPED) :: AudioStatus
-pattern SDL_AUDIO_PLAYING = (#const SDL_AUDIO_PLAYING) :: AudioStatus
-pattern SDL_AUDIO_PAUSED = (#const SDL_AUDIO_PAUSED) :: AudioStatus
+pattern SDL_AUDIO_S8 = (#const SDL_AUDIO_S8) :: AudioFormat
+pattern SDL_AUDIO_U8 = (#const SDL_AUDIO_U8) :: AudioFormat
+pattern SDL_AUDIO_S16LSB = (#const SDL_AUDIO_S16LE) :: AudioFormat
+pattern SDL_AUDIO_S16MSB = (#const SDL_AUDIO_S16BE) :: AudioFormat
+pattern SDL_AUDIO_S16SYS = (#const SDL_AUDIO_S16) :: AudioFormat
+pattern SDL_AUDIO_S32LSB = (#const SDL_AUDIO_S32LE) :: AudioFormat
+pattern SDL_AUDIO_S32MSB = (#const SDL_AUDIO_S32BE) :: AudioFormat
+pattern SDL_AUDIO_S32SYS = (#const SDL_AUDIO_S32) :: AudioFormat
+pattern SDL_AUDIO_F32LSB = (#const SDL_AUDIO_F32LE) :: AudioFormat
+pattern SDL_AUDIO_F32MSB = (#const SDL_AUDIO_F32BE) :: AudioFormat
+pattern SDL_AUDIO_F32SYS = (#const SDL_AUDIO_F32) :: AudioFormat
 
 pattern SDL_BLENDMODE_NONE = (#const SDL_BLENDMODE_NONE) :: BlendMode
 pattern SDL_BLENDMODE_BLEND = (#const SDL_BLENDMODE_BLEND) :: BlendMode
@@ -1030,32 +970,32 @@ pattern SDL_ADDEVENT = (#const SDL_ADDEVENT) :: EventAction
 pattern SDL_PEEKEVENT = (#const SDL_PEEKEVENT) :: EventAction
 pattern SDL_GETEVENT = (#const SDL_GETEVENT) :: EventAction
 
-pattern SDL_CONTROLLER_AXIS_INVALID = (#const SDL_CONTROLLER_AXIS_INVALID) :: GameControllerAxis
-pattern SDL_CONTROLLER_AXIS_LEFTX = (#const SDL_CONTROLLER_AXIS_LEFTX) :: GameControllerAxis
-pattern SDL_CONTROLLER_AXIS_LEFTY = (#const SDL_CONTROLLER_AXIS_LEFTY) :: GameControllerAxis
-pattern SDL_CONTROLLER_AXIS_RIGHTX = (#const SDL_CONTROLLER_AXIS_RIGHTX) :: GameControllerAxis
-pattern SDL_CONTROLLER_AXIS_RIGHTY = (#const SDL_CONTROLLER_AXIS_RIGHTY) :: GameControllerAxis
-pattern SDL_CONTROLLER_AXIS_TRIGGERLEFT = (#const SDL_CONTROLLER_AXIS_TRIGGERLEFT) :: GameControllerAxis
-pattern SDL_CONTROLLER_AXIS_TRIGGERRIGHT = (#const SDL_CONTROLLER_AXIS_TRIGGERRIGHT) :: GameControllerAxis
-pattern SDL_CONTROLLER_AXIS_MAX = (#const SDL_CONTROLLER_AXIS_MAX) :: GameControllerAxis
+pattern SDL_GAMEPAD_AXIS_INVALID = (#const SDL_GAMEPAD_AXIS_INVALID) :: GameControllerAxis
+pattern SDL_GAMEPAD_AXIS_LEFTX = (#const SDL_GAMEPAD_AXIS_LEFTX) :: GameControllerAxis
+pattern SDL_GAMEPAD_AXIS_LEFTY = (#const SDL_GAMEPAD_AXIS_LEFTY) :: GameControllerAxis
+pattern SDL_GAMEPAD_AXIS_RIGHTX = (#const SDL_GAMEPAD_AXIS_RIGHTX) :: GameControllerAxis
+pattern SDL_GAMEPAD_AXIS_RIGHTY = (#const SDL_GAMEPAD_AXIS_RIGHTY) :: GameControllerAxis
+pattern SDL_GAMEPAD_AXIS_LEFT_TRIGGER = (#const SDL_GAMEPAD_AXIS_LEFT_TRIGGER) :: GameControllerAxis
+pattern SDL_GAMEPAD_AXIS_RIGHT_TRIGGER = (#const SDL_GAMEPAD_AXIS_RIGHT_TRIGGER) :: GameControllerAxis
+pattern SDL_GAMEPAD_AXIS_COUNT = (#const SDL_GAMEPAD_AXIS_COUNT) :: GameControllerAxis
 
-pattern SDL_CONTROLLER_BUTTON_INVALID = (#const SDL_CONTROLLER_BUTTON_INVALID) :: GameControllerButton
-pattern SDL_CONTROLLER_BUTTON_A = (#const SDL_CONTROLLER_BUTTON_A) :: GameControllerButton
-pattern SDL_CONTROLLER_BUTTON_B = (#const SDL_CONTROLLER_BUTTON_B) :: GameControllerButton
-pattern SDL_CONTROLLER_BUTTON_X = (#const SDL_CONTROLLER_BUTTON_X) :: GameControllerButton
-pattern SDL_CONTROLLER_BUTTON_Y = (#const SDL_CONTROLLER_BUTTON_Y) :: GameControllerButton
-pattern SDL_CONTROLLER_BUTTON_BACK = (#const SDL_CONTROLLER_BUTTON_BACK) :: GameControllerButton
-pattern SDL_CONTROLLER_BUTTON_GUIDE = (#const SDL_CONTROLLER_BUTTON_GUIDE) :: GameControllerButton
-pattern SDL_CONTROLLER_BUTTON_START = (#const SDL_CONTROLLER_BUTTON_START) :: GameControllerButton
-pattern SDL_CONTROLLER_BUTTON_LEFTSTICK = (#const SDL_CONTROLLER_BUTTON_LEFTSTICK) :: GameControllerButton
-pattern SDL_CONTROLLER_BUTTON_RIGHTSTICK = (#const SDL_CONTROLLER_BUTTON_RIGHTSTICK) :: GameControllerButton
-pattern SDL_CONTROLLER_BUTTON_LEFTSHOULDER = (#const SDL_CONTROLLER_BUTTON_LEFTSHOULDER) :: GameControllerButton
-pattern SDL_CONTROLLER_BUTTON_RIGHTSHOULDER = (#const SDL_CONTROLLER_BUTTON_RIGHTSHOULDER) :: GameControllerButton
-pattern SDL_CONTROLLER_BUTTON_DPAD_UP = (#const SDL_CONTROLLER_BUTTON_DPAD_UP) :: GameControllerButton
-pattern SDL_CONTROLLER_BUTTON_DPAD_DOWN = (#const SDL_CONTROLLER_BUTTON_DPAD_DOWN) :: GameControllerButton
-pattern SDL_CONTROLLER_BUTTON_DPAD_LEFT = (#const SDL_CONTROLLER_BUTTON_DPAD_LEFT) :: GameControllerButton
-pattern SDL_CONTROLLER_BUTTON_DPAD_RIGHT = (#const SDL_CONTROLLER_BUTTON_DPAD_RIGHT) :: GameControllerButton
-pattern SDL_CONTROLLER_BUTTON_MAX = (#const SDL_CONTROLLER_BUTTON_MAX) :: GameControllerButton
+pattern SDL_GAMEPAD_BUTTON_INVALID = (#const SDL_GAMEPAD_BUTTON_INVALID) :: GameControllerButton
+pattern SDL_GAMEPAD_BUTTON_SOUTH = (#const SDL_GAMEPAD_BUTTON_SOUTH) :: GameControllerButton
+pattern SDL_GAMEPAD_BUTTON_EAST = (#const SDL_GAMEPAD_BUTTON_EAST) :: GameControllerButton
+pattern SDL_GAMEPAD_BUTTON_WEST = (#const SDL_GAMEPAD_BUTTON_WEST) :: GameControllerButton
+pattern SDL_GAMEPAD_BUTTON_NORTH = (#const SDL_GAMEPAD_BUTTON_NORTH) :: GameControllerButton
+pattern SDL_GAMEPAD_BUTTON_BACK = (#const SDL_GAMEPAD_BUTTON_BACK) :: GameControllerButton
+pattern SDL_GAMEPAD_BUTTON_GUIDE = (#const SDL_GAMEPAD_BUTTON_GUIDE) :: GameControllerButton
+pattern SDL_GAMEPAD_BUTTON_START = (#const SDL_GAMEPAD_BUTTON_START) :: GameControllerButton
+pattern SDL_GAMEPAD_BUTTON_LEFT_STICK = (#const SDL_GAMEPAD_BUTTON_LEFT_STICK) :: GameControllerButton
+pattern SDL_GAMEPAD_BUTTON_RIGHT_STICK = (#const SDL_GAMEPAD_BUTTON_RIGHT_STICK) :: GameControllerButton
+pattern SDL_GAMEPAD_BUTTON_LEFT_SHOULDER = (#const SDL_GAMEPAD_BUTTON_LEFT_SHOULDER) :: GameControllerButton
+pattern SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER = (#const SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER) :: GameControllerButton
+pattern SDL_GAMEPAD_BUTTON_DPAD_UP = (#const SDL_GAMEPAD_BUTTON_DPAD_UP) :: GameControllerButton
+pattern SDL_GAMEPAD_BUTTON_DPAD_DOWN = (#const SDL_GAMEPAD_BUTTON_DPAD_DOWN) :: GameControllerButton
+pattern SDL_GAMEPAD_BUTTON_DPAD_LEFT = (#const SDL_GAMEPAD_BUTTON_DPAD_LEFT) :: GameControllerButton
+pattern SDL_GAMEPAD_BUTTON_DPAD_RIGHT = (#const SDL_GAMEPAD_BUTTON_DPAD_RIGHT) :: GameControllerButton
+pattern SDL_GAMEPAD_BUTTON_COUNT = (#const SDL_GAMEPAD_BUTTON_COUNT) :: GameControllerButton
 
 pattern SDL_GL_RED_SIZE = (#const SDL_GL_RED_SIZE) :: GLattr
 pattern SDL_GL_GREEN_SIZE = (#const SDL_GL_GREEN_SIZE) :: GLattr
@@ -1076,7 +1016,6 @@ pattern SDL_GL_ACCELERATED_VISUAL = (#const SDL_GL_ACCELERATED_VISUAL) :: GLattr
 pattern SDL_GL_RETAINED_BACKING = (#const SDL_GL_RETAINED_BACKING) :: GLattr
 pattern SDL_GL_CONTEXT_MAJOR_VERSION = (#const SDL_GL_CONTEXT_MAJOR_VERSION) :: GLattr
 pattern SDL_GL_CONTEXT_MINOR_VERSION = (#const SDL_GL_CONTEXT_MINOR_VERSION) :: GLattr
-pattern SDL_GL_CONTEXT_EGL = (#const SDL_GL_CONTEXT_EGL) :: GLattr
 pattern SDL_GL_CONTEXT_FLAGS = (#const SDL_GL_CONTEXT_FLAGS) :: GLattr
 pattern SDL_GL_CONTEXT_PROFILE_MASK = (#const SDL_GL_CONTEXT_PROFILE_MASK) :: GLattr
 pattern SDL_GL_SHARE_WITH_CURRENT_CONTEXT = (#const SDL_GL_SHARE_WITH_CURRENT_CONTEXT) :: GLattr
@@ -1087,23 +1026,12 @@ pattern SDL_HINT_DEFAULT = (#const SDL_HINT_DEFAULT) :: HintPriority
 pattern SDL_HINT_NORMAL = (#const SDL_HINT_NORMAL) :: HintPriority
 pattern SDL_HINT_OVERRIDE = (#const SDL_HINT_OVERRIDE) :: HintPriority
 
-pattern SDL_INIT_TIMER = (#const SDL_INIT_TIMER) :: InitFlag
 pattern SDL_INIT_AUDIO = (#const SDL_INIT_AUDIO) :: InitFlag
 pattern SDL_INIT_VIDEO = (#const SDL_INIT_VIDEO) :: InitFlag
 pattern SDL_INIT_JOYSTICK = (#const SDL_INIT_JOYSTICK) :: InitFlag
 pattern SDL_INIT_HAPTIC = (#const SDL_INIT_HAPTIC) :: InitFlag
-pattern SDL_INIT_GAMECONTROLLER = (#const SDL_INIT_GAMECONTROLLER) :: InitFlag
+pattern SDL_INIT_GAMEPAD = (#const SDL_INIT_GAMEPAD) :: InitFlag
 pattern SDL_INIT_EVENTS = (#const SDL_INIT_EVENTS) :: InitFlag
-pattern SDL_INIT_NOPARACHUTE = (#const SDL_INIT_NOPARACHUTE) :: InitFlag
-pattern SDL_INIT_EVERYTHING = (#const SDL_INIT_EVERYTHING) :: InitFlag
-
-pattern SDL_JOYSTICK_POWER_UNKNOWN = (#const SDL_JOYSTICK_POWER_UNKNOWN) :: JoystickPowerLevel
-pattern SDL_JOYSTICK_POWER_EMPTY = (#const SDL_JOYSTICK_POWER_EMPTY) :: JoystickPowerLevel
-pattern SDL_JOYSTICK_POWER_LOW = (#const SDL_JOYSTICK_POWER_LOW) :: JoystickPowerLevel
-pattern SDL_JOYSTICK_POWER_MEDIUM = (#const SDL_JOYSTICK_POWER_MEDIUM) :: JoystickPowerLevel
-pattern SDL_JOYSTICK_POWER_FULL = (#const SDL_JOYSTICK_POWER_FULL) :: JoystickPowerLevel
-pattern SDL_JOYSTICK_POWER_WIRED = (#const SDL_JOYSTICK_POWER_WIRED) :: JoystickPowerLevel
-pattern SDL_JOYSTICK_POWER_MAX = (#const SDL_JOYSTICK_POWER_MAX) :: JoystickPowerLevel
 
 pattern SDLK_UNKNOWN = (#const SDLK_UNKNOWN) :: Keycode
 pattern SDLK_RETURN = (#const SDLK_RETURN) :: Keycode
@@ -1112,12 +1040,12 @@ pattern SDLK_BACKSPACE = (#const SDLK_BACKSPACE) :: Keycode
 pattern SDLK_TAB = (#const SDLK_TAB) :: Keycode
 pattern SDLK_SPACE = (#const SDLK_SPACE) :: Keycode
 pattern SDLK_EXCLAIM = (#const SDLK_EXCLAIM) :: Keycode
-pattern SDLK_QUOTEDBL = (#const SDLK_QUOTEDBL) :: Keycode
+pattern SDLK_DBLAPOSTROPHE = (#const SDLK_DBLAPOSTROPHE) :: Keycode
 pattern SDLK_HASH = (#const SDLK_HASH) :: Keycode
 pattern SDLK_PERCENT = (#const SDLK_PERCENT) :: Keycode
 pattern SDLK_DOLLAR = (#const SDLK_DOLLAR) :: Keycode
 pattern SDLK_AMPERSAND = (#const SDLK_AMPERSAND) :: Keycode
-pattern SDLK_QUOTE = (#const SDLK_QUOTE) :: Keycode
+pattern SDLK_APOSTROPHE = (#const SDLK_APOSTROPHE) :: Keycode
 pattern SDLK_LEFTPAREN = (#const SDLK_LEFTPAREN) :: Keycode
 pattern SDLK_RIGHTPAREN = (#const SDLK_RIGHTPAREN) :: Keycode
 pattern SDLK_ASTERISK = (#const SDLK_ASTERISK) :: Keycode
@@ -1148,33 +1076,33 @@ pattern SDLK_BACKSLASH = (#const SDLK_BACKSLASH) :: Keycode
 pattern SDLK_RIGHTBRACKET = (#const SDLK_RIGHTBRACKET) :: Keycode
 pattern SDLK_CARET = (#const SDLK_CARET) :: Keycode
 pattern SDLK_UNDERSCORE = (#const SDLK_UNDERSCORE) :: Keycode
-pattern SDLK_BACKQUOTE = (#const SDLK_BACKQUOTE) :: Keycode
-pattern SDLK_a = (#const SDLK_a) :: Keycode
-pattern SDLK_b = (#const SDLK_b) :: Keycode
-pattern SDLK_c = (#const SDLK_c) :: Keycode
-pattern SDLK_d = (#const SDLK_d) :: Keycode
-pattern SDLK_e = (#const SDLK_e) :: Keycode
-pattern SDLK_f = (#const SDLK_f) :: Keycode
-pattern SDLK_g = (#const SDLK_g) :: Keycode
-pattern SDLK_h = (#const SDLK_h) :: Keycode
-pattern SDLK_i = (#const SDLK_i) :: Keycode
-pattern SDLK_j = (#const SDLK_j) :: Keycode
-pattern SDLK_k = (#const SDLK_k) :: Keycode
-pattern SDLK_l = (#const SDLK_l) :: Keycode
-pattern SDLK_m = (#const SDLK_m) :: Keycode
-pattern SDLK_n = (#const SDLK_n) :: Keycode
-pattern SDLK_o = (#const SDLK_o) :: Keycode
-pattern SDLK_p = (#const SDLK_p) :: Keycode
-pattern SDLK_q = (#const SDLK_q) :: Keycode
-pattern SDLK_r = (#const SDLK_r) :: Keycode
-pattern SDLK_s = (#const SDLK_s) :: Keycode
-pattern SDLK_t = (#const SDLK_t) :: Keycode
-pattern SDLK_u = (#const SDLK_u) :: Keycode
-pattern SDLK_v = (#const SDLK_v) :: Keycode
-pattern SDLK_w = (#const SDLK_w) :: Keycode
-pattern SDLK_x = (#const SDLK_x) :: Keycode
-pattern SDLK_y = (#const SDLK_y) :: Keycode
-pattern SDLK_z = (#const SDLK_z) :: Keycode
+pattern SDLK_GRAVE = (#const SDLK_GRAVE) :: Keycode
+pattern SDLK_A = (#const SDLK_A) :: Keycode
+pattern SDLK_B = (#const SDLK_B) :: Keycode
+pattern SDLK_C = (#const SDLK_C) :: Keycode
+pattern SDLK_D = (#const SDLK_D) :: Keycode
+pattern SDLK_E = (#const SDLK_E) :: Keycode
+pattern SDLK_F = (#const SDLK_F) :: Keycode
+pattern SDLK_G = (#const SDLK_G) :: Keycode
+pattern SDLK_H = (#const SDLK_H) :: Keycode
+pattern SDLK_I = (#const SDLK_I) :: Keycode
+pattern SDLK_J = (#const SDLK_J) :: Keycode
+pattern SDLK_K = (#const SDLK_K) :: Keycode
+pattern SDLK_L = (#const SDLK_L) :: Keycode
+pattern SDLK_M = (#const SDLK_M) :: Keycode
+pattern SDLK_N = (#const SDLK_N) :: Keycode
+pattern SDLK_O = (#const SDLK_O) :: Keycode
+pattern SDLK_P = (#const SDLK_P) :: Keycode
+pattern SDLK_Q = (#const SDLK_Q) :: Keycode
+pattern SDLK_R = (#const SDLK_R) :: Keycode
+pattern SDLK_S = (#const SDLK_S) :: Keycode
+pattern SDLK_T = (#const SDLK_T) :: Keycode
+pattern SDLK_U = (#const SDLK_U) :: Keycode
+pattern SDLK_V = (#const SDLK_V) :: Keycode
+pattern SDLK_W = (#const SDLK_W) :: Keycode
+pattern SDLK_X = (#const SDLK_X) :: Keycode
+pattern SDLK_Y = (#const SDLK_Y) :: Keycode
+pattern SDLK_Z = (#const SDLK_Z) :: Keycode
 pattern SDLK_CAPSLOCK = (#const SDLK_CAPSLOCK) :: Keycode
 pattern SDLK_F1 = (#const SDLK_F1) :: Keycode
 pattern SDLK_F2 = (#const SDLK_F2) :: Keycode
@@ -1316,16 +1244,12 @@ pattern SDLK_RSHIFT = (#const SDLK_RSHIFT) :: Keycode
 pattern SDLK_RALT = (#const SDLK_RALT) :: Keycode
 pattern SDLK_RGUI = (#const SDLK_RGUI) :: Keycode
 pattern SDLK_MODE = (#const SDLK_MODE) :: Keycode
-pattern SDLK_AUDIONEXT = (#const SDLK_AUDIONEXT) :: Keycode
-pattern SDLK_AUDIOPREV = (#const SDLK_AUDIOPREV) :: Keycode
-pattern SDLK_AUDIOSTOP = (#const SDLK_AUDIOSTOP) :: Keycode
-pattern SDLK_AUDIOPLAY = (#const SDLK_AUDIOPLAY) :: Keycode
-pattern SDLK_AUDIOMUTE = (#const SDLK_AUDIOMUTE) :: Keycode
-pattern SDLK_MEDIASELECT = (#const SDLK_MEDIASELECT) :: Keycode
-pattern SDLK_WWW = (#const SDLK_WWW) :: Keycode
-pattern SDLK_MAIL = (#const SDLK_MAIL) :: Keycode
-pattern SDLK_CALCULATOR = (#const SDLK_CALCULATOR) :: Keycode
-pattern SDLK_COMPUTER = (#const SDLK_COMPUTER) :: Keycode
+pattern SDLK_MEDIA_NEXT_TRACK = (#const SDLK_MEDIA_NEXT_TRACK) :: Keycode
+pattern SDLK_MEDIA_PREVIOUS_TRACK = (#const SDLK_MEDIA_PREVIOUS_TRACK) :: Keycode
+pattern SDLK_MEDIA_STOP = (#const SDLK_MEDIA_STOP) :: Keycode
+pattern SDLK_MEDIA_PLAY = (#const SDLK_MEDIA_PLAY) :: Keycode
+pattern SDLK_MUTE = (#const SDLK_MUTE) :: Keycode
+pattern SDLK_MEDIA_SELECT = (#const SDLK_MEDIA_SELECT) :: Keycode
 pattern SDLK_AC_SEARCH = (#const SDLK_AC_SEARCH) :: Keycode
 pattern SDLK_AC_HOME = (#const SDLK_AC_HOME) :: Keycode
 pattern SDLK_AC_BACK = (#const SDLK_AC_BACK) :: Keycode
@@ -1333,32 +1257,25 @@ pattern SDLK_AC_FORWARD = (#const SDLK_AC_FORWARD) :: Keycode
 pattern SDLK_AC_STOP = (#const SDLK_AC_STOP) :: Keycode
 pattern SDLK_AC_REFRESH = (#const SDLK_AC_REFRESH) :: Keycode
 pattern SDLK_AC_BOOKMARKS = (#const SDLK_AC_BOOKMARKS) :: Keycode
-pattern SDLK_BRIGHTNESSDOWN = (#const SDLK_BRIGHTNESSDOWN) :: Keycode
-pattern SDLK_BRIGHTNESSUP = (#const SDLK_BRIGHTNESSUP) :: Keycode
-pattern SDLK_DISPLAYSWITCH = (#const SDLK_DISPLAYSWITCH) :: Keycode
-pattern SDLK_KBDILLUMTOGGLE = (#const SDLK_KBDILLUMTOGGLE) :: Keycode
-pattern SDLK_KBDILLUMDOWN = (#const SDLK_KBDILLUMDOWN) :: Keycode
-pattern SDLK_KBDILLUMUP = (#const SDLK_KBDILLUMUP) :: Keycode
-pattern SDLK_EJECT = (#const SDLK_EJECT) :: Keycode
+pattern SDLK_MEDIA_EJECT = (#const SDLK_MEDIA_EJECT) :: Keycode
 pattern SDLK_SLEEP = (#const SDLK_SLEEP) :: Keycode
 
-pattern KMOD_NONE = (#const KMOD_NONE)
-pattern KMOD_LSHIFT = (#const KMOD_LSHIFT)
-pattern KMOD_RSHIFT = (#const KMOD_RSHIFT)
-pattern KMOD_SHIFT = (#const KMOD_SHIFT)
-pattern KMOD_LCTRL = (#const KMOD_LCTRL)
-pattern KMOD_RCTRL = (#const KMOD_RCTRL)
-pattern KMOD_CTRL = (#const KMOD_CTRL)
-pattern KMOD_LALT = (#const KMOD_LALT)
-pattern KMOD_RALT = (#const KMOD_RALT)
-pattern KMOD_ALT = (#const KMOD_ALT)
-pattern KMOD_LGUI = (#const KMOD_LGUI)
-pattern KMOD_RGUI = (#const KMOD_RGUI)
-pattern KMOD_GUI = (#const KMOD_GUI)
-pattern KMOD_NUM = (#const KMOD_NUM)
-pattern KMOD_CAPS = (#const KMOD_CAPS)
-pattern KMOD_MODE = (#const KMOD_MODE)
-pattern KMOD_RESERVED = (#const KMOD_RESERVED)
+pattern SDL_KMOD_NONE = (#const SDL_KMOD_NONE)
+pattern SDL_KMOD_LSHIFT = (#const SDL_KMOD_LSHIFT)
+pattern SDL_KMOD_RSHIFT = (#const SDL_KMOD_RSHIFT)
+pattern SDL_KMOD_SHIFT = (#const SDL_KMOD_SHIFT)
+pattern SDL_KMOD_LCTRL = (#const SDL_KMOD_LCTRL)
+pattern SDL_KMOD_RCTRL = (#const SDL_KMOD_RCTRL)
+pattern SDL_KMOD_CTRL = (#const SDL_KMOD_CTRL)
+pattern SDL_KMOD_LALT = (#const SDL_KMOD_LALT)
+pattern SDL_KMOD_RALT = (#const SDL_KMOD_RALT)
+pattern SDL_KMOD_ALT = (#const SDL_KMOD_ALT)
+pattern SDL_KMOD_LGUI = (#const SDL_KMOD_LGUI)
+pattern SDL_KMOD_RGUI = (#const SDL_KMOD_RGUI)
+pattern SDL_KMOD_GUI = (#const SDL_KMOD_GUI)
+pattern SDL_KMOD_NUM = (#const SDL_KMOD_NUM)
+pattern SDL_KMOD_CAPS = (#const SDL_KMOD_CAPS)
+pattern SDL_KMOD_MODE = (#const SDL_KMOD_MODE)
 
 pattern SDL_LOG_PRIORITY_VERBOSE = (#const SDL_LOG_PRIORITY_VERBOSE) :: LogPriority
 pattern SDL_LOG_PRIORITY_DEBUG = (#const SDL_LOG_PRIORITY_DEBUG) :: LogPriority
@@ -1366,7 +1283,7 @@ pattern SDL_LOG_PRIORITY_INFO = (#const SDL_LOG_PRIORITY_INFO) :: LogPriority
 pattern SDL_LOG_PRIORITY_WARN = (#const SDL_LOG_PRIORITY_WARN) :: LogPriority
 pattern SDL_LOG_PRIORITY_ERROR = (#const SDL_LOG_PRIORITY_ERROR) :: LogPriority
 pattern SDL_LOG_PRIORITY_CRITICAL = (#const SDL_LOG_PRIORITY_CRITICAL) :: LogPriority
-pattern SDL_NUM_LOG_PRIORITIES = (#const SDL_NUM_LOG_PRIORITIES) :: LogPriority
+pattern SDL_LOG_PRIORITY_COUNT = (#const SDL_LOG_PRIORITY_COUNT) :: LogPriority
 
 pattern SDL_POWERSTATE_UNKNOWN = (#const SDL_POWERSTATE_UNKNOWN) :: PowerState
 pattern SDL_POWERSTATE_ON_BATTERY = (#const SDL_POWERSTATE_ON_BATTERY) :: PowerState
@@ -1592,16 +1509,12 @@ pattern SDL_SCANCODE_RSHIFT = (#const SDL_SCANCODE_RSHIFT) :: Scancode
 pattern SDL_SCANCODE_RALT = (#const SDL_SCANCODE_RALT) :: Scancode
 pattern SDL_SCANCODE_RGUI = (#const SDL_SCANCODE_RGUI) :: Scancode
 pattern SDL_SCANCODE_MODE = (#const SDL_SCANCODE_MODE) :: Scancode
-pattern SDL_SCANCODE_AUDIONEXT = (#const SDL_SCANCODE_AUDIONEXT) :: Scancode
-pattern SDL_SCANCODE_AUDIOPREV = (#const SDL_SCANCODE_AUDIOPREV) :: Scancode
-pattern SDL_SCANCODE_AUDIOSTOP = (#const SDL_SCANCODE_AUDIOSTOP) :: Scancode
-pattern SDL_SCANCODE_AUDIOPLAY = (#const SDL_SCANCODE_AUDIOPLAY) :: Scancode
-pattern SDL_SCANCODE_AUDIOMUTE = (#const SDL_SCANCODE_AUDIOMUTE) :: Scancode
-pattern SDL_SCANCODE_MEDIASELECT = (#const SDL_SCANCODE_MEDIASELECT) :: Scancode
-pattern SDL_SCANCODE_WWW = (#const SDL_SCANCODE_WWW) :: Scancode
-pattern SDL_SCANCODE_MAIL = (#const SDL_SCANCODE_MAIL) :: Scancode
-pattern SDL_SCANCODE_CALCULATOR = (#const SDL_SCANCODE_CALCULATOR) :: Scancode
-pattern SDL_SCANCODE_COMPUTER = (#const SDL_SCANCODE_COMPUTER) :: Scancode
+pattern SDL_SCANCODE_MEDIA_NEXT_TRACK = (#const SDL_SCANCODE_MEDIA_NEXT_TRACK) :: Scancode
+pattern SDL_SCANCODE_MEDIA_PREVIOUS_TRACK = (#const SDL_SCANCODE_MEDIA_PREVIOUS_TRACK) :: Scancode
+pattern SDL_SCANCODE_MEDIA_STOP = (#const SDL_SCANCODE_MEDIA_STOP) :: Scancode
+pattern SDL_SCANCODE_MEDIA_PLAY = (#const SDL_SCANCODE_MEDIA_PLAY) :: Scancode
+pattern SDL_SCANCODE_MUTE = (#const SDL_SCANCODE_MUTE) :: Scancode
+pattern SDL_SCANCODE_MEDIA_SELECT = (#const SDL_SCANCODE_MEDIA_SELECT) :: Scancode
 pattern SDL_SCANCODE_AC_SEARCH = (#const SDL_SCANCODE_AC_SEARCH) :: Scancode
 pattern SDL_SCANCODE_AC_HOME = (#const SDL_SCANCODE_AC_HOME) :: Scancode
 pattern SDL_SCANCODE_AC_BACK = (#const SDL_SCANCODE_AC_BACK) :: Scancode
@@ -1609,40 +1522,27 @@ pattern SDL_SCANCODE_AC_FORWARD = (#const SDL_SCANCODE_AC_FORWARD) :: Scancode
 pattern SDL_SCANCODE_AC_STOP = (#const SDL_SCANCODE_AC_STOP) :: Scancode
 pattern SDL_SCANCODE_AC_REFRESH = (#const SDL_SCANCODE_AC_REFRESH) :: Scancode
 pattern SDL_SCANCODE_AC_BOOKMARKS = (#const SDL_SCANCODE_AC_BOOKMARKS) :: Scancode
-pattern SDL_SCANCODE_BRIGHTNESSDOWN = (#const SDL_SCANCODE_BRIGHTNESSDOWN) :: Scancode
-pattern SDL_SCANCODE_BRIGHTNESSUP = (#const SDL_SCANCODE_BRIGHTNESSUP) :: Scancode
-pattern SDL_SCANCODE_DISPLAYSWITCH = (#const SDL_SCANCODE_DISPLAYSWITCH) :: Scancode
-pattern SDL_SCANCODE_KBDILLUMTOGGLE = (#const SDL_SCANCODE_KBDILLUMTOGGLE) :: Scancode
-pattern SDL_SCANCODE_KBDILLUMDOWN = (#const SDL_SCANCODE_KBDILLUMDOWN) :: Scancode
-pattern SDL_SCANCODE_KBDILLUMUP = (#const SDL_SCANCODE_KBDILLUMUP) :: Scancode
-pattern SDL_SCANCODE_EJECT = (#const SDL_SCANCODE_EJECT) :: Scancode
+pattern SDL_SCANCODE_MEDIA_EJECT = (#const SDL_SCANCODE_MEDIA_EJECT) :: Scancode
 pattern SDL_SCANCODE_SLEEP = (#const SDL_SCANCODE_SLEEP) :: Scancode
-pattern SDL_SCANCODE_APP1 = (#const SDL_SCANCODE_APP1) :: Scancode
-pattern SDL_SCANCODE_APP2 = (#const SDL_SCANCODE_APP2) :: Scancode
-pattern SDL_NUM_SCANCODES = (#const SDL_NUM_SCANCODES) :: Scancode
+pattern SDL_SCANCODE_COUNT = (#const SDL_SCANCODE_COUNT) :: Scancode
 
-pattern SDL_SYSTEM_CURSOR_ARROW = (#const SDL_SYSTEM_CURSOR_ARROW) :: SystemCursor
-pattern SDL_SYSTEM_CURSOR_IBEAM = (#const SDL_SYSTEM_CURSOR_IBEAM) :: SystemCursor
+pattern SDL_SYSTEM_CURSOR_DEFAULT = (#const SDL_SYSTEM_CURSOR_DEFAULT) :: SystemCursor
+pattern SDL_SYSTEM_CURSOR_TEXT = (#const SDL_SYSTEM_CURSOR_TEXT) :: SystemCursor
 pattern SDL_SYSTEM_CURSOR_WAIT = (#const SDL_SYSTEM_CURSOR_WAIT) :: SystemCursor
 pattern SDL_SYSTEM_CURSOR_CROSSHAIR = (#const SDL_SYSTEM_CURSOR_CROSSHAIR) :: SystemCursor
-pattern SDL_SYSTEM_CURSOR_WAITARROW = (#const SDL_SYSTEM_CURSOR_WAITARROW) :: SystemCursor
-pattern SDL_SYSTEM_CURSOR_SIZENWSE = (#const SDL_SYSTEM_CURSOR_SIZENWSE) :: SystemCursor
-pattern SDL_SYSTEM_CURSOR_SIZENESW = (#const SDL_SYSTEM_CURSOR_SIZENESW) :: SystemCursor
-pattern SDL_SYSTEM_CURSOR_SIZEWE = (#const SDL_SYSTEM_CURSOR_SIZEWE) :: SystemCursor
-pattern SDL_SYSTEM_CURSOR_SIZENS = (#const SDL_SYSTEM_CURSOR_SIZENS) :: SystemCursor
-pattern SDL_SYSTEM_CURSOR_SIZEALL = (#const SDL_SYSTEM_CURSOR_SIZEALL) :: SystemCursor
-pattern SDL_SYSTEM_CURSOR_NO = (#const SDL_SYSTEM_CURSOR_NO) :: SystemCursor
-pattern SDL_SYSTEM_CURSOR_HAND = (#const SDL_SYSTEM_CURSOR_HAND) :: SystemCursor
-pattern SDL_NUM_SYSTEM_CURSORS = (#const SDL_NUM_SYSTEM_CURSORS) :: SystemCursor
+pattern SDL_SYSTEM_CURSOR_PROGRESS = (#const SDL_SYSTEM_CURSOR_PROGRESS) :: SystemCursor
+pattern SDL_SYSTEM_CURSOR_NWSE_RESIZE = (#const SDL_SYSTEM_CURSOR_NWSE_RESIZE) :: SystemCursor
+pattern SDL_SYSTEM_CURSOR_NESW_RESIZE = (#const SDL_SYSTEM_CURSOR_NESW_RESIZE) :: SystemCursor
+pattern SDL_SYSTEM_CURSOR_EW_RESIZE = (#const SDL_SYSTEM_CURSOR_EW_RESIZE) :: SystemCursor
+pattern SDL_SYSTEM_CURSOR_NS_RESIZE = (#const SDL_SYSTEM_CURSOR_NS_RESIZE) :: SystemCursor
+pattern SDL_SYSTEM_CURSOR_MOVE = (#const SDL_SYSTEM_CURSOR_MOVE) :: SystemCursor
+pattern SDL_SYSTEM_CURSOR_NOT_ALLOWED = (#const SDL_SYSTEM_CURSOR_NOT_ALLOWED) :: SystemCursor
+pattern SDL_SYSTEM_CURSOR_POINTER = (#const SDL_SYSTEM_CURSOR_POINTER) :: SystemCursor
+pattern SDL_SYSTEM_CURSOR_COUNT = (#const SDL_SYSTEM_CURSOR_COUNT) :: SystemCursor
 
 pattern SDL_THREAD_PRIORITY_LOW = (#const SDL_THREAD_PRIORITY_LOW) :: ThreadPriority
 pattern SDL_THREAD_PRIORITY_NORMAL = (#const SDL_THREAD_PRIORITY_NORMAL) :: ThreadPriority
 pattern SDL_THREAD_PRIORITY_HIGH = (#const SDL_THREAD_PRIORITY_HIGH) :: ThreadPriority
-
-pattern SDL_AUDIO_ALLOW_FREQUENCY_CHANGE = (#const SDL_AUDIO_ALLOW_FREQUENCY_CHANGE)
-pattern SDL_AUDIO_ALLOW_FORMAT_CHANGE = (#const SDL_AUDIO_ALLOW_FORMAT_CHANGE)
-pattern SDL_AUDIO_ALLOW_CHANNELS_CHANGE = (#const SDL_AUDIO_ALLOW_CHANNELS_CHANGE)
-pattern SDL_AUDIO_ALLOW_ANY_CHANGE = (#const SDL_AUDIO_ALLOW_ANY_CHANGE)
 
 pattern SDL_BUTTON_LEFT = (#const SDL_BUTTON_LEFT)
 pattern SDL_BUTTON_MIDDLE = (#const SDL_BUTTON_MIDDLE)
@@ -1658,52 +1558,47 @@ pattern SDL_BUTTON_X2MASK = (#const SDL_BUTTON_X2MASK)
 pattern SDL_MOUSEWHEEL_NORMAL = (#const SDL_MOUSEWHEEL_NORMAL)
 pattern SDL_MOUSEWHEEL_FLIPPED = (#const SDL_MOUSEWHEEL_FLIPPED)
 
-pattern SDL_FIRSTEVENT = (#const SDL_FIRSTEVENT)
-pattern SDL_QUIT = (#const SDL_QUIT)
-pattern SDL_APP_TERMINATING = (#const SDL_APP_TERMINATING)
-pattern SDL_APP_LOWMEMORY = (#const SDL_APP_LOWMEMORY)
-pattern SDL_APP_WILLENTERBACKGROUND = (#const SDL_APP_WILLENTERBACKGROUND)
-pattern SDL_APP_DIDENTERBACKGROUND = (#const SDL_APP_DIDENTERBACKGROUND)
-pattern SDL_APP_WILLENTERFOREGROUND = (#const SDL_APP_WILLENTERFOREGROUND)
-pattern SDL_APP_DIDENTERFOREGROUND = (#const SDL_APP_DIDENTERFOREGROUND)
-pattern SDL_WINDOWEVENT = (#const SDL_WINDOWEVENT)
-pattern SDL_SYSWMEVENT = (#const SDL_SYSWMEVENT)
-pattern SDL_KEYDOWN = (#const SDL_KEYDOWN)
-pattern SDL_KEYUP = (#const SDL_KEYUP)
-pattern SDL_TEXTEDITING = (#const SDL_TEXTEDITING)
-pattern SDL_TEXTINPUT = (#const SDL_TEXTINPUT)
-pattern SDL_KEYMAPCHANGED = (#const SDL_KEYMAPCHANGED)
-pattern SDL_MOUSEMOTION = (#const SDL_MOUSEMOTION)
-pattern SDL_MOUSEBUTTONDOWN = (#const SDL_MOUSEBUTTONDOWN)
-pattern SDL_MOUSEBUTTONUP = (#const SDL_MOUSEBUTTONUP)
-pattern SDL_MOUSEWHEEL = (#const SDL_MOUSEWHEEL)
-pattern SDL_JOYAXISMOTION = (#const SDL_JOYAXISMOTION)
-pattern SDL_JOYBALLMOTION = (#const SDL_JOYBALLMOTION)
-pattern SDL_JOYHATMOTION = (#const SDL_JOYHATMOTION)
-pattern SDL_JOYBUTTONDOWN = (#const SDL_JOYBUTTONDOWN)
-pattern SDL_JOYBUTTONUP = (#const SDL_JOYBUTTONUP)
-pattern SDL_JOYDEVICEADDED = (#const SDL_JOYDEVICEADDED)
-pattern SDL_JOYDEVICEREMOVED = (#const SDL_JOYDEVICEREMOVED)
-pattern SDL_CONTROLLERAXISMOTION = (#const SDL_CONTROLLERAXISMOTION)
-pattern SDL_CONTROLLERBUTTONDOWN = (#const SDL_CONTROLLERBUTTONDOWN)
-pattern SDL_CONTROLLERBUTTONUP = (#const SDL_CONTROLLERBUTTONUP)
-pattern SDL_CONTROLLERDEVICEADDED = (#const SDL_CONTROLLERDEVICEADDED)
-pattern SDL_CONTROLLERDEVICEREMOVED = (#const SDL_CONTROLLERDEVICEREMOVED)
-pattern SDL_CONTROLLERDEVICEREMAPPED = (#const SDL_CONTROLLERDEVICEREMAPPED)
-pattern SDL_FINGERDOWN = (#const SDL_FINGERDOWN)
-pattern SDL_FINGERUP = (#const SDL_FINGERUP)
-pattern SDL_FINGERMOTION = (#const SDL_FINGERMOTION)
-pattern SDL_DOLLARGESTURE = (#const SDL_DOLLARGESTURE)
-pattern SDL_DOLLARRECORD = (#const SDL_DOLLARRECORD)
-pattern SDL_MULTIGESTURE = (#const SDL_MULTIGESTURE)
-pattern SDL_CLIPBOARDUPDATE = (#const SDL_CLIPBOARDUPDATE)
-pattern SDL_DROPFILE = (#const SDL_DROPFILE)
-pattern SDL_AUDIODEVICEADDED = (#const SDL_AUDIODEVICEADDED)
-pattern SDL_AUDIODEVICEREMOVED = (#const SDL_AUDIODEVICEREMOVED)
-pattern SDL_RENDER_TARGETS_RESET = (#const SDL_RENDER_TARGETS_RESET)
-pattern SDL_RENDER_DEVICE_RESET = (#const SDL_RENDER_DEVICE_RESET)
-pattern SDL_USEREVENT = (#const SDL_USEREVENT)
-pattern SDL_LASTEVENT = (#const SDL_LASTEVENT)
+pattern SDL_EVENT_FIRST = (#const SDL_EVENT_FIRST)
+pattern SDL_EVENT_QUIT = (#const SDL_EVENT_QUIT)
+pattern SDL_EVENT_TERMINATING = (#const SDL_EVENT_TERMINATING)
+pattern SDL_EVENT_LOW_MEMORY = (#const SDL_EVENT_LOW_MEMORY)
+pattern SDL_EVENT_WILL_ENTER_BACKGROUND = (#const SDL_EVENT_WILL_ENTER_BACKGROUND)
+pattern SDL_EVENT_DID_ENTER_BACKGROUND = (#const SDL_EVENT_DID_ENTER_BACKGROUND)
+pattern SDL_EVENT_WILL_ENTER_FOREGROUND = (#const SDL_EVENT_WILL_ENTER_FOREGROUND)
+pattern SDL_EVENT_DID_ENTER_FOREGROUND = (#const SDL_EVENT_DID_ENTER_FOREGROUND)
+pattern SDL_EVENT_KEY_DOWN = (#const SDL_EVENT_KEY_DOWN)
+pattern SDL_EVENT_KEY_UP = (#const SDL_EVENT_KEY_UP)
+pattern SDL_EVENT_TEXT_EDITING = (#const SDL_EVENT_TEXT_EDITING)
+pattern SDL_EVENT_TEXT_INPUT = (#const SDL_EVENT_TEXT_INPUT)
+pattern SDL_EVENT_KEYMAP_CHANGED = (#const SDL_EVENT_KEYMAP_CHANGED)
+pattern SDL_EVENT_MOUSE_MOTION = (#const SDL_EVENT_MOUSE_MOTION)
+pattern SDL_EVENT_MOUSE_BUTTON_DOWN = (#const SDL_EVENT_MOUSE_BUTTON_DOWN)
+pattern SDL_EVENT_MOUSE_BUTTON_UP = (#const SDL_EVENT_MOUSE_BUTTON_UP)
+pattern SDL_EVENT_MOUSE_WHEEL = (#const SDL_EVENT_MOUSE_WHEEL)
+pattern SDL_EVENT_JOYSTICK_AXIS_MOTION = (#const SDL_EVENT_JOYSTICK_AXIS_MOTION)
+pattern SDL_EVENT_JOYSTICK_BALL_MOTION = (#const SDL_EVENT_JOYSTICK_BALL_MOTION)
+pattern SDL_EVENT_JOYSTICK_HAT_MOTION = (#const SDL_EVENT_JOYSTICK_HAT_MOTION)
+pattern SDL_EVENT_JOYSTICK_BUTTON_DOWN = (#const SDL_EVENT_JOYSTICK_BUTTON_DOWN)
+pattern SDL_EVENT_JOYSTICK_BUTTON_UP = (#const SDL_EVENT_JOYSTICK_BUTTON_UP)
+pattern SDL_EVENT_JOYSTICK_ADDED = (#const SDL_EVENT_JOYSTICK_ADDED)
+pattern SDL_EVENT_JOYSTICK_REMOVED = (#const SDL_EVENT_JOYSTICK_REMOVED)
+pattern SDL_EVENT_GAMEPAD_AXIS_MOTION = (#const SDL_EVENT_GAMEPAD_AXIS_MOTION)
+pattern SDL_EVENT_GAMEPAD_BUTTON_DOWN = (#const SDL_EVENT_GAMEPAD_BUTTON_DOWN)
+pattern SDL_EVENT_GAMEPAD_BUTTON_UP = (#const SDL_EVENT_GAMEPAD_BUTTON_UP)
+pattern SDL_EVENT_GAMEPAD_ADDED = (#const SDL_EVENT_GAMEPAD_ADDED)
+pattern SDL_EVENT_GAMEPAD_REMOVED = (#const SDL_EVENT_GAMEPAD_REMOVED)
+pattern SDL_EVENT_GAMEPAD_REMAPPED = (#const SDL_EVENT_GAMEPAD_REMAPPED)
+pattern SDL_EVENT_FINGER_DOWN = (#const SDL_EVENT_FINGER_DOWN)
+pattern SDL_EVENT_FINGER_UP = (#const SDL_EVENT_FINGER_UP)
+pattern SDL_EVENT_FINGER_MOTION = (#const SDL_EVENT_FINGER_MOTION)
+pattern SDL_EVENT_CLIPBOARD_UPDATE = (#const SDL_EVENT_CLIPBOARD_UPDATE)
+pattern SDL_EVENT_DROP_FILE = (#const SDL_EVENT_DROP_FILE)
+pattern SDL_EVENT_AUDIO_DEVICE_ADDED = (#const SDL_EVENT_AUDIO_DEVICE_ADDED)
+pattern SDL_EVENT_AUDIO_DEVICE_REMOVED = (#const SDL_EVENT_AUDIO_DEVICE_REMOVED)
+pattern SDL_EVENT_RENDER_TARGETS_RESET = (#const SDL_EVENT_RENDER_TARGETS_RESET)
+pattern SDL_EVENT_RENDER_DEVICE_RESET = (#const SDL_EVENT_RENDER_DEVICE_RESET)
+pattern SDL_EVENT_USER = (#const SDL_EVENT_USER)
+pattern SDL_EVENT_LAST = (#const SDL_EVENT_LAST)
 
 pattern SDL_HAT_CENTERED = (#const SDL_HAT_CENTERED)
 pattern SDL_HAT_UP = (#const SDL_HAT_UP)
@@ -1714,9 +1609,6 @@ pattern SDL_HAT_RIGHTUP = (#const SDL_HAT_RIGHTUP)
 pattern SDL_HAT_RIGHTDOWN = (#const SDL_HAT_RIGHTDOWN)
 pattern SDL_HAT_LEFTUP = (#const SDL_HAT_LEFTUP)
 pattern SDL_HAT_LEFTDOWN = (#const SDL_HAT_LEFTDOWN)
-
-pattern SDL_PRESSED = (#const SDL_PRESSED)
-pattern SDL_RELEASED = (#const SDL_RELEASED)
 
 pattern SDL_LOG_CATEGORY_APPLICATION = (#const SDL_LOG_CATEGORY_APPLICATION)
 pattern SDL_LOG_CATEGORY_ERROR = (#const SDL_LOG_CATEGORY_ERROR)
@@ -1755,9 +1647,9 @@ pattern SDL_PIXELFORMAT_INDEX4LSB = (#const SDL_PIXELFORMAT_INDEX4LSB)
 pattern SDL_PIXELFORMAT_INDEX4MSB = (#const SDL_PIXELFORMAT_INDEX4MSB)
 pattern SDL_PIXELFORMAT_INDEX8 = (#const SDL_PIXELFORMAT_INDEX8)
 pattern SDL_PIXELFORMAT_RGB332 = (#const SDL_PIXELFORMAT_RGB332)
-pattern SDL_PIXELFORMAT_RGB444 = (#const SDL_PIXELFORMAT_RGB444)
-pattern SDL_PIXELFORMAT_RGB555 = (#const SDL_PIXELFORMAT_RGB555)
-pattern SDL_PIXELFORMAT_BGR555 = (#const SDL_PIXELFORMAT_BGR555)
+pattern SDL_PIXELFORMAT_XRGB4444 = (#const SDL_PIXELFORMAT_XRGB4444)
+pattern SDL_PIXELFORMAT_XRGB1555 = (#const SDL_PIXELFORMAT_XRGB1555)
+pattern SDL_PIXELFORMAT_XBGR1555 = (#const SDL_PIXELFORMAT_XBGR1555)
 pattern SDL_PIXELFORMAT_ARGB4444 = (#const SDL_PIXELFORMAT_ARGB4444)
 pattern SDL_PIXELFORMAT_RGBA4444 = (#const SDL_PIXELFORMAT_RGBA4444)
 pattern SDL_PIXELFORMAT_ABGR4444 = (#const SDL_PIXELFORMAT_ABGR4444)
@@ -1770,9 +1662,9 @@ pattern SDL_PIXELFORMAT_RGB565 = (#const SDL_PIXELFORMAT_RGB565)
 pattern SDL_PIXELFORMAT_BGR565 = (#const SDL_PIXELFORMAT_BGR565)
 pattern SDL_PIXELFORMAT_RGB24 = (#const SDL_PIXELFORMAT_RGB24)
 pattern SDL_PIXELFORMAT_BGR24 = (#const SDL_PIXELFORMAT_BGR24)
-pattern SDL_PIXELFORMAT_RGB888 = (#const SDL_PIXELFORMAT_RGB888)
+pattern SDL_PIXELFORMAT_XRGB8888 = (#const SDL_PIXELFORMAT_XRGB8888)
 pattern SDL_PIXELFORMAT_RGBX8888 = (#const SDL_PIXELFORMAT_RGBX8888)
-pattern SDL_PIXELFORMAT_BGR888 = (#const SDL_PIXELFORMAT_BGR888)
+pattern SDL_PIXELFORMAT_XBGR8888 = (#const SDL_PIXELFORMAT_XBGR8888)
 pattern SDL_PIXELFORMAT_BGRX8888 = (#const SDL_PIXELFORMAT_BGRX8888)
 pattern SDL_PIXELFORMAT_ARGB8888 = (#const SDL_PIXELFORMAT_ARGB8888)
 pattern SDL_PIXELFORMAT_RGBA8888 = (#const SDL_PIXELFORMAT_RGBA8888)
@@ -1785,51 +1677,38 @@ pattern SDL_PIXELFORMAT_YUY2 = (#const SDL_PIXELFORMAT_YUY2)
 pattern SDL_PIXELFORMAT_UYVY = (#const SDL_PIXELFORMAT_UYVY)
 pattern SDL_PIXELFORMAT_YVYU = (#const SDL_PIXELFORMAT_YVYU)
 
-pattern SDL_RENDERER_SOFTWARE = (#const SDL_RENDERER_SOFTWARE)
-pattern SDL_RENDERER_ACCELERATED = (#const SDL_RENDERER_ACCELERATED)
-pattern SDL_RENDERER_PRESENTVSYNC = (#const SDL_RENDERER_PRESENTVSYNC)
-pattern SDL_RENDERER_TARGETTEXTURE = (#const SDL_RENDERER_TARGETTEXTURE)
-
 pattern SDL_TEXTUREACCESS_STATIC = (#const SDL_TEXTUREACCESS_STATIC)
 pattern SDL_TEXTUREACCESS_STREAMING = (#const SDL_TEXTUREACCESS_STREAMING)
 pattern SDL_TEXTUREACCESS_TARGET = (#const SDL_TEXTUREACCESS_TARGET)
 
-pattern SDL_TEXTUREMODULATE_NONE = (#const SDL_TEXTUREMODULATE_NONE)
-pattern SDL_TEXTUREMODULATE_COLOR = (#const SDL_TEXTUREMODULATE_COLOR)
-pattern SDL_TEXTUREMODULATE_ALPHA = (#const SDL_TEXTUREMODULATE_ALPHA)
-
 pattern SDL_TOUCH_MOUSEID = (#const SDL_TOUCH_MOUSEID)
 
-pattern SDL_WINDOWEVENT_NONE = (#const SDL_WINDOWEVENT_NONE)
-pattern SDL_WINDOWEVENT_SHOWN = (#const SDL_WINDOWEVENT_SHOWN)
-pattern SDL_WINDOWEVENT_HIDDEN = (#const SDL_WINDOWEVENT_HIDDEN)
-pattern SDL_WINDOWEVENT_EXPOSED = (#const SDL_WINDOWEVENT_EXPOSED)
-pattern SDL_WINDOWEVENT_MOVED = (#const SDL_WINDOWEVENT_MOVED)
-pattern SDL_WINDOWEVENT_RESIZED = (#const SDL_WINDOWEVENT_RESIZED)
-pattern SDL_WINDOWEVENT_SIZE_CHANGED = (#const SDL_WINDOWEVENT_SIZE_CHANGED)
-pattern SDL_WINDOWEVENT_MINIMIZED = (#const SDL_WINDOWEVENT_MINIMIZED)
-pattern SDL_WINDOWEVENT_MAXIMIZED = (#const SDL_WINDOWEVENT_MAXIMIZED)
-pattern SDL_WINDOWEVENT_RESTORED = (#const SDL_WINDOWEVENT_RESTORED)
-pattern SDL_WINDOWEVENT_ENTER = (#const SDL_WINDOWEVENT_ENTER)
-pattern SDL_WINDOWEVENT_LEAVE = (#const SDL_WINDOWEVENT_LEAVE)
-pattern SDL_WINDOWEVENT_FOCUS_GAINED = (#const SDL_WINDOWEVENT_FOCUS_GAINED)
-pattern SDL_WINDOWEVENT_FOCUS_LOST = (#const SDL_WINDOWEVENT_FOCUS_LOST)
-pattern SDL_WINDOWEVENT_CLOSE = (#const SDL_WINDOWEVENT_CLOSE)
+pattern SDL_EVENT_WINDOW_SHOWN = (#const SDL_EVENT_WINDOW_SHOWN)
+pattern SDL_EVENT_WINDOW_HIDDEN = (#const SDL_EVENT_WINDOW_HIDDEN)
+pattern SDL_EVENT_WINDOW_EXPOSED = (#const SDL_EVENT_WINDOW_EXPOSED)
+pattern SDL_EVENT_WINDOW_MOVED = (#const SDL_EVENT_WINDOW_MOVED)
+pattern SDL_EVENT_WINDOW_RESIZED = (#const SDL_EVENT_WINDOW_RESIZED)
+pattern SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED = (#const SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED)
+pattern SDL_EVENT_WINDOW_MINIMIZED = (#const SDL_EVENT_WINDOW_MINIMIZED)
+pattern SDL_EVENT_WINDOW_MAXIMIZED = (#const SDL_EVENT_WINDOW_MAXIMIZED)
+pattern SDL_EVENT_WINDOW_RESTORED = (#const SDL_EVENT_WINDOW_RESTORED)
+pattern SDL_EVENT_WINDOW_MOUSE_ENTER = (#const SDL_EVENT_WINDOW_MOUSE_ENTER)
+pattern SDL_EVENT_WINDOW_MOUSE_LEAVE = (#const SDL_EVENT_WINDOW_MOUSE_LEAVE)
+pattern SDL_EVENT_WINDOW_FOCUS_GAINED = (#const SDL_EVENT_WINDOW_FOCUS_GAINED)
+pattern SDL_EVENT_WINDOW_FOCUS_LOST = (#const SDL_EVENT_WINDOW_FOCUS_LOST)
+pattern SDL_EVENT_WINDOW_CLOSE_REQUESTED = (#const SDL_EVENT_WINDOW_CLOSE_REQUESTED)
 
 pattern SDL_WINDOW_FULLSCREEN = (#const SDL_WINDOW_FULLSCREEN)
 pattern SDL_WINDOW_OPENGL = (#const SDL_WINDOW_OPENGL)
-pattern SDL_WINDOW_SHOWN = (#const SDL_WINDOW_SHOWN)
 pattern SDL_WINDOW_HIDDEN = (#const SDL_WINDOW_HIDDEN)
 pattern SDL_WINDOW_BORDERLESS = (#const SDL_WINDOW_BORDERLESS)
 pattern SDL_WINDOW_RESIZABLE = (#const SDL_WINDOW_RESIZABLE)
 pattern SDL_WINDOW_MINIMIZED = (#const SDL_WINDOW_MINIMIZED)
 pattern SDL_WINDOW_MAXIMIZED = (#const SDL_WINDOW_MAXIMIZED)
-pattern SDL_WINDOW_INPUT_GRABBED = (#const SDL_WINDOW_INPUT_GRABBED)
+pattern SDL_WINDOW_MOUSE_GRABBED = (#const SDL_WINDOW_MOUSE_GRABBED)
 pattern SDL_WINDOW_INPUT_FOCUS = (#const SDL_WINDOW_INPUT_FOCUS)
 pattern SDL_WINDOW_MOUSE_FOCUS = (#const SDL_WINDOW_MOUSE_FOCUS)
-pattern SDL_WINDOW_FULLSCREEN_DESKTOP = (#const SDL_WINDOW_FULLSCREEN_DESKTOP)
-pattern SDL_WINDOW_FOREIGN = (#const SDL_WINDOW_FOREIGN)
-pattern SDL_WINDOW_ALLOW_HIGHDPI = (#const SDL_WINDOW_ALLOW_HIGHDPI)
+pattern SDL_WINDOW_HIGH_PIXEL_DENSITY = (#const SDL_WINDOW_HIGH_PIXEL_DENSITY)
 pattern SDL_WINDOW_MOUSE_CAPTURE = (#const SDL_WINDOW_MOUSE_CAPTURE)
 pattern SDL_WINDOW_VULKAN = (#const SDL_WINDOW_VULKAN)
 

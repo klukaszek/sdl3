@@ -62,18 +62,18 @@ foreign import ccall "SDL.h SDL_free" freeFFI :: Ptr () -> IO ()
 
 foreign import ccall "SDL.h SDL_AddHintCallback" addHintCallbackFFI :: CString -> HintCallback -> Ptr () -> IO ()
 foreign import ccall "SDL.h SDL_ClearHints" clearHintsFFI :: IO ()
-foreign import ccall "SDL.h SDL_DelHintCallback" delHintCallbackFFI :: CString -> HintCallback -> Ptr () -> IO ()
+foreign import ccall "SDL.h SDL_RemoveHintCallback" delHintCallbackFFI :: CString -> HintCallback -> Ptr () -> IO ()
 foreign import ccall "SDL.h SDL_GetHint" getHintFFI :: CString -> IO CString
 foreign import ccall "SDL.h SDL_SetHint" setHintFFI :: CString -> CString -> IO Bool
 foreign import ccall "SDL.h SDL_SetHintWithPriority" setHintWithPriorityFFI :: CString -> CString -> HintPriority -> IO Bool
 
-foreign import ccall "SDL.h SDL_LogGetOutputFunction" logGetOutputFunctionFFI :: Ptr LogOutputFunction -> Ptr (Ptr ()) -> IO ()
-foreign import ccall "SDL.h SDL_LogGetPriority" logGetPriorityFFI :: CInt -> IO LogPriority
+foreign import ccall "SDL.h SDL_GetLogOutputFunction" logGetOutputFunctionFFI :: Ptr LogOutputFunction -> Ptr (Ptr ()) -> IO ()
+foreign import ccall "SDL.h SDL_GetLogPriority" logGetPriorityFFI :: CInt -> IO LogPriority
 foreign import ccall "sdlhelper.c SDLHelper_LogMessage" logMessageFFI :: CInt -> LogPriority -> CString -> IO ()
-foreign import ccall "SDL.h SDL_LogResetPriorities" logResetPrioritiesFFI :: IO ()
-foreign import ccall "SDL.h SDL_LogSetAllPriority" logSetAllPriorityFFI :: LogPriority -> IO ()
-foreign import ccall "SDL.h SDL_LogSetOutputFunction" logSetOutputFunctionFFI :: LogOutputFunction -> Ptr () -> IO ()
-foreign import ccall "SDL.h SDL_LogSetPriority" logSetPriorityFFI :: CInt -> LogPriority -> IO ()
+foreign import ccall "SDL.h SDL_ResetLogPriorities" logResetPrioritiesFFI :: IO ()
+foreign import ccall "SDL.h SDL_SetLogPriorities" logSetAllPriorityFFI :: LogPriority -> IO ()
+foreign import ccall "SDL.h SDL_SetLogOutputFunction" logSetOutputFunctionFFI :: LogOutputFunction -> Ptr () -> IO ()
+foreign import ccall "SDL.h SDL_SetLogPriority" logSetPriorityFFI :: CInt -> LogPriority -> IO ()
 
 foreign import ccall "SDL.h SDL_GetRevision" getRevisionFFI :: IO CString
 foreign import ccall "SDL.h SDL_GetRevisionNumber" getRevisionNumberFFI :: IO CInt

@@ -89,7 +89,7 @@ availableJoysticks = liftIO $ do
 
 -- | Open a joystick so that you can start receiving events from interaction with this joystick.
 --
--- See @<https://wiki.libsdl.org/SDL_JoystickOpen SDL_JoystickOpen>@ for C documentation.
+-- See @<https://wiki.libsdl.org/SDL_OpenJoystick SDL_OpenJoystick>@ for C documentation.
 openJoystick :: (Functor m,MonadIO m)
              => JoystickDevice -- ^ The device to open. Use 'availableJoysticks' to find 'JoystickDevices's
              -> m Joystick
@@ -100,22 +100,22 @@ openJoystick (JoystickDevice _ x) =
 
 -- | Close a joystick previously opened with 'openJoystick'.
 --
--- See @<https://wiki.libsdl.org/SDL_JoystickClose SDL_JoystickClose>@ for C documentation.
+-- See @<https://wiki.libsdl.org/SDL_CloseJoystick SDL_CloseJoystick>@ for C documentation.
 closeJoystick :: MonadIO m => Joystick -> m ()
 closeJoystick (Joystick j) = Raw.joystickClose j
 
 -- | Get the instance ID of an opened joystick. The instance ID is used to identify the joystick
 -- in future SDL events.
 --
--- See @<https://wiki.libsdl.org/SDL_JoystickInstanceID SDL_JoystickInstanceID>@ for C documentation.
+-- See @<https://wiki.libsdl.org/SDL_GetJoystickID SDL_GetJoystickID>@ for C documentation.
 getJoystickID :: MonadIO m => Joystick -> m Raw.JoystickID
 getJoystickID (Joystick j) =
-  throwIfNeg "SDL.Input.Joystick.getJoystickID" "SDL_JoystickInstanceID" $
+  throwIfNeg "SDL.Input.Joystick.getJoystickID" "SDL_GetJoystickID" $
   Raw.joystickInstanceID j
 
 -- | Determine if a given button is currently held.
 --
--- See @<https://wiki.libsdl.org/SDL_JoystickGetButton SDL_JoystickGetButton>@ for C documentation.
+-- See @<https://wiki.libsdl.org/SDL_GetJoystickButton SDL_GetJoystickButton>@ for C documentation.
 buttonPressed :: (Functor m, MonadIO m)
               => Joystick
               -> CInt -- ^ The index of the button. You can use 'numButtons' to determine how many buttons a given joystick has.
@@ -124,7 +124,7 @@ buttonPressed (Joystick j) buttonIndex = (== 1) <$> Raw.joystickGetButton j butt
 
 -- | Get the ball axis change since the last poll.
 --
--- See @<https://wiki.libsdl.org/SDL_JoystickGetBall SDL_JoystickGetBall>@ for C documentation.
+-- See @<https://wiki.libsdl.org/SDL_GetJoystickBall SDL_GetJoystickBall>@ for C documentation.
 ballDelta :: MonadIO m
           => Joystick
           -> CInt -- ^ The index of the joystick ball. You can use 'numBalls' to determine how many balls a given joystick has.
@@ -132,7 +132,7 @@ ballDelta :: MonadIO m
 ballDelta (Joystick j) ballIndex = liftIO $
   alloca $ \xptr ->
   alloca $ \yptr -> do
-    throwIfNeg_ "SDL.Input.Joystick.ballDelta" "SDL_JoystickGetBall" $
+    throwIfNeg_ "SDL.Input.Joystick.ballDelta" "SDL_GetJoystickBall" $
       Raw.joystickGetBall j ballIndex xptr yptr
 
     V2 <$> peek xptr <*> peek yptr
@@ -145,27 +145,27 @@ ballDelta (Joystick j) ballIndex = liftIO $
 --
 -- Some joysticks use axes 2 and 3 for extra buttons.
 --
--- See @<https://wiki.libsdl.org/SDL_JoystickGetAxis SDL_JoystickGetAxis>@ for C documentation.
+-- See @<https://wiki.libsdl.org/SDL_GetJoystickAxis SDL_GetJoystickAxis>@ for C documentation.
 axisPosition :: MonadIO m => Joystick -> CInt -> m Int16
 axisPosition (Joystick j) axisIndex = Raw.joystickGetAxis j axisIndex
 
 -- | Get the number of general axis controls on a joystick.
 --
--- See @<https://wiki.libsdl.org/SDL_JoystickNumAxes SDL_JoystickNumAxes>@ for C documentation.
+-- See @<https://wiki.libsdl.org/SDL_GetNumJoystickAxes SDL_GetNumJoystickAxes>@ for C documentation.
 numAxes :: (MonadIO m) => Joystick -> m CInt
-numAxes (Joystick j) = liftIO $ throwIfNeg "SDL.Input.Joystick.numAxis" "SDL_JoystickNumAxes" (Raw.joystickNumAxes j)
+numAxes (Joystick j) = liftIO $ throwIfNeg "SDL.Input.Joystick.numAxis" "SDL_GetNumJoystickAxes" (Raw.joystickNumAxes j)
 
 -- | Get the number of buttons on a joystick.
 --
--- See @<https://wiki.libsdl.org/SDL_JoystickNumButtons SDL_JoystickNumButtons>@ for C documentation.
+-- See @<https://wiki.libsdl.org/SDL_GetNumJoystickButtons SDL_GetNumJoystickButtons>@ for C documentation.
 numButtons :: (MonadIO m) => Joystick -> m CInt
-numButtons (Joystick j) = liftIO $ throwIfNeg "SDL.Input.Joystick.numButtons" "SDL_JoystickNumButtons" (Raw.joystickNumButtons j)
+numButtons (Joystick j) = liftIO $ throwIfNeg "SDL.Input.Joystick.numButtons" "SDL_GetNumJoystickButtons" (Raw.joystickNumButtons j)
 
 -- | Get the number of trackballs on a joystick.
 --
--- See @<https://wiki.libsdl.org/SDL_JoystickNumBalls SDL_JoystickNumBalls>@ for C documentation.
+-- See @<https://wiki.libsdl.org/SDL_GetNumJoystickBalls SDL_GetNumJoystickBalls>@ for C documentation.
 numBalls :: (MonadIO m) => Joystick -> m CInt
-numBalls (Joystick j) = liftIO $ throwIfNeg "SDL.Input.Joystick.numBalls" "SDL_JoystickNumBalls" (Raw.joystickNumBalls j)
+numBalls (Joystick j) = liftIO $ throwIfNeg "SDL.Input.Joystick.numBalls" "SDL_GetNumJoystickBalls" (Raw.joystickNumBalls j)
 
 -- | Identifies the state of the POV hat on a joystick.
 data JoyHatPosition
@@ -195,7 +195,7 @@ instance FromNumber JoyHatPosition Word8 where
 
 -- | Get current position of a POV hat on a joystick.
 --
--- See @<https://wiki.libsdl.org/SDL_JoystickGetHat SDL_JoystickGetHat>@ for C documentation.
+-- See @<https://wiki.libsdl.org/SDL_GetJoystickHat SDL_GetJoystickHat>@ for C documentation.
 getHat :: (Functor m, MonadIO m)
        => Joystick
        -> CInt -- ^ The index of the POV hat. You can use 'numHats' to determine how many POV hats a given joystick has.
@@ -204,9 +204,9 @@ getHat (Joystick j) hatIndex = fromNumber <$> Raw.joystickGetHat j hatIndex
 
 -- | Get the number of POV hats on a joystick.
 --
--- See @<https://wiki.libsdl.org/https://wiki.libsdl.org/SDL_JoystickNumHats SDL_JoystickNumHats>@ for C documentation.
+-- See @<https://wiki.libsdl.org/https://wiki.libsdl.org/SDL_GetNumJoystickHats SDL_GetNumJoystickHats>@ for C documentation.
 numHats :: (MonadIO m) => Joystick -> m CInt
-numHats (Joystick j) = liftIO $ throwIfNeg "SDL.Input.Joystick.numHats" "SDL_JoystickNumHats" (Raw.joystickNumHats j)
+numHats (Joystick j) = liftIO $ throwIfNeg "SDL.Input.Joystick.numHats" "SDL_GetNumJoystickHats" (Raw.joystickNumHats j)
 
 -- | Identifies whether a joystick has been connected or disconnected.
 data JoyDeviceConnection = JoyDeviceAdded | JoyDeviceRemoved
@@ -214,6 +214,6 @@ data JoyDeviceConnection = JoyDeviceAdded | JoyDeviceRemoved
 
 instance FromNumber JoyDeviceConnection Word32 where
   fromNumber n = case n of
-    Raw.SDL_JOYDEVICEADDED -> JoyDeviceAdded
-    Raw.SDL_JOYDEVICEREMOVED -> JoyDeviceRemoved
+    Raw.SDL_EVENT_JOYSTICK_ADDED -> JoyDeviceAdded
+    Raw.SDL_EVENT_JOYSTICK_REMOVED -> JoyDeviceRemoved
     _ -> JoyDeviceAdded

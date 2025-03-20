@@ -554,41 +554,41 @@ convertRaw (Raw.WindowEvent t ts a b c d) =
   do w <- fmap Window (Raw.getWindowFromID a)
      return (Event ts
                    (case b of
-                      Raw.SDL_WINDOWEVENT_SHOWN ->
+                      Raw.SDL_EVENT_WINDOW_SHOWN ->
                         WindowShownEvent (WindowShownEventData w)
-                      Raw.SDL_WINDOWEVENT_HIDDEN ->
+                      Raw.SDL_EVENT_WINDOW_HIDDEN ->
                         WindowHiddenEvent (WindowHiddenEventData w)
-                      Raw.SDL_WINDOWEVENT_EXPOSED ->
+                      Raw.SDL_EVENT_WINDOW_EXPOSED ->
                         WindowExposedEvent (WindowExposedEventData w)
-                      Raw.SDL_WINDOWEVENT_MOVED ->
+                      Raw.SDL_EVENT_WINDOW_MOVED ->
                         WindowMovedEvent
                           (WindowMovedEventData w
                                                 (P (V2 c d)))
-                      Raw.SDL_WINDOWEVENT_RESIZED ->
+                      Raw.SDL_EVENT_WINDOW_RESIZED ->
                         WindowResizedEvent
                           (WindowResizedEventData w
                                                   (V2 c d))
-                      Raw.SDL_WINDOWEVENT_SIZE_CHANGED ->
+                      Raw.SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED ->
                         WindowSizeChangedEvent (WindowSizeChangedEventData w (V2 c d))
-                      Raw.SDL_WINDOWEVENT_MINIMIZED ->
+                      Raw.SDL_EVENT_WINDOW_MINIMIZED ->
                         WindowMinimizedEvent (WindowMinimizedEventData w)
-                      Raw.SDL_WINDOWEVENT_MAXIMIZED ->
+                      Raw.SDL_EVENT_WINDOW_MAXIMIZED ->
                         WindowMaximizedEvent (WindowMaximizedEventData w)
-                      Raw.SDL_WINDOWEVENT_RESTORED ->
+                      Raw.SDL_EVENT_WINDOW_RESTORED ->
                         WindowRestoredEvent (WindowRestoredEventData w)
-                      Raw.SDL_WINDOWEVENT_ENTER ->
+                      Raw.SDL_EVENT_WINDOW_MOUSE_ENTER ->
                         WindowGainedMouseFocusEvent (WindowGainedMouseFocusEventData w)
-                      Raw.SDL_WINDOWEVENT_LEAVE ->
+                      Raw.SDL_EVENT_WINDOW_MOUSE_LEAVE ->
                         WindowLostMouseFocusEvent (WindowLostMouseFocusEventData w)
-                      Raw.SDL_WINDOWEVENT_FOCUS_GAINED ->
+                      Raw.SDL_EVENT_WINDOW_FOCUS_GAINED ->
                         WindowGainedKeyboardFocusEvent (WindowGainedKeyboardFocusEventData w)
-                      Raw.SDL_WINDOWEVENT_FOCUS_LOST ->
+                      Raw.SDL_EVENT_WINDOW_FOCUS_LOST ->
                         WindowLostKeyboardFocusEvent (WindowLostKeyboardFocusEventData w)
-                      Raw.SDL_WINDOWEVENT_CLOSE ->
+                      Raw.SDL_EVENT_WINDOW_CLOSE_REQUESTED ->
                         WindowClosedEvent (WindowClosedEventData w)
                       _ ->
                         UnknownEvent (UnknownEventData t)))
-convertRaw (Raw.KeyboardEvent Raw.SDL_KEYDOWN ts a _ c d) =
+convertRaw (Raw.KeyboardEvent Raw.SDL_EVENT_KEY_DOWN ts a _ c d) =
   do w <- getWindowFromID a
      return (Event ts
                    (KeyboardEvent
@@ -596,7 +596,7 @@ convertRaw (Raw.KeyboardEvent Raw.SDL_KEYDOWN ts a _ c d) =
                                          Pressed
                                          (c /= 0)
                                          (fromRawKeysym d))))
-convertRaw (Raw.KeyboardEvent Raw.SDL_KEYUP ts a _ c d) =
+convertRaw (Raw.KeyboardEvent Raw.SDL_EVENT_KEY_UP ts a _ c d) =
   do w <- getWindowFromID a
      return (Event ts
                    (KeyboardEvent
@@ -643,8 +643,8 @@ convertRaw (Raw.MouseMotionEvent _ ts a b c d e f g) =
 convertRaw (Raw.MouseButtonEvent t ts a b c _ e f g) =
   do w <- getWindowFromID a
      let motion
-           | t == Raw.SDL_MOUSEBUTTONUP = Released
-           | t == Raw.SDL_MOUSEBUTTONDOWN = Pressed
+           | t == Raw.SDL_EVENT_MOUSE_BUTTON_UP = Released
+           | t == Raw.SDL_EVENT_MOUSE_BUTTON_DOWN = Pressed
            | otherwise = error "convertRaw: Unexpected mouse button motion"
      return (Event ts
                    (MouseButtonEvent
@@ -694,9 +694,9 @@ convertRaw (Raw.ControllerButtonEvent t ts a b _) =
                                         (fromNumber t))))
 convertRaw (Raw.ControllerDeviceEvent t ts a) =
   return (Event ts (ControllerDeviceEvent (ControllerDeviceEventData (fromNumber t) a)))
-convertRaw (Raw.AudioDeviceEvent Raw.SDL_AUDIODEVICEADDED ts a b) =
+convertRaw (Raw.AudioDeviceEvent Raw.SDL_EVENT_AUDIO_DEVICE_ADDED ts a b) =
   return (Event ts (AudioDeviceEvent (AudioDeviceEventData True a (b /= 0))))
-convertRaw (Raw.AudioDeviceEvent Raw.SDL_AUDIODEVICEREMOVED ts a b) =
+convertRaw (Raw.AudioDeviceEvent Raw.SDL_EVENT_AUDIO_DEVICE_REMOVED ts a b) =
   return (Event ts (AudioDeviceEvent (AudioDeviceEventData False a (b /= 0))))
 convertRaw Raw.AudioDeviceEvent{} =
   error "convertRaw: Unknown audio device motion"
@@ -721,9 +721,9 @@ convertRaw (Raw.TouchFingerEvent t ts a b c d e f g) =
                                                                 (V2 e f)
                                                                 g)
      case t of
-       Raw.SDL_FINGERDOWN   -> return (Event ts (touchFingerEvent Pressed))
-       Raw.SDL_FINGERUP     -> return (Event ts (touchFingerEvent Released))
-       Raw.SDL_FINGERMOTION -> return (Event ts touchFingerMotionEvent)
+       Raw.SDL_EVENT_FINGER_DOWN   -> return (Event ts (touchFingerEvent Pressed))
+       Raw.SDL_EVENT_FINGER_UP     -> return (Event ts (touchFingerEvent Released))
+       Raw.SDL_EVENT_FINGER_MOTION -> return (Event ts touchFingerMotionEvent)
        _                    -> error "convertRaw: Unexpected touch finger event"
 convertRaw (Raw.MultiGestureEvent _ ts a b c d e f) =
   return (Event ts
@@ -777,8 +777,8 @@ pollEvents = liftIO $ do
         Raw.eventBuffer
         Raw.eventBufferSize
         Raw.SDL_GETEVENT
-        Raw.SDL_FIRSTEVENT
-        Raw.SDL_LASTEVENT
+        Raw.SDL_EVENT_FIRST
+        Raw.SDL_EVENT_LAST
       peeped <- peekArray (fromIntegral numPeeped) Raw.eventBuffer
       if numPeeped == Raw.eventBufferSize -- are there more events to peep?
         then (peeped ++) <$> peepAllEvents
@@ -918,7 +918,7 @@ addEventWatch callback = liftIO $ do
 
 -- | Remove an 'EventWatch'.
 --
--- See @<https://wiki.libsdl.org/SDL_DelEventWatch>@ for C documentation.
+-- See @<https://wiki.libsdl.org/SDL_RemoveEventWatch>@ for C documentation.
 delEventWatch :: MonadIO m => EventWatch -> m ()
 delEventWatch = liftIO . runEventWatchRemoval
 

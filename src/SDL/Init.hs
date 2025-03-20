@@ -45,7 +45,7 @@ instance ToNumber InitFlag Word32 where
   toNumber InitVideo = Raw.SDL_INIT_VIDEO
   toNumber InitJoystick = Raw.SDL_INIT_JOYSTICK
   toNumber InitHaptic = Raw.SDL_INIT_HAPTIC
-  toNumber InitGameController = Raw.SDL_INIT_GAMECONTROLLER
+  toNumber InitGameController = Raw.SDL_INIT_GAMEPAD
   toNumber InitEvents = Raw.SDL_INIT_EVENTS
 
 -- | Initializes SDL and the given subsystems. Do not call any SDL functions

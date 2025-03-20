@@ -91,7 +91,7 @@ openHaptic o = liftIO $ do
             Raw.hapticName i
     Text.decodeUtf8 <$> BS.packCString cstr
 
-  axes <- SDLEx.throwIfNeg "SDL.Haptic.openHaptic" "SDL_HapticNumAxes" $
+  axes <- SDLEx.throwIfNeg "SDL.Haptic.openHaptic" "SDL_GetNumHapticAxes" $
           Raw.hapticNumAxes ptr
 
   return (HapticDevice ptr n axes)
@@ -102,19 +102,19 @@ closeHaptic (HapticDevice h _ _) = Raw.hapticClose h
 hapticRumbleInit :: MonadIO m => HapticDevice -> m ()
 hapticRumbleInit (HapticDevice h _ _) =
   liftIO $
-  SDLEx.throwIfNeg_ "SDL.Haptic.hapticRumbleInit" "SDL_HapticRumbleInit" $
+  SDLEx.throwIfNeg_ "SDL.Haptic.hapticRumbleInit" "SDL_InitHapticRumble" $
   Raw.hapticRumbleInit h
 
 hapticRumblePlay :: MonadIO m => HapticDevice -> CFloat -> Word32 -> m ()
 hapticRumblePlay (HapticDevice h _ _) strength length =
   liftIO $
-  SDLEx.throwIfNot0_ "SDL.Haptic.hapticRumblePlay" "SDL_HapticRumblePlay" $
+  SDLEx.throwIfNot0_ "SDL.Haptic.hapticRumblePlay" "SDL_PlayHapticRumble" $
   Raw.hapticRumblePlay h strength length
 
 hapticRumbleStop :: MonadIO m => HapticDevice -> m ()
 hapticRumbleStop (HapticDevice h _ _) =
   liftIO $
-  SDLEx.throwIfNot0_ "SDL.Haptic.hapticRumbleStop" "SDL_HapticRumbleStop" $
+  SDLEx.throwIfNot0_ "SDL.Haptic.hapticRumbleStop" "SDL_StopHapticRumble" $
   Raw.hapticRumbleStop h
 
 newtype EffectId = EffectId CInt
@@ -156,13 +156,13 @@ uploadEffect (HapticDevice h _ _) effect =
                                            ,Raw.hapticPeriodicPhase = phase})
              fmap EffectId
                   (SDLEx.throwIfNeg "SDL.Haptic.uploadEffect"
-                                    "SDL_HapticNewEffect"
+                                    "SDL_CreateHapticEffect"
                                     (Raw.hapticNewEffect h ptr)))
 
 runEffect :: (Functor m, MonadIO m) => HapticDevice -> EffectId -> Word32 -> m ()
 runEffect (HapticDevice h _ _) (EffectId e) x =
   SDLEx.throwIfNeg_ "SDL.Haptic.runEffect"
-                    "SDL_HapticRunEffect"
+                    "SDL_RunHapticEffect"
                     (Raw.hapticRunEffect h e x)
 
 data EffectEnvelope = EffectEnvelope

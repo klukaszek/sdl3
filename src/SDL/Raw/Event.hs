@@ -130,7 +130,7 @@ import SDL.Raw.Filesystem
 import SDL.Raw.Types
 
 foreign import ccall "SDL.h SDL_AddEventWatch" addEventWatchFFI :: EventFilter -> Ptr () -> IO ()
-foreign import ccall "SDL.h SDL_DelEventWatch" delEventWatchFFI :: EventFilter -> Ptr () -> IO ()
+foreign import ccall "SDL.h SDL_RemoveEventWatch" delEventWatchFFI :: EventFilter -> Ptr () -> IO ()
 foreign import ccall "SDL.h SDL_EventState" eventStateFFI :: Word32 -> CInt -> IO Word8
 foreign import ccall "SDL.h SDL_FilterEvents" filterEventsFFI :: EventFilter -> Ptr () -> IO ()
 foreign import ccall "SDL.h SDL_FlushEvent" flushEventFFI :: Word32 -> IO ()
@@ -165,8 +165,8 @@ foreign import ccall "SDL.h SDL_GetScancodeFromKey" getScancodeFromKeyFFI :: Key
 foreign import ccall "SDL.h SDL_GetScancodeFromName" getScancodeFromNameFFI :: CString -> IO Scancode
 foreign import ccall "SDL.h SDL_GetScancodeName" getScancodeNameFFI :: Scancode -> IO CString
 foreign import ccall "SDL.h SDL_HasScreenKeyboardSupport" hasScreenKeyboardSupportFFI :: IO Bool
-foreign import ccall "SDL.h SDL_IsScreenKeyboardShown" isScreenKeyboardShownFFI :: Window -> IO Bool
-foreign import ccall "SDL.h SDL_IsTextInputActive" isTextInputActiveFFI :: IO Bool
+foreign import ccall "SDL.h SDL_ScreenKeyboardShown" isScreenKeyboardShownFFI :: Window -> IO Bool
+foreign import ccall "SDL.h SDL_TextInputActive" isTextInputActiveFFI :: IO Bool
 foreign import ccall "SDL.h SDL_SetModState" setModStateFFI :: Keymod -> IO ()
 foreign import ccall "SDL.h SDL_SetTextInputRect" setTextInputRectFFI :: Ptr Rect -> IO ()
 foreign import ccall "SDL.h SDL_StartTextInput" startTextInputFFI :: IO ()
@@ -176,7 +176,7 @@ foreign import ccall "SDL.h SDL_CaptureMouse" captureMouseFFI :: Bool -> IO CInt
 foreign import ccall "SDL.h SDL_CreateColorCursor" createColorCursorFFI :: Ptr Surface -> CInt -> CInt -> IO Cursor
 foreign import ccall "SDL.h SDL_CreateCursor" createCursorFFI :: Ptr Word8 -> Ptr Word8 -> CInt -> CInt -> CInt -> CInt -> IO Cursor
 foreign import ccall "SDL.h SDL_CreateSystemCursor" createSystemCursorFFI :: SystemCursor -> IO Cursor
-foreign import ccall "SDL.h SDL_FreeCursor" freeCursorFFI :: Cursor -> IO ()
+foreign import ccall "SDL.h SDL_DestroyCursor" freeCursorFFI :: Cursor -> IO ()
 foreign import ccall "SDL.h SDL_GetCursor" getCursorFFI :: IO Cursor
 foreign import ccall "SDL.h SDL_GetDefaultCursor" getDefaultCursorFFI :: IO Cursor
 foreign import ccall "SDL.h SDL_GetGlobalMouseState" getGlobalMouseStateFFI :: Ptr CInt -> Ptr CInt -> IO Word32
@@ -190,52 +190,52 @@ foreign import ccall "SDL.h SDL_ShowCursor" showCursorFFI :: CInt -> IO CInt
 foreign import ccall "SDL.h SDL_WarpMouseGlobal" warpMouseGlobalFFI :: CInt -> CInt -> IO CInt
 foreign import ccall "SDL.h SDL_WarpMouseInWindow" warpMouseInWindowFFI :: Window -> CInt -> CInt -> IO ()
 
-foreign import ccall "SDL.h SDL_JoystickClose" joystickCloseFFI :: Joystick -> IO ()
+foreign import ccall "SDL.h SDL_CloseJoystick" joystickCloseFFI :: Joystick -> IO ()
 foreign import ccall "SDL.h SDL_JoystickCurrentPowerLevel" joystickCurrentPowerLevelFFI :: Joystick -> IO JoystickPowerLevel
 foreign import ccall "SDL.h SDL_JoystickEventState" joystickEventStateFFI :: CInt -> IO CInt
-foreign import ccall "SDL.h SDL_JoystickFromInstanceID" joystickFromInstanceIDFFI :: JoystickID -> IO Joystick
-foreign import ccall "SDL.h SDL_JoystickGetAttached" joystickGetAttachedFFI :: Joystick -> IO Bool
-foreign import ccall "SDL.h SDL_JoystickGetAxis" joystickGetAxisFFI :: Joystick -> CInt -> IO Int16
-foreign import ccall "SDL.h SDL_JoystickGetBall" joystickGetBallFFI :: Joystick -> CInt -> Ptr CInt -> Ptr CInt -> IO CInt
-foreign import ccall "SDL.h SDL_JoystickGetButton" joystickGetButtonFFI :: Joystick -> CInt -> IO Word8
+foreign import ccall "SDL.h SDL_GetJoystickFromID" joystickFromInstanceIDFFI :: JoystickID -> IO Joystick
+foreign import ccall "SDL.h SDL_JoystickConnected" joystickGetAttachedFFI :: Joystick -> IO Bool
+foreign import ccall "SDL.h SDL_GetJoystickAxis" joystickGetAxisFFI :: Joystick -> CInt -> IO Int16
+foreign import ccall "SDL.h SDL_GetJoystickBall" joystickGetBallFFI :: Joystick -> CInt -> Ptr CInt -> Ptr CInt -> IO CInt
+foreign import ccall "SDL.h SDL_GetJoystickButton" joystickGetButtonFFI :: Joystick -> CInt -> IO Word8
 foreign import ccall "sdlhelper.h SDLHelper_JoystickGetDeviceGUID" joystickGetDeviceGUIDFFI :: CInt -> Ptr JoystickGUID -> IO ()
 foreign import ccall "sdlhelper.h SDLHelper_JoystickGetGUID" joystickGetGUIDFFI :: Joystick -> Ptr JoystickGUID -> IO ()
 foreign import ccall "sdlhelper.h SDLHelper_JoystickGetGUIDFromString" joystickGetGUIDFromStringFFI :: CString -> Ptr JoystickGUID -> IO ()
 foreign import ccall "sdlhelper.h SDLHelper_JoystickGetGUIDString" joystickGetGUIDStringFFI :: Ptr JoystickGUID -> CString -> CInt -> IO ()
-foreign import ccall "SDL.h SDL_JoystickGetHat" joystickGetHatFFI :: Joystick -> CInt -> IO Word8
-foreign import ccall "SDL.h SDL_JoystickInstanceID" joystickInstanceIDFFI :: Joystick -> IO JoystickID
-foreign import ccall "SDL.h SDL_JoystickName" joystickNameFFI :: Joystick -> IO CString
+foreign import ccall "SDL.h SDL_GetJoystickHat" joystickGetHatFFI :: Joystick -> CInt -> IO Word8
+foreign import ccall "SDL.h SDL_GetJoystickID" joystickInstanceIDFFI :: Joystick -> IO JoystickID
+foreign import ccall "SDL.h SDL_GetJoystickName" joystickNameFFI :: Joystick -> IO CString
 foreign import ccall "SDL.h SDL_JoystickNameForIndex" joystickNameForIndexFFI :: CInt -> IO CString
-foreign import ccall "SDL.h SDL_JoystickNumAxes" joystickNumAxesFFI :: Joystick -> IO CInt
-foreign import ccall "SDL.h SDL_JoystickNumBalls" joystickNumBallsFFI :: Joystick -> IO CInt
-foreign import ccall "SDL.h SDL_JoystickNumButtons" joystickNumButtonsFFI :: Joystick -> IO CInt
-foreign import ccall "SDL.h SDL_JoystickNumHats" joystickNumHatsFFI :: Joystick -> IO CInt
-foreign import ccall "SDL.h SDL_JoystickOpen" joystickOpenFFI :: CInt -> IO Joystick
-foreign import ccall "SDL.h SDL_JoystickUpdate" joystickUpdateFFI :: IO ()
+foreign import ccall "SDL.h SDL_GetNumJoystickAxes" joystickNumAxesFFI :: Joystick -> IO CInt
+foreign import ccall "SDL.h SDL_GetNumJoystickBalls" joystickNumBallsFFI :: Joystick -> IO CInt
+foreign import ccall "SDL.h SDL_GetNumJoystickButtons" joystickNumButtonsFFI :: Joystick -> IO CInt
+foreign import ccall "SDL.h SDL_GetNumJoystickHats" joystickNumHatsFFI :: Joystick -> IO CInt
+foreign import ccall "SDL.h SDL_OpenJoystick" joystickOpenFFI :: CInt -> IO Joystick
+foreign import ccall "SDL.h SDL_UpdateJoysticks" joystickUpdateFFI :: IO ()
 foreign import ccall "SDL.h SDL_NumJoysticks" numJoysticksFFI :: IO CInt
 
-foreign import ccall "SDL.h SDL_GameControllerAddMapping" gameControllerAddMappingFFI :: CString -> IO CInt
-foreign import ccall "SDL.h SDL_GameControllerAddMappingsFromRW" gameControllerAddMappingsFromRWFFI :: Ptr RWops -> CInt -> IO CInt
-foreign import ccall "SDL.h SDL_GameControllerClose" gameControllerCloseFFI :: GameController -> IO ()
+foreign import ccall "SDL.h SDL_AddGamepadMapping" gameControllerAddMappingFFI :: CString -> IO CInt
+foreign import ccall "SDL.h SDL_AddGamepadMappingsFromIO" gameControllerAddMappingsFromRWFFI :: Ptr RWops -> CInt -> IO CInt
+foreign import ccall "SDL.h SDL_CloseGamepad" gameControllerCloseFFI :: GameController -> IO ()
 foreign import ccall "SDL.h SDL_GameControllerEventState" gameControllerEventStateFFI :: CInt -> IO CInt
-foreign import ccall "SDL.h SDL_GameControllerFromInstanceID" gameControllerFromInstanceIDFFI :: JoystickID -> IO GameController
-foreign import ccall "SDL.h SDL_GameControllerGetAttached" gameControllerGetAttachedFFI :: GameController -> IO Bool
-foreign import ccall "SDL.h SDL_GameControllerGetAxis" gameControllerGetAxisFFI :: GameController -> GameControllerAxis -> IO Int16
-foreign import ccall "SDL.h SDL_GameControllerGetAxisFromString" gameControllerGetAxisFromStringFFI :: CString -> IO GameControllerAxis
+foreign import ccall "SDL.h SDL_GetGamepadFromID" gameControllerFromInstanceIDFFI :: JoystickID -> IO GameController
+foreign import ccall "SDL.h SDL_GamepadConnected" gameControllerGetAttachedFFI :: GameController -> IO Bool
+foreign import ccall "SDL.h SDL_GetGamepadAxis" gameControllerGetAxisFFI :: GameController -> GameControllerAxis -> IO Int16
+foreign import ccall "SDL.h SDL_GetGamepadAxisFromString" gameControllerGetAxisFromStringFFI :: CString -> IO GameControllerAxis
 foreign import ccall "sdlhelper.h SDLHelper_GameControllerGetBindForAxis" gameControllerGetBindForAxisFFI :: GameController -> GameControllerAxis -> Ptr GameControllerButtonBind -> IO ()
 foreign import ccall "sdlhelper.h SDLHelper_GameControllerGetBindForButton" gameControllerGetBindForButtonFFI :: GameController -> GameControllerButton -> Ptr GameControllerButtonBind -> IO ()
-foreign import ccall "SDL.h SDL_GameControllerGetButton" gameControllerGetButtonFFI :: GameController -> GameControllerButton -> IO Word8
-foreign import ccall "SDL.h SDL_GameControllerGetButtonFromString" gameControllerGetButtonFromStringFFI :: CString -> IO GameControllerButton
-foreign import ccall "SDL.h SDL_GameControllerGetJoystick" gameControllerGetJoystickFFI :: GameController -> IO Joystick
-foreign import ccall "SDL.h SDL_GameControllerGetStringForAxis" gameControllerGetStringForAxisFFI :: GameControllerAxis -> IO CString
-foreign import ccall "SDL.h SDL_GameControllerGetStringForButton" gameControllerGetStringForButtonFFI :: GameControllerButton -> IO CString
-foreign import ccall "SDL.h SDL_GameControllerMapping" gameControllerMappingFFI :: GameController -> IO CString
+foreign import ccall "SDL.h SDL_GetGamepadButton" gameControllerGetButtonFFI :: GameController -> GameControllerButton -> IO Word8
+foreign import ccall "SDL.h SDL_GetGamepadButtonFromString" gameControllerGetButtonFromStringFFI :: CString -> IO GameControllerButton
+foreign import ccall "SDL.h SDL_GetGamepadJoystick" gameControllerGetJoystickFFI :: GameController -> IO Joystick
+foreign import ccall "SDL.h SDL_GetGamepadStringForAxis" gameControllerGetStringForAxisFFI :: GameControllerAxis -> IO CString
+foreign import ccall "SDL.h SDL_GetGamepadStringForButton" gameControllerGetStringForButtonFFI :: GameControllerButton -> IO CString
+foreign import ccall "SDL.h SDL_GetGamepadMapping" gameControllerMappingFFI :: GameController -> IO CString
 foreign import ccall "sdlhelper.h SDLHelper_GameControllerMappingForGUID" gameControllerMappingForGUIDFFI :: Ptr JoystickGUID -> IO CString
-foreign import ccall "SDL.h SDL_GameControllerName" gameControllerNameFFI :: GameController -> IO CString
+foreign import ccall "SDL.h SDL_GetGamepadName" gameControllerNameFFI :: GameController -> IO CString
 foreign import ccall "SDL.h SDL_GameControllerNameForIndex" gameControllerNameForIndexFFI :: CInt -> IO CString
-foreign import ccall "SDL.h SDL_GameControllerOpen" gameControllerOpenFFI :: CInt -> IO GameController
-foreign import ccall "SDL.h SDL_GameControllerUpdate" gameControllerUpdateFFI :: IO ()
-foreign import ccall "SDL.h SDL_IsGameController" isGameControllerFFI :: CInt -> IO Bool
+foreign import ccall "SDL.h SDL_OpenGamepad" gameControllerOpenFFI :: CInt -> IO GameController
+foreign import ccall "SDL.h SDL_UpdateGamepads" gameControllerUpdateFFI :: IO ()
+foreign import ccall "SDL.h SDL_IsGamepad" isGameControllerFFI :: CInt -> IO Bool
 
 foreign import ccall "sdlhelper.c SDLHelper_GetEventBufferSize" eventBufferSize :: CInt
 foreign import ccall "sdlhelper.c SDLHelper_GetEventBuffer"  eventBuffer :: Ptr Event
@@ -315,7 +315,7 @@ pushEvent v1 = liftIO $ pushEventFFI v1
 quitRequested :: MonadIO m => m Bool
 quitRequested = liftIO $ do
   pumpEvents
-  ev <- peepEvents nullPtr 0 SDL_PEEKEVENT SDL_QUIT SDL_QUIT
+  ev <- peepEvents nullPtr 0 SDL_PEEKEVENT SDL_EVENT_QUIT SDL_EVENT_QUIT
   return $ ev > 0
 {-# INLINE quitRequested #-}
 

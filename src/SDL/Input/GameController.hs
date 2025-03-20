@@ -83,7 +83,7 @@ availableControllers = liftIO $ do
 
 {- | Open a controller so that you can start receiving events from interaction with this controller.
 
- See @<https://wiki.libsdl.org/SDL_GameControllerOpen SDL_GameControllerOpen>@ for C documentation.
+ See @<https://wiki.libsdl.org/SDL_OpenGamepad SDL_OpenGamepad>@ for C documentation.
 -}
 openController
   :: (Functor m, MonadIO m)
@@ -92,19 +92,19 @@ openController
   -> m GameController
 openController (ControllerDevice _ x) =
   fmap GameController $
-    throwIfNull "SDL.Input.GameController.openController" "SDL_GameControllerOpen" $
+    throwIfNull "SDL.Input.GameController.openController" "SDL_OpenGamepad" $
       Raw.gameControllerOpen x
 
 {- | Close a controller previously opened with 'openController'.
 
- See @<https://wiki.libsdl.org/SDL_GameControllerClose SDL_GameControllerClose>@ for C documentation.
+ See @<https://wiki.libsdl.org/SDL_CloseGamepad SDL_CloseGamepad>@ for C documentation.
 -}
 closeController :: MonadIO m => GameController -> m ()
 closeController (GameController j) = Raw.gameControllerClose j
 
 {- | Check if a controller has been opened and is currently connected.
 
- See @<https://wiki.libsdl.org/SDL_GameControllerGetAttached SDL_GameControllerGetAttached>@ for C documentation.
+ See @<https://wiki.libsdl.org/SDL_GamepadConnected SDL_GamepadConnected>@ for C documentation.
 -}
 controllerAttached :: MonadIO m => GameController -> m Bool
 controllerAttached (GameController c) = Raw.gameControllerGetAttached c
@@ -116,29 +116,29 @@ controllerAttached (GameController c) = Raw.gameControllerGetAttached c
 -}
 getControllerID :: MonadIO m => GameController -> m Int32
 getControllerID (GameController c) =
-  throwIfNeg "SDL.Input.GameController.getControllerID" "SDL_JoystickInstanceID" $
+  throwIfNeg "SDL.Input.GameController.getControllerID" "SDL_GetJoystickID" $
     Raw.joystickInstanceID c
 
 {- | Get the current mapping of a Game Controller.
 
- See @<https://wiki.libsdl.org/SDL_GameControllerMapping SDL_GameControllerMapping>@ for C documentation.
+ See @<https://wiki.libsdl.org/SDL_GetGamepadMapping SDL_GetGamepadMapping>@ for C documentation.
 -}
 controllerMapping :: MonadIO m => GameController -> m Text
 controllerMapping (GameController c) = liftIO $ do
   mapping <-
-    throwIfNull "SDL.Input.GameController.getControllerMapping" "SDL_GameControllerMapping" $
+    throwIfNull "SDL.Input.GameController.getControllerMapping" "SDL_GetGamepadMapping" $
       Raw.gameControllerMapping c
   Text.decodeUtf8 <$> BS.packCString mapping
 
 {- | Add support for controllers that SDL is unaware of or to cause an existing controller to
  have a different binding.
 
- See @<https://wiki.libsdl.org/SDL_GameControllerAddMapping SDL_GameControllerAddMapping>@ for C documentation.
+ See @<https://wiki.libsdl.org/SDL_AddGamepadMapping SDL_AddGamepadMapping>@ for C documentation.
 -}
 addControllerMapping :: MonadIO m => BS.ByteString -> m ()
 addControllerMapping mapping =
   liftIO $
-    throwIfNeg_ "SDL.Input.GameController.addControllerMapping" "SDL_GameControllerAddMapping" $
+    throwIfNeg_ "SDL.Input.GameController.addControllerMapping" "SDL_AddGamepadMapping" $
       let (mappingForeign, _, _) = BSI.toForeignPtr mapping
        in withForeignPtr mappingForeign $ \mappingPtr ->
             Raw.gameControllerAddMapping (castPtr mappingPtr)
@@ -148,17 +148,17 @@ addControllerMapping mapping =
  @<https://raw.githubusercontent.com/gabomdq/SDL_GameControllerDB/master/gamecontrollerdb.txt here>@
  (on GitHub).
 
- See @<https://wiki.libsdl.org/SDL_GameControllerAddMappingsFromFile SDL_GameControllerAddMappingsFromFile>@ for C documentation.
+ See @<https://wiki.libsdl.org/SDL_AddGamepadMappingsFromFile SDL_AddGamepadMappingsFromFile>@ for C documentation.
 -}
 addControllerMappingsFromFile :: MonadIO m => FilePath -> m ()
 addControllerMappingsFromFile mappingFile =
   liftIO $
-    throwIfNeg_ "SDL.Input.GameController.addControllerMappingsFromFile" "SDL_GameControllerAddMappingsFromFile" $
+    throwIfNeg_ "SDL.Input.GameController.addControllerMappingsFromFile" "SDL_AddGamepadMappingsFromFile" $
       withCString mappingFile Raw.gameControllerAddMappingsFromFile
 
 {- | Get the current state of an axis control on a game controller.
 
- See @<https://wiki.libsdl.org/SDL_GameControllerGetAxis SDL_GameControllerGetAxis>@ for C documentation.
+ See @<https://wiki.libsdl.org/SDL_GetGamepadAxis SDL_GetGamepadAxis>@ for C documentation.
 -}
 controllerAxis :: MonadIO m => GameController -> ControllerAxis -> m Int16
 controllerAxis (GameController c) axis =
@@ -166,7 +166,7 @@ controllerAxis (GameController c) axis =
 
 {- | Get the current state of a button on a game controller.
 
- See @<https://wiki.libsdl.org/SDL_GameControllerGetButton SDL_GameControllerGetButton>@ for C documentation.
+ See @<https://wiki.libsdl.org/SDL_GetGamepadButton SDL_GetGamepadButton>@ for C documentation.
 -}
 controllerButton :: MonadIO m => GameController -> ControllerButton -> m ControllerButtonState
 controllerButton (GameController c) button =
@@ -194,41 +194,41 @@ data ControllerButton
 
 instance FromNumber ControllerButton Int32 where
   fromNumber n = case n of
-    Raw.SDL_CONTROLLER_BUTTON_A -> ControllerButtonA
-    Raw.SDL_CONTROLLER_BUTTON_B -> ControllerButtonB
-    Raw.SDL_CONTROLLER_BUTTON_X -> ControllerButtonX
-    Raw.SDL_CONTROLLER_BUTTON_Y -> ControllerButtonY
-    Raw.SDL_CONTROLLER_BUTTON_BACK -> ControllerButtonBack
-    Raw.SDL_CONTROLLER_BUTTON_GUIDE -> ControllerButtonGuide
-    Raw.SDL_CONTROLLER_BUTTON_START -> ControllerButtonStart
-    Raw.SDL_CONTROLLER_BUTTON_LEFTSTICK -> ControllerButtonLeftStick
-    Raw.SDL_CONTROLLER_BUTTON_RIGHTSTICK -> ControllerButtonRightStick
-    Raw.SDL_CONTROLLER_BUTTON_LEFTSHOULDER -> ControllerButtonLeftShoulder
-    Raw.SDL_CONTROLLER_BUTTON_RIGHTSHOULDER -> ControllerButtonRightShoulder
-    Raw.SDL_CONTROLLER_BUTTON_DPAD_UP -> ControllerButtonDpadUp
-    Raw.SDL_CONTROLLER_BUTTON_DPAD_DOWN -> ControllerButtonDpadDown
-    Raw.SDL_CONTROLLER_BUTTON_DPAD_LEFT -> ControllerButtonDpadLeft
-    Raw.SDL_CONTROLLER_BUTTON_DPAD_RIGHT -> ControllerButtonDpadRight
+    Raw.SDL_GAMEPAD_BUTTON_SOUTH -> ControllerButtonA
+    Raw.SDL_GAMEPAD_BUTTON_EAST -> ControllerButtonB
+    Raw.SDL_GAMEPAD_BUTTON_WEST -> ControllerButtonX
+    Raw.SDL_GAMEPAD_BUTTON_NORTH -> ControllerButtonY
+    Raw.SDL_GAMEPAD_BUTTON_BACK -> ControllerButtonBack
+    Raw.SDL_GAMEPAD_BUTTON_GUIDE -> ControllerButtonGuide
+    Raw.SDL_GAMEPAD_BUTTON_START -> ControllerButtonStart
+    Raw.SDL_GAMEPAD_BUTTON_LEFT_STICK -> ControllerButtonLeftStick
+    Raw.SDL_GAMEPAD_BUTTON_RIGHT_STICK -> ControllerButtonRightStick
+    Raw.SDL_GAMEPAD_BUTTON_LEFT_SHOULDER -> ControllerButtonLeftShoulder
+    Raw.SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER -> ControllerButtonRightShoulder
+    Raw.SDL_GAMEPAD_BUTTON_DPAD_UP -> ControllerButtonDpadUp
+    Raw.SDL_GAMEPAD_BUTTON_DPAD_DOWN -> ControllerButtonDpadDown
+    Raw.SDL_GAMEPAD_BUTTON_DPAD_LEFT -> ControllerButtonDpadLeft
+    Raw.SDL_GAMEPAD_BUTTON_DPAD_RIGHT -> ControllerButtonDpadRight
     _ -> ControllerButtonInvalid
 
 instance ToNumber ControllerButton Int32 where
   toNumber c = case c of
-    ControllerButtonA -> Raw.SDL_CONTROLLER_BUTTON_A
-    ControllerButtonB -> Raw.SDL_CONTROLLER_BUTTON_B
-    ControllerButtonX -> Raw.SDL_CONTROLLER_BUTTON_X
-    ControllerButtonY -> Raw.SDL_CONTROLLER_BUTTON_Y
-    ControllerButtonBack -> Raw.SDL_CONTROLLER_BUTTON_BACK
-    ControllerButtonGuide -> Raw.SDL_CONTROLLER_BUTTON_GUIDE
-    ControllerButtonStart -> Raw.SDL_CONTROLLER_BUTTON_START
-    ControllerButtonLeftStick -> Raw.SDL_CONTROLLER_BUTTON_LEFTSTICK
-    ControllerButtonRightStick -> Raw.SDL_CONTROLLER_BUTTON_RIGHTSTICK
-    ControllerButtonLeftShoulder -> Raw.SDL_CONTROLLER_BUTTON_LEFTSHOULDER
-    ControllerButtonRightShoulder -> Raw.SDL_CONTROLLER_BUTTON_RIGHTSHOULDER
-    ControllerButtonDpadUp -> Raw.SDL_CONTROLLER_BUTTON_DPAD_UP
-    ControllerButtonDpadDown -> Raw.SDL_CONTROLLER_BUTTON_DPAD_DOWN
-    ControllerButtonDpadLeft -> Raw.SDL_CONTROLLER_BUTTON_DPAD_LEFT
-    ControllerButtonDpadRight -> Raw.SDL_CONTROLLER_BUTTON_DPAD_RIGHT
-    ControllerButtonInvalid -> Raw.SDL_CONTROLLER_BUTTON_INVALID
+    ControllerButtonA -> Raw.SDL_GAMEPAD_BUTTON_SOUTH
+    ControllerButtonB -> Raw.SDL_GAMEPAD_BUTTON_EAST
+    ControllerButtonX -> Raw.SDL_GAMEPAD_BUTTON_WEST
+    ControllerButtonY -> Raw.SDL_GAMEPAD_BUTTON_NORTH
+    ControllerButtonBack -> Raw.SDL_GAMEPAD_BUTTON_BACK
+    ControllerButtonGuide -> Raw.SDL_GAMEPAD_BUTTON_GUIDE
+    ControllerButtonStart -> Raw.SDL_GAMEPAD_BUTTON_START
+    ControllerButtonLeftStick -> Raw.SDL_GAMEPAD_BUTTON_LEFT_STICK
+    ControllerButtonRightStick -> Raw.SDL_GAMEPAD_BUTTON_RIGHT_STICK
+    ControllerButtonLeftShoulder -> Raw.SDL_GAMEPAD_BUTTON_LEFT_SHOULDER
+    ControllerButtonRightShoulder -> Raw.SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER
+    ControllerButtonDpadUp -> Raw.SDL_GAMEPAD_BUTTON_DPAD_UP
+    ControllerButtonDpadDown -> Raw.SDL_GAMEPAD_BUTTON_DPAD_DOWN
+    ControllerButtonDpadLeft -> Raw.SDL_GAMEPAD_BUTTON_DPAD_LEFT
+    ControllerButtonDpadRight -> Raw.SDL_GAMEPAD_BUTTON_DPAD_RIGHT
+    ControllerButtonInvalid -> Raw.SDL_GAMEPAD_BUTTON_INVALID
 
 -- | Identifies the state of a controller button.
 data ControllerButtonState
@@ -239,8 +239,8 @@ data ControllerButtonState
 
 instance FromNumber ControllerButtonState Word32 where
   fromNumber n = case n of
-    Raw.SDL_CONTROLLERBUTTONDOWN -> ControllerButtonPressed
-    Raw.SDL_CONTROLLERBUTTONUP -> ControllerButtonReleased
+    Raw.SDL_EVENT_GAMEPAD_BUTTON_DOWN -> ControllerButtonPressed
+    Raw.SDL_EVENT_GAMEPAD_BUTTON_UP -> ControllerButtonReleased
     _ -> ControllerButtonInvalidState
 
 data ControllerAxis
@@ -256,24 +256,24 @@ data ControllerAxis
 
 instance ToNumber ControllerAxis Int32 where
   toNumber a = case a of
-    ControllerAxisLeftX -> Raw.SDL_CONTROLLER_AXIS_LEFTX
-    ControllerAxisLeftY -> Raw.SDL_CONTROLLER_AXIS_LEFTY
-    ControllerAxisRightX -> Raw.SDL_CONTROLLER_AXIS_RIGHTX
-    ControllerAxisRightY -> Raw.SDL_CONTROLLER_AXIS_RIGHTY
-    ControllerAxisTriggerLeft -> Raw.SDL_CONTROLLER_AXIS_TRIGGERLEFT
-    ControllerAxisTriggerRight -> Raw.SDL_CONTROLLER_AXIS_TRIGGERRIGHT
-    ControllerAxisMax -> Raw.SDL_CONTROLLER_AXIS_MAX
-    ControllerAxisInvalid -> Raw.SDL_CONTROLLER_AXIS_INVALID
+    ControllerAxisLeftX -> Raw.SDL_GAMEPAD_AXIS_LEFTX
+    ControllerAxisLeftY -> Raw.SDL_GAMEPAD_AXIS_LEFTY
+    ControllerAxisRightX -> Raw.SDL_GAMEPAD_AXIS_RIGHTX
+    ControllerAxisRightY -> Raw.SDL_GAMEPAD_AXIS_RIGHTY
+    ControllerAxisTriggerLeft -> Raw.SDL_GAMEPAD_AXIS_LEFT_TRIGGER
+    ControllerAxisTriggerRight -> Raw.SDL_GAMEPAD_AXIS_RIGHT_TRIGGER
+    ControllerAxisMax -> Raw.SDL_GAMEPAD_AXIS_COUNT
+    ControllerAxisInvalid -> Raw.SDL_GAMEPAD_AXIS_INVALID
 
 instance FromNumber ControllerAxis Int32 where
   fromNumber n = case n of
-    Raw.SDL_CONTROLLER_AXIS_LEFTX -> ControllerAxisLeftX
-    Raw.SDL_CONTROLLER_AXIS_LEFTY -> ControllerAxisLeftY
-    Raw.SDL_CONTROLLER_AXIS_RIGHTX -> ControllerAxisRightX
-    Raw.SDL_CONTROLLER_AXIS_RIGHTY -> ControllerAxisRightY
-    Raw.SDL_CONTROLLER_AXIS_TRIGGERLEFT -> ControllerAxisTriggerLeft
-    Raw.SDL_CONTROLLER_AXIS_TRIGGERRIGHT -> ControllerAxisTriggerRight
-    Raw.SDL_CONTROLLER_AXIS_MAX -> ControllerAxisMax
+    Raw.SDL_GAMEPAD_AXIS_LEFTX -> ControllerAxisLeftX
+    Raw.SDL_GAMEPAD_AXIS_LEFTY -> ControllerAxisLeftY
+    Raw.SDL_GAMEPAD_AXIS_RIGHTX -> ControllerAxisRightX
+    Raw.SDL_GAMEPAD_AXIS_RIGHTY -> ControllerAxisRightY
+    Raw.SDL_GAMEPAD_AXIS_LEFT_TRIGGER -> ControllerAxisTriggerLeft
+    Raw.SDL_GAMEPAD_AXIS_RIGHT_TRIGGER -> ControllerAxisTriggerRight
+    Raw.SDL_GAMEPAD_AXIS_COUNT -> ControllerAxisMax
     _ -> ControllerAxisInvalid
 
 -- | Identifies whether the game controller was added, removed, or remapped.
@@ -285,6 +285,6 @@ data ControllerDeviceConnection
 
 instance FromNumber ControllerDeviceConnection Word32 where
   fromNumber n = case n of
-    Raw.SDL_CONTROLLERDEVICEADDED -> ControllerDeviceAdded
-    Raw.SDL_CONTROLLERDEVICEREMOVED -> ControllerDeviceRemoved
+    Raw.SDL_EVENT_GAMEPAD_ADDED -> ControllerDeviceAdded
+    Raw.SDL_EVENT_GAMEPAD_REMOVED -> ControllerDeviceRemoved
     _ -> ControllerDeviceRemapped

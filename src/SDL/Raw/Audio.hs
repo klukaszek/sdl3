@@ -47,7 +47,7 @@ foreign import ccall "SDL.h SDL_ClearQueuedAudio" clearQueuedAudioFFI :: AudioDe
 foreign import ccall "SDL.h SDL_CloseAudio" closeAudioFFI :: IO ()
 foreign import ccall "SDL.h SDL_CloseAudioDevice" closeAudioDeviceFFI :: AudioDeviceID -> IO ()
 foreign import ccall "SDL.h SDL_ConvertAudio" convertAudioFFI :: Ptr AudioCVT -> IO CInt
-foreign import ccall "SDL.h SDL_FreeWAV" freeWAVFFI :: Ptr Word8 -> IO ()
+foreign import ccall "SDL.h SDL_free" freeWAVFFI :: Ptr Word8 -> IO ()
 foreign import ccall "SDL.h SDL_GetAudioDeviceName" getAudioDeviceNameFFI :: CInt -> CInt -> IO CString
 foreign import ccall "SDL.h SDL_GetAudioDeviceStatus" getAudioDeviceStatusFFI :: AudioDeviceID -> IO AudioStatus
 foreign import ccall "SDL.h SDL_GetAudioDriver" getAudioDriverFFI :: CInt -> IO CString
@@ -56,11 +56,11 @@ foreign import ccall "SDL.h SDL_GetCurrentAudioDriver" getCurrentAudioDriverFFI 
 foreign import ccall "SDL.h SDL_GetNumAudioDevices" getNumAudioDevicesFFI :: CInt -> IO CInt
 foreign import ccall "SDL.h SDL_GetNumAudioDrivers" getNumAudioDriversFFI :: IO CInt
 foreign import ccall "SDL.h SDL_GetQueuedAudioSize" getQueuedAudioSizeFFI :: AudioDeviceID -> IO Word32
-foreign import ccall "SDL.h SDL_LoadWAV_RW" loadWAV_RWFFI :: Ptr RWops -> CInt -> Ptr AudioSpec -> Ptr (Ptr Word8) -> Ptr Word32 -> IO (Ptr AudioSpec)
+foreign import ccall "SDL.h SDL_LoadWAV_IO" loadWAV_RWFFI :: Ptr RWops -> CInt -> Ptr AudioSpec -> Ptr (Ptr Word8) -> Ptr Word32 -> IO (Ptr AudioSpec)
 foreign import ccall "SDL.h SDL_LockAudio" lockAudioFFI :: IO ()
 foreign import ccall "SDL.h SDL_LockAudioDevice" lockAudioDeviceFFI :: AudioDeviceID -> IO ()
 foreign import ccall "SDL.h SDL_MixAudio" mixAudioFFI :: Ptr Word8 -> Ptr Word8 -> Word32 -> CInt -> IO ()
-foreign import ccall "SDL.h SDL_MixAudioFormat" mixAudioFormatFFI :: Ptr Word8 -> Ptr Word8 -> AudioFormat -> Word32 -> CInt -> IO ()
+foreign import ccall "SDL.h SDL_MixAudio" mixAudioFormatFFI :: Ptr Word8 -> Ptr Word8 -> AudioFormat -> Word32 -> CInt -> IO ()
 foreign import ccall "SDL.h SDL_OpenAudio" openAudioFFI :: Ptr AudioSpec -> Ptr AudioSpec -> IO CInt
 foreign import ccall "SDL.h SDL_OpenAudioDevice" openAudioDeviceFFI :: CString -> CInt -> Ptr AudioSpec -> Ptr AudioSpec -> CInt -> IO AudioDeviceID
 foreign import ccall "SDL.h SDL_PauseAudio" pauseAudioFFI :: CInt -> IO ()

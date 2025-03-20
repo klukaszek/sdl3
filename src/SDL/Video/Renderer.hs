@@ -375,14 +375,14 @@ createRGBSurfaceFrom pixels (V2 w h) p pf = liftIO $
 --
 -- If there is a clip rectangle set on the destination (set via 'clipRect'), then this function will fill based on the intersection of the clip rectangle and the given 'Rectangle'.
 --
--- See @<https://wiki.libsdl.org/SDL_FillRect SDL_FillRect>@ for C documentation.
+-- See @<https://wiki.libsdl.org/SDL_FillSurfaceRect SDL_FillSurfaceRect>@ for C documentation.
 surfaceFillRect :: MonadIO m
                 => Surface -- ^ The 'Surface' that is the drawing target.
                 -> Maybe (Rectangle CInt) -- ^ The rectangle to fill, or 'Nothing' to fill the entire surface.
                 -> V4 Word8 -- ^ The color to fill with. If the color value contains an alpha component then the destination is simply filled with that alpha information, no blending takes place. This colour will be implictly mapped to the closest approximation that matches the surface's pixel format.
                 -> m ()
 surfaceFillRect (Surface s _) rect (V4 r g b a) = liftIO $
-  throwIfNeg_ "SDL.Video.fillRect" "SDL_FillRect" $
+  throwIfNeg_ "SDL.Video.fillRect" "SDL_FillSurfaceRect" $
   maybeWith with rect $ \rectPtr -> do
     format <- Raw.surfaceFormat <$> peek s
     Raw.mapRGBA format r g b a >>= Raw.fillRect s (castPtr rectPtr)
@@ -391,14 +391,14 @@ surfaceFillRect (Surface s _) rect (V4 r g b a) = liftIO $
 --
 -- If there is a clip rectangle set on any of the destinations (set via 'clipRect'), then this function will fill based on the intersection of the clip rectangle and the given 'Rectangle's.
 --
--- See @<https://wiki.libsdl.org/SDL_FillRect SDL_FillRects>@ for C documentation.
+-- See @<https://wiki.libsdl.org/SDL_FillSurfaceRect SDL_FillSurfaceRects>@ for C documentation.
 surfaceFillRects :: MonadIO m
                  => Surface -- ^ The 'Surface' that is the drawing target.
                  -> SV.Vector (Rectangle CInt) -- ^ A 'SV.Vector' of 'Rectangle's to be filled.
                  -> V4 Word8 -- ^ The color to fill with. If the color value contains an alpha component then the destination is simply filled with that alpha information, no blending takes place. This colour will be implictly mapped to the closest approximation that matches the surface's pixel format.
                  -> m ()
 surfaceFillRects (Surface s _) rects (V4 r g b a) = liftIO $ do
-  throwIfNeg_ "SDL.Video.fillRects" "SDL_FillRects" $
+  throwIfNeg_ "SDL.Video.fillRects" "SDL_FillSurfaceRects" $
     SV.unsafeWith rects $ \rp -> do
       format <- Raw.surfaceFormat <$> peek s
       Raw.fillRects s
@@ -410,7 +410,7 @@ surfaceFillRects (Surface s _) rects (V4 r g b a) = liftIO $ do
 --
 -- If the surface was created using 'createRGBSurfaceFrom' then the pixel data is not freed.
 --
--- See @<https://wiki.libsdl.org/SDL_FreeSurface SDL_FreeSurface>@ for the C documentation.
+-- See @<https://wiki.libsdl.org/SDL_DestroySurface SDL_DestroySurface>@ for the C documentation.
 freeSurface :: MonadIO m => Surface -> m ()
 freeSurface (Surface s _) = Raw.freeSurface s
 
@@ -617,21 +617,21 @@ newtype Texture = Texture Raw.Texture
 
 -- | Draw a rectangle outline on the current rendering target.
 --
--- See @<https://wiki.libsdl.org/SDL_RenderDrawRect SDL_RenderDrawRect>@ for C documentation.
+-- See @<https://wiki.libsdl.org/SDL_RenderRect SDL_RenderRect>@ for C documentation.
 drawRect :: MonadIO m
          => Renderer
          -> Maybe (Rectangle CInt) -- ^ The rectangle outline to draw. 'Nothing' for the entire rendering context.
          -> m ()
 drawRect (Renderer r) rect = liftIO $
-  throwIfNeg_ "SDL.Video.drawRect" "SDL_RenderDrawRect" $
+  throwIfNeg_ "SDL.Video.drawRect" "SDL_RenderRect" $
   maybeWith with rect (Raw.renderDrawRect r . castPtr)
 
 -- | Draw some number of rectangles on the current rendering target.
 --
--- See @<https://wiki.libsdl.org/SDL_RenderDrawRects SDL_RenderDrawRects>@ for C documentation.
+-- See @<https://wiki.libsdl.org/SDL_RenderRects SDL_RenderRects>@ for C documentation.
 drawRects :: MonadIO m => Renderer -> SV.Vector (Rectangle CInt) -> m ()
 drawRects (Renderer r) rects = liftIO $
-  throwIfNeg_ "SDL.Video.drawRects" "SDL_RenderDrawRects" $
+  throwIfNeg_ "SDL.Video.drawRects" "SDL_RenderRects" $
   SV.unsafeWith rects $ \rp ->
     Raw.renderDrawRects r
                         (castPtr rp)
@@ -669,7 +669,7 @@ fillRects (Renderer r) rects = liftIO $
 -- | Copy a portion of the texture to the current rendering target.
 copyF :: MonadIO m => Renderer -> Texture -> Maybe (Rectangle CInt) -> Maybe (Rectangle CFloat) -> m ()
 copyF (Renderer r) (Texture t) srcRect dstRect = liftIO $
-  throwIfNeg_ "SDL.Video.copyF" "SDL_RenderCopyF" $
+  throwIfNeg_ "SDL.Video.copyF" "SDL_RenderTexture" $
     maybeWith with srcRect $ \src ->
       maybeWith with dstRect $ \dst ->
         Raw.renderCopyF r t (castPtr src) (castPtr dst)
@@ -686,7 +686,7 @@ copyExF :: MonadIO m
        -> m ()
 copyExF (Renderer r) (Texture t) srcRect dstRect theta center flips =
   liftIO $
-  throwIfNeg_ "SDL.Video.copyExF" "SDL_RenderCopyExF" $
+  throwIfNeg_ "SDL.Video.copyExF" "SDL_RenderTextureRotated" $
   maybeWith with srcRect $ \src ->
   maybeWith with dstRect $ \dst ->
   maybeWith with center $ \c ->
@@ -698,54 +698,54 @@ copyExF (Renderer r) (Texture t) srcRect dstRect theta center flips =
 -- | Draw a line between two points on the current rendering target.
 drawLineF :: MonadIO m => Renderer -> Point V2 CFloat -> Point V2 CFloat -> m ()
 drawLineF (Renderer r) (P (V2 x y)) (P (V2 x' y')) = liftIO $
-  throwIfNeg_ "SDL.Video.drawLineF" "SDL_RenderDrawLineF" $
+  throwIfNeg_ "SDL.Video.drawLineF" "SDL_RenderLine" $
     Raw.renderDrawLineF r x y x' y'
 
 -- | Draw a series of connected lines on the current rendering target.
 drawLinesF :: MonadIO m => Renderer -> SV.Vector (Point V2 CFloat) -> m ()
 drawLinesF (Renderer r) points = liftIO $
-  throwIfNeg_ "SDL.Video.drawLinesF" "SDL_RenderDrawLinesF" $
+  throwIfNeg_ "SDL.Video.drawLinesF" "SDL_RenderLines" $
     SV.unsafeWith points $ \p ->
       Raw.renderDrawLinesF r (castPtr p) (fromIntegral (SV.length points))
 
 -- | Draw a point on the current rendering target.
 drawPointF :: MonadIO m => Renderer -> Point V2 CFloat -> m ()
 drawPointF (Renderer r) (P (V2 x y)) = liftIO $
-  throwIfNeg_ "SDL.Video.drawPointF" "SDL_RenderDrawPointF" $
+  throwIfNeg_ "SDL.Video.drawPointF" "SDL_RenderPoint" $
     Raw.renderDrawPointF r x y
 
 -- | Draw a collection of points on the current rendering target.
 drawPointsF :: MonadIO m => Renderer -> SV.Vector (Point V2 CFloat) -> m ()
 drawPointsF (Renderer r) points = liftIO $
-  throwIfNeg_ "SDL.Video.drawPointsF" "SDL_RenderDrawPointsF" $
+  throwIfNeg_ "SDL.Video.drawPointsF" "SDL_RenderPoints" $
     SV.unsafeWith points $ \p ->
       Raw.renderDrawPointsF r (castPtr p) (fromIntegral (SV.length points))
 
 -- | Draw the outline of a rectangle on the current rendering target.
 drawRectF :: MonadIO m => Renderer -> Rectangle CFloat -> m ()
 drawRectF (Renderer r) rect = liftIO $
-  throwIfNeg_ "SDL.Video.drawRectF" "SDL_RenderDrawRectF" $
+  throwIfNeg_ "SDL.Video.drawRectF" "SDL_RenderRect" $
     with rect $ \rectPtr ->
       Raw.renderDrawRectF r (castPtr rectPtr)
 
 -- | Draw a series of rectangle outlines on the current rendering target.
 drawRectsF :: MonadIO m => Renderer -> SV.Vector (Rectangle CFloat) -> m ()
 drawRectsF (Renderer r) rects = liftIO $
-  throwIfNeg_ "SDL.Video.drawRectsF" "SDL_RenderDrawRectsF" $
+  throwIfNeg_ "SDL.Video.drawRectsF" "SDL_RenderRects" $
     SV.unsafeWith rects $ \rp ->
       Raw.renderDrawRectsF r (castPtr rp) (fromIntegral (SV.length rects))
 
 -- | Draw a filled rectangle on the current rendering target.
 fillRectF :: MonadIO m => Renderer -> Rectangle CFloat -> m ()
 fillRectF (Renderer r) rect = liftIO $
-  throwIfNeg_ "SDL.Video.fillRectF" "SDL_RenderFillRectF" $
+  throwIfNeg_ "SDL.Video.fillRectF" "SDL_RenderFillRect" $
     with rect $ \rectPtr ->
       Raw.renderFillRectF r (castPtr rectPtr)
 
 -- | Draw a series of filled rectangles on the current rendering target.
 fillRectsF :: MonadIO m => Renderer -> SV.Vector (Rectangle CFloat) -> m ()
 fillRectsF (Renderer r) rects = liftIO $
-  throwIfNeg_ "SDL.Video.fillRectsF" "SDL_RenderFillRectsF" $
+  throwIfNeg_ "SDL.Video.fillRectsF" "SDL_RenderFillRects" $
     SV.unsafeWith rects $ \rp ->
       Raw.renderFillRectsF r (castPtr rp) (fromIntegral (SV.length rects))
 
@@ -806,12 +806,12 @@ clear (Renderer r) =
 --
 -- If this results in scaling or subpixel drawing by the rendering backend, it will be handled using the appropriate quality hints. For best results use integer scaling factors.
 --
--- See @<https://wiki.libsdl.org/SDL_RenderSetScale SDL_RenderSetScale>@ and @<https://wiki.libsdl.org/SDL_RenderGetScale SDL_RenderGetScale>@ for C documentation.
+-- See @<https://wiki.libsdl.org/SDL_SetRenderScale SDL_SetRenderScale>@ and @<https://wiki.libsdl.org/SDL_GetRenderScale SDL_GetRenderScale>@ for C documentation.
 rendererScale :: Renderer -> StateVar (V2 CFloat)
 rendererScale (Renderer r) = makeStateVar renderGetScale renderSetScale
   where
   renderSetScale (V2 x y) =
-    throwIfNeg_ "SDL.Video.renderSetScale" "SDL_RenderSetScale" $
+    throwIfNeg_ "SDL.Video.renderSetScale" "SDL_SetRenderScale" $
     Raw.renderSetScale r x y
 
   renderGetScale =
@@ -824,7 +824,7 @@ rendererScale (Renderer r) = makeStateVar renderGetScale renderSetScale
 --
 -- This 'StateVar' can be modified using '$=' and the current value retrieved with 'get'.
 --
--- See @<https://wiki.libsdl.org/SDL_RenderSetClipRect SDL_RenderSetClipRect>@ and @<https://wiki.libsdl.org/SDL_RenderGetClipRect SDL_RenderGetClipRect>@ for C documentation.
+-- See @<https://wiki.libsdl.org/SDL_SetRenderClipRect SDL_SetRenderClipRect>@ and @<https://wiki.libsdl.org/SDL_GetRenderClipRect SDL_GetRenderClipRect>@ for C documentation.
 rendererClipRect :: Renderer -> StateVar (Maybe (Rectangle CInt))
 rendererClipRect (Renderer r) = makeStateVar renderGetClipRect renderSetClipRect
   where
@@ -833,14 +833,14 @@ rendererClipRect (Renderer r) = makeStateVar renderGetClipRect renderSetClipRect
       Raw.renderGetClipRect r rPtr
       maybePeek peek (castPtr rPtr)
   renderSetClipRect rect =
-    throwIfNeg_ "SDL.Video.renderSetClipRect" "SDL_RenderSetClipRect" $
+    throwIfNeg_ "SDL.Video.renderSetClipRect" "SDL_SetRenderClipRect" $
     maybeWith with rect $ Raw.renderSetClipRect r . castPtr
 
 -- | Get or set the drawing area for rendering on the current target.
 --
 -- This 'StateVar' can be modified using '$=' and the current value retrieved with 'get'.
 --
--- See @<https://wiki.libsdl.org/SDL_RenderSetViewport SDL_RenderSetViewport>@ and @<https://wiki.libsdl.org/SDL_RenderGetViewport SDL_RenderGetViewport>@ for C documentation.
+-- See @<https://wiki.libsdl.org/SDL_SetRenderViewport SDL_SetRenderViewport>@ and @<https://wiki.libsdl.org/SDL_GetRenderViewport SDL_GetRenderViewport>@ for C documentation.
 rendererViewport :: Renderer -> StateVar (Maybe (Rectangle CInt))
 rendererViewport (Renderer r) = makeStateVar renderGetViewport renderSetViewport
   where
@@ -850,7 +850,7 @@ rendererViewport (Renderer r) = makeStateVar renderGetViewport renderSetViewport
       maybePeek peek (castPtr rect)
 
   renderSetViewport rect =
-    throwIfNeg_ "SDL.Video.renderSetViewport" "SDL_RenderSetViewport" $
+    throwIfNeg_ "SDL.Video.renderSetViewport" "SDL_SetRenderViewport" $
     maybeWith with rect $ Raw.renderSetViewport r . castPtr
 
 -- | Update the screen with any rendering performed since the previous call.
@@ -867,7 +867,7 @@ present (Renderer r) = Raw.renderPresent r
 
 -- | Copy a portion of the texture to the current rendering target.
 --
--- See @<https://wiki.libsdl.org/SDL_RenderCopy SDL_RenderCopy>@ for C documentation.
+-- See @<https://wiki.libsdl.org/SDL_RenderTexture SDL_RenderTexture>@ for C documentation.
 copy :: MonadIO m
      => Renderer -- ^ The rendering context
      -> Texture -- ^ The source texture
@@ -876,14 +876,14 @@ copy :: MonadIO m
      -> m ()
 copy (Renderer r) (Texture t) srcRect dstRect =
   liftIO $
-  throwIfNeg_ "SDL.Video.copy" "SDL_RenderCopy" $
+  throwIfNeg_ "SDL.Video.copy" "SDL_RenderTexture" $
   maybeWith with srcRect $ \src ->
   maybeWith with dstRect $ \dst ->
   Raw.renderCopy r t (castPtr src) (castPtr dst)
 
 -- | Copy a portion of the texture to the current rendering target, optionally rotating it by angle around the given center and also flipping it top-bottom and/or left-right.
 --
--- See @<https://wiki.libsdl.org/SDL_RenderCopyEx SDL_RenderCopyEx>@ for C documentation.
+-- See @<https://wiki.libsdl.org/SDL_RenderTextureRotated SDL_RenderTextureRotated>@ for C documentation.
 copyEx :: MonadIO m
        => Renderer -- ^ The rendering context
        -> Texture -- ^ The source texture
@@ -895,7 +895,7 @@ copyEx :: MonadIO m
        -> m ()
 copyEx (Renderer r) (Texture t) srcRect dstRect theta center flips =
   liftIO $
-  throwIfNeg_ "SDL.Video.copyEx" "SDL_RenderCopyEx" $
+  throwIfNeg_ "SDL.Video.copyEx" "SDL_RenderTextureRotated" $
   maybeWith with srcRect $ \src ->
   maybeWith with dstRect $ \dst ->
   maybeWith with center $ \c ->
@@ -906,26 +906,26 @@ copyEx (Renderer r) (Texture t) srcRect dstRect theta center flips =
 
 -- | Draw a line on the current rendering target.
 --
--- See @<https://wiki.libsdl.org/SDL_RenderDrawLine SDL_RenderDrawLine>@ for C documentation.
+-- See @<https://wiki.libsdl.org/SDL_RenderLine SDL_RenderLine>@ for C documentation.
 drawLine :: (Functor m,MonadIO m)
          => Renderer
          -> Point V2 CInt -- ^ The start point of the line
          -> Point V2 CInt -- ^ The end point of the line
          -> m ()
 drawLine (Renderer r) (P (V2 x y)) (P (V2 x' y')) =
-  throwIfNeg_ "SDL.Video.drawLine" "SDL_RenderDrawLine" $
+  throwIfNeg_ "SDL.Video.drawLine" "SDL_RenderLine" $
   Raw.renderDrawLine r x y x' y'
 
 -- | Draw a series of connected lines on the current rendering target.
 --
--- See @<https://wiki.libsdl.org/SDL_RenderDrawLines SDL_RenderDrawLines>@ for C documentation.
+-- See @<https://wiki.libsdl.org/SDL_RenderLines SDL_RenderLines>@ for C documentation.
 drawLines :: MonadIO m
           => Renderer
           -> SV.Vector (Point V2 CInt) -- ^ A 'SV.Vector' of points along the line. SDL will draw lines between these points.
           -> m ()
 drawLines (Renderer r) points =
   liftIO $
-  throwIfNeg_ "SDL.Video.drawLines" "SDL_RenderDrawLines" $
+  throwIfNeg_ "SDL.Video.drawLines" "SDL_RenderLines" $
   SV.unsafeWith points $ \cp ->
     Raw.renderDrawLines r
                         (castPtr cp)
@@ -933,19 +933,19 @@ drawLines (Renderer r) points =
 
 -- | Draw a point on the current rendering target.
 --
--- See @<https://wiki.libsdl.org/SDL_RenderDrawPoint SDL_RenderDrawPoint>@ for C documentation.
+-- See @<https://wiki.libsdl.org/SDL_RenderPoint SDL_RenderPoint>@ for C documentation.
 drawPoint :: (Functor m, MonadIO m) => Renderer -> Point V2 CInt -> m ()
 drawPoint (Renderer r) (P (V2 x y)) =
-  throwIfNeg_ "SDL.Video.drawPoint" "SDL_RenderDrawPoint" $
+  throwIfNeg_ "SDL.Video.drawPoint" "SDL_RenderPoint" $
   Raw.renderDrawPoint r x y
 
 -- | Draw multiple points on the current rendering target.
 --
--- See @<https://wiki.libsdl.org/SDL_RenderDrawPoints SDL_RenderDrawPoints>@ for C documentation.
+-- See @<https://wiki.libsdl.org/SDL_RenderPoints SDL_RenderPoints>@ for C documentation.
 drawPoints :: MonadIO m => Renderer -> SV.Vector (Point V2 CInt) -> m ()
 drawPoints (Renderer r) points =
   liftIO $
-  throwIfNeg_ "SDL.Video.drawPoints" "SDL_RenderDrawPoints" $
+  throwIfNeg_ "SDL.Video.drawPoints" "SDL_RenderPoints" $
   SV.unsafeWith points $ \cp ->
     Raw.renderDrawPoints r
                          (castPtr cp)
@@ -967,7 +967,7 @@ convertSurface (Surface s _) (SurfacePixelFormat fmt) =
 
 -- | Perform a scaled surface copy to a destination surface.
 --
--- See @<https://wiki.libsdl.org/SDL_BlitScaled SDL_BlitScaled>@ for C documentation.
+-- See @<https://wiki.libsdl.org/SDL_BlitSurfaceScaled SDL_BlitSurfaceScaled>@ for C documentation.
 surfaceBlitScaled :: MonadIO m
                   => Surface -- ^ The 'Surface' to be copied from
                   -> Maybe (Rectangle CInt) -- ^ The rectangle to be copied, or 'Nothing' to copy the entire surface
@@ -985,7 +985,7 @@ surfaceBlitScaled (Surface src _) srcRect (Surface dst _) dstRect =
 --
 -- This 'StateVar' can be modified using '$=' and the current value retrieved with 'get'.
 --
--- See @<https://wiki.libsdl.org/SDL_SetColorKey SDL_SetColorKey>@ and @<https://wiki.libsdl.org/SDL_GetColorKey SDL_GetColorKey>@ for C documentation.
+-- See @<https://wiki.libsdl.org/SDL_SetSurfaceColorKey SDL_SetSurfaceColorKey>@ and @<https://wiki.libsdl.org/SDL_GetSurfaceColorKey SDL_GetSurfaceColorKey>@ for C documentation.
 surfaceColorKey :: Surface -> StateVar (Maybe (V4 Word8))
 surfaceColorKey (Surface s _) = makeStateVar getColorKey setColorKey
   where
@@ -1003,7 +1003,7 @@ surfaceColorKey (Surface s _) = makeStateVar getColorKey setColorKey
                     do Raw.getRGBA mapped format r g b a
                        Just <$> (V4 <$> peek r <*> peek g <*> peek b <*> peek a)
   setColorKey key =
-    throwIfNeg_ "SDL.Video.Renderer.setColorKey" "SDL_SetColorKey" $
+    throwIfNeg_ "SDL.Video.Renderer.setColorKey" "SDL_SetSurfaceColorKey" $
     case key of
       Nothing ->
         alloca $ \keyPtr -> do
@@ -1087,9 +1087,9 @@ instance FromNumber PixelFormat Word32 where
     Raw.SDL_PIXELFORMAT_INDEX4MSB -> Index4MSB
     Raw.SDL_PIXELFORMAT_INDEX8 -> Index8
     Raw.SDL_PIXELFORMAT_RGB332 -> RGB332
-    Raw.SDL_PIXELFORMAT_RGB444 -> RGB444
-    Raw.SDL_PIXELFORMAT_RGB555 -> RGB555
-    Raw.SDL_PIXELFORMAT_BGR555 -> BGR555
+    Raw.SDL_PIXELFORMAT_XRGB4444 -> RGB444
+    Raw.SDL_PIXELFORMAT_XRGB1555 -> RGB555
+    Raw.SDL_PIXELFORMAT_XBGR1555 -> BGR555
     Raw.SDL_PIXELFORMAT_ARGB4444 -> ARGB4444
     Raw.SDL_PIXELFORMAT_RGBA4444 -> RGBA4444
     Raw.SDL_PIXELFORMAT_ABGR4444 -> ABGR4444
@@ -1102,9 +1102,9 @@ instance FromNumber PixelFormat Word32 where
     Raw.SDL_PIXELFORMAT_BGR565 -> BGR565
     Raw.SDL_PIXELFORMAT_RGB24 -> RGB24
     Raw.SDL_PIXELFORMAT_BGR24 -> BGR24
-    Raw.SDL_PIXELFORMAT_RGB888 -> RGB888
+    Raw.SDL_PIXELFORMAT_XRGB8888 -> RGB888
     Raw.SDL_PIXELFORMAT_RGBX8888 -> RGBX8888
-    Raw.SDL_PIXELFORMAT_BGR888 -> BGR888
+    Raw.SDL_PIXELFORMAT_XBGR8888 -> BGR888
     Raw.SDL_PIXELFORMAT_BGRX8888 -> BGRX8888
     Raw.SDL_PIXELFORMAT_ARGB8888 -> ARGB8888
     Raw.SDL_PIXELFORMAT_RGBA8888 -> RGBA8888
@@ -1128,9 +1128,9 @@ instance ToNumber PixelFormat Word32 where
     Index4MSB -> Raw.SDL_PIXELFORMAT_INDEX4MSB
     Index8 -> Raw.SDL_PIXELFORMAT_INDEX8
     RGB332 -> Raw.SDL_PIXELFORMAT_RGB332
-    RGB444 -> Raw.SDL_PIXELFORMAT_RGB444
-    RGB555 -> Raw.SDL_PIXELFORMAT_RGB555
-    BGR555 -> Raw.SDL_PIXELFORMAT_BGR555
+    RGB444 -> Raw.SDL_PIXELFORMAT_XRGB4444
+    RGB555 -> Raw.SDL_PIXELFORMAT_XRGB1555
+    BGR555 -> Raw.SDL_PIXELFORMAT_XBGR1555
     ARGB4444 -> Raw.SDL_PIXELFORMAT_ARGB4444
     RGBA4444 -> Raw.SDL_PIXELFORMAT_RGBA4444
     ABGR4444 -> Raw.SDL_PIXELFORMAT_ABGR4444
@@ -1143,9 +1143,9 @@ instance ToNumber PixelFormat Word32 where
     BGR565 -> Raw.SDL_PIXELFORMAT_BGR565
     RGB24 -> Raw.SDL_PIXELFORMAT_RGB24
     BGR24 -> Raw.SDL_PIXELFORMAT_BGR24
-    RGB888 -> Raw.SDL_PIXELFORMAT_RGB888
+    RGB888 -> Raw.SDL_PIXELFORMAT_XRGB8888
     RGBX8888 -> Raw.SDL_PIXELFORMAT_RGBX8888
-    BGR888 -> Raw.SDL_PIXELFORMAT_BGR888
+    BGR888 -> Raw.SDL_PIXELFORMAT_XBGR8888
     BGRX8888 -> Raw.SDL_PIXELFORMAT_BGRX8888
     ARGB8888 -> Raw.SDL_PIXELFORMAT_ARGB8888
     RGBA8888 -> Raw.SDL_PIXELFORMAT_RGBA8888
@@ -1356,7 +1356,7 @@ rendererIntegerScale (Renderer r) = makeStateVar renderGetIntegerScale renderSet
 --
 -- This 'StateVar' can be modified using '$=' and the current value retrieved with 'get'.
 --
--- See @<https://wiki.libsdl.org/SDL_RenderSetLogicalSize SDL_RenderSetLogicalSize>@ and @<https://wiki.libsdl.org/SDL_RenderGetLogicalSize SDL_RenderGetLogicalSize>@ for C documentation.
+-- See @<https://wiki.libsdl.org/SDL_SetRenderLogicalPresentation SDL_SetRenderLogicalPresentation>@ and @<https://wiki.libsdl.org/SDL_GetRenderLogicalPresentation SDL_GetRenderLogicalPresentation>@ for C documentation.
 rendererLogicalSize :: Renderer -> StateVar (Maybe (V2 CInt))
 rendererLogicalSize (Renderer r) = makeStateVar renderGetLogicalSize renderSetLogicalSize
   where
@@ -1368,7 +1368,7 @@ rendererLogicalSize (Renderer r) = makeStateVar renderGetLogicalSize renderSetLo
       return $ if v == 0 then Nothing else Just v
 
   renderSetLogicalSize v =
-    throwIfNeg_ "SDL.Video.renderSetLogicalSize" "SDL_RenderSetLogicalSize" $ do
+    throwIfNeg_ "SDL.Video.renderSetLogicalSize" "SDL_SetRenderLogicalPresentation" $ do
       let (x,y) = case v of Just (V2 vx vy) -> (vx, vy)
                             Nothing -> (0,0)
       Raw.renderSetLogicalSize r x y
@@ -1381,7 +1381,7 @@ renderTargetSupported (Renderer r) = Raw.renderTargetSupported r
 
 -- | Convert the given the enumerated pixel format to a bpp value and RGBA masks.
 --
--- See @<https://wiki.libsdl.org/SDL_PixelFormatEnumToMasks SDL_PixelFormatEnumToMasks>@ for C documentation.
+-- See @<https://wiki.libsdl.org/SDL_GetMasksForPixelFormat SDL_GetMasksForPixelFormat>@ for C documentation.
 pixelFormatToMasks :: (MonadIO m) => PixelFormat -> m (CInt, V4 Word32)
 pixelFormatToMasks pf = liftIO $
   alloca $ \bpp ->
@@ -1389,7 +1389,7 @@ pixelFormatToMasks pf = liftIO $
   alloca $ \g ->
   alloca $ \b ->
   alloca $ \a -> do
-    throwIf_ not "SDL.Video.pixelFormatEnumToMasks" "SDL_PixelFormatEnumToMasks" $
+    throwIf_ not "SDL.Video.pixelFormatEnumToMasks" "SDL_GetMasksForPixelFormat" $
       Raw.pixelFormatEnumToMasks (toNumber pf) bpp r g b a
     wrap <$> peek bpp <*> peek r <*> peek g <*> peek b <*> peek a
     where
@@ -1397,7 +1397,7 @@ pixelFormatToMasks pf = liftIO $
 
 -- | Convert a bpp value and RGBA masks to an enumerated pixel format.
 --
--- See @<https://wiki.libsdl.org/SDL_MasksToPixelFormatEnum SDL_MasksToPixelFormatEnum>@ for C documentation.
+-- See @<https://wiki.libsdl.org/SDL_GetPixelFormatForMasks SDL_GetPixelFormatForMasks>@ for C documentation.
 masksToPixelFormat :: (MonadIO m) => CInt -> V4 Word32 -> m PixelFormat
 masksToPixelFormat bpp (V4 r g b a) = liftIO $
   fromNumber <$> Raw.masksToPixelFormatEnum bpp r g b a

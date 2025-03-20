@@ -77,32 +77,32 @@ data KeyModifier = KeyModifier
 
 instance FromNumber KeyModifier Word32 where
   fromNumber m' = let m = m' in KeyModifier
-    { keyModifierLeftShift  = m .&. Raw.KMOD_LSHIFT > 0
-    , keyModifierRightShift = m .&. Raw.KMOD_RSHIFT > 0
-    , keyModifierLeftCtrl   = m .&. Raw.KMOD_LCTRL  > 0
-    , keyModifierRightCtrl  = m .&. Raw.KMOD_RCTRL  > 0
-    , keyModifierLeftAlt    = m .&. Raw.KMOD_LALT   > 0
-    , keyModifierRightAlt   = m .&. Raw.KMOD_RALT   > 0
-    , keyModifierLeftGUI    = m .&. Raw.KMOD_LGUI   > 0
-    , keyModifierRightGUI   = m .&. Raw.KMOD_RGUI   > 0
-    , keyModifierNumLock    = m .&. Raw.KMOD_NUM    > 0
-    , keyModifierCapsLock   = m .&. Raw.KMOD_CAPS   > 0
-    , keyModifierAltGr      = m .&. Raw.KMOD_MODE   > 0
+    { keyModifierLeftShift  = m .&. Raw.SDL_KMOD_LSHIFT > 0
+    , keyModifierRightShift = m .&. Raw.SDL_KMOD_RSHIFT > 0
+    , keyModifierLeftCtrl   = m .&. Raw.SDL_KMOD_LCTRL  > 0
+    , keyModifierRightCtrl  = m .&. Raw.SDL_KMOD_RCTRL  > 0
+    , keyModifierLeftAlt    = m .&. Raw.SDL_KMOD_LALT   > 0
+    , keyModifierRightAlt   = m .&. Raw.SDL_KMOD_RALT   > 0
+    , keyModifierLeftGUI    = m .&. Raw.SDL_KMOD_LGUI   > 0
+    , keyModifierRightGUI   = m .&. Raw.SDL_KMOD_RGUI   > 0
+    , keyModifierNumLock    = m .&. Raw.SDL_KMOD_NUM    > 0
+    , keyModifierCapsLock   = m .&. Raw.SDL_KMOD_CAPS   > 0
+    , keyModifierAltGr      = m .&. Raw.SDL_KMOD_MODE   > 0
     }
 
 instance ToNumber KeyModifier Word32 where
   toNumber m = foldr (.|.) 0
-    [ if keyModifierLeftShift m  then Raw.KMOD_LSHIFT else 0
-    , if keyModifierRightShift m then Raw.KMOD_RSHIFT else 0
-    , if keyModifierLeftCtrl m   then Raw.KMOD_LCTRL  else 0
-    , if keyModifierRightCtrl m  then Raw.KMOD_RCTRL  else 0
-    , if keyModifierLeftAlt m    then Raw.KMOD_LALT   else 0
-    , if keyModifierRightAlt m   then Raw.KMOD_RALT   else 0
-    , if keyModifierLeftGUI m    then Raw.KMOD_LGUI   else 0
-    , if keyModifierRightGUI m   then Raw.KMOD_RGUI   else 0
-    , if keyModifierNumLock m    then Raw.KMOD_NUM    else 0
-    , if keyModifierCapsLock m   then Raw.KMOD_CAPS   else 0
-    , if keyModifierAltGr m      then Raw.KMOD_MODE   else 0
+    [ if keyModifierLeftShift m  then Raw.SDL_KMOD_LSHIFT else 0
+    , if keyModifierRightShift m then Raw.SDL_KMOD_RSHIFT else 0
+    , if keyModifierLeftCtrl m   then Raw.SDL_KMOD_LCTRL  else 0
+    , if keyModifierRightCtrl m  then Raw.SDL_KMOD_RCTRL  else 0
+    , if keyModifierLeftAlt m    then Raw.SDL_KMOD_LALT   else 0
+    , if keyModifierRightAlt m   then Raw.SDL_KMOD_RALT   else 0
+    , if keyModifierLeftGUI m    then Raw.SDL_KMOD_LGUI   else 0
+    , if keyModifierRightGUI m   then Raw.SDL_KMOD_RGUI   else 0
+    , if keyModifierNumLock m    then Raw.SDL_KMOD_NUM    else 0
+    , if keyModifierCapsLock m   then Raw.SDL_KMOD_CAPS   else 0
+    , if keyModifierAltGr m      then Raw.SDL_KMOD_MODE   else 0
     ]
 
 -- | Set the rectangle used to type text inputs and start accepting text input
@@ -130,7 +130,7 @@ hasScreenKeyboardSupport = Raw.hasScreenKeyboardSupport
 
 -- | Check whether the screen keyboard is shown for the given window.
 --
--- See @<https://wiki.libsdl.org/SDL_IsScreenKeyboardShown SDL_IsScreenKeyboardShown>@ for C documentation.
+-- See @<https://wiki.libsdl.org/SDL_ScreenKeyboardShown SDL_ScreenKeyboardShown>@ for C documentation.
 isScreenKeyboardShown :: MonadIO m => Window -> m Bool
 isScreenKeyboardShown (Window w) = Raw.isScreenKeyboardShown w
 

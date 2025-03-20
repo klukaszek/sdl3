@@ -58,42 +58,42 @@ foreign import ccall "SDL.h SDL_CreateThread" createThreadFFI :: ThreadFunction 
 foreign import ccall "SDL.h SDL_DetachThread" detachThreadFFI :: Ptr Thread -> IO ()
 foreign import ccall "SDL.h SDL_GetThreadID" getThreadIDFFI :: Ptr Thread -> IO ThreadID
 foreign import ccall "SDL.h SDL_GetThreadName" getThreadNameFFI :: Ptr Thread -> IO CString
-foreign import ccall "SDL.h SDL_SetThreadPriority" setThreadPriorityFFI :: ThreadPriority -> IO CInt
+foreign import ccall "SDL.h SDL_SetCurrentThreadPriority" setThreadPriorityFFI :: ThreadPriority -> IO CInt
 foreign import ccall "SDL.h SDL_TLSCreate" tlsCreateFFI :: IO TLSID
-foreign import ccall "SDL.h SDL_TLSGet" tlsGetFFI :: TLSID -> IO (Ptr ())
-foreign import ccall "SDL.h SDL_TLSSet" tlsSetFFI :: TLSID -> Ptr () -> FunPtr (Ptr () -> IO ()) -> IO CInt
+foreign import ccall "SDL.h SDL_GetTLS" tlsGetFFI :: TLSID -> IO (Ptr ())
+foreign import ccall "SDL.h SDL_SetTLS" tlsSetFFI :: TLSID -> Ptr () -> FunPtr (Ptr () -> IO ()) -> IO CInt
 foreign import ccall "SDL.h SDL_ThreadID" threadIDFFI :: IO ThreadID
 foreign import ccall "SDL.h SDL_WaitThread" waitThreadFFI :: Ptr Thread -> Ptr CInt -> IO ()
 
-foreign import ccall "SDL.h SDL_CondBroadcast" condBroadcastFFI :: Ptr Cond -> IO CInt
-foreign import ccall "SDL.h SDL_CondSignal" condSignalFFI :: Ptr Cond -> IO CInt
-foreign import ccall "SDL.h SDL_CondWait" condWaitFFI :: Ptr Cond -> Ptr Mutex -> IO CInt
-foreign import ccall "SDL.h SDL_CondWaitTimeout" condWaitTimeoutFFI :: Ptr Cond -> Ptr Mutex -> Word32 -> IO CInt
-foreign import ccall "SDL.h SDL_CreateCond" createCondFFI :: IO (Ptr Cond)
+foreign import ccall "SDL.h SDL_BroadcastCondition" condBroadcastFFI :: Ptr Cond -> IO CInt
+foreign import ccall "SDL.h SDL_SignalCondition" condSignalFFI :: Ptr Cond -> IO CInt
+foreign import ccall "SDL.h SDL_WaitCondition" condWaitFFI :: Ptr Cond -> Ptr Mutex -> IO CInt
+foreign import ccall "SDL.h SDL_WaitConditionTimeout" condWaitTimeoutFFI :: Ptr Cond -> Ptr Mutex -> Word32 -> IO CInt
+foreign import ccall "SDL.h SDL_CreateCondition" createCondFFI :: IO (Ptr Cond)
 foreign import ccall "SDL.h SDL_CreateMutex" createMutexFFI :: IO (Ptr Mutex)
 foreign import ccall "SDL.h SDL_CreateSemaphore" createSemaphoreFFI :: Word32 -> IO (Ptr Sem)
-foreign import ccall "SDL.h SDL_DestroyCond" destroyCondFFI :: Ptr Cond -> IO ()
+foreign import ccall "SDL.h SDL_DestroyCondition" destroyCondFFI :: Ptr Cond -> IO ()
 foreign import ccall "SDL.h SDL_DestroyMutex" destroyMutexFFI :: Ptr Mutex -> IO ()
 foreign import ccall "SDL.h SDL_DestroySemaphore" destroySemaphoreFFI :: Ptr Sem -> IO ()
 foreign import ccall "SDL.h SDL_LockMutex" lockMutexFFI :: Ptr Mutex -> IO CInt
-foreign import ccall "SDL.h SDL_SemPost" semPostFFI :: Ptr Sem -> IO CInt
-foreign import ccall "SDL.h SDL_SemTryWait" semTryWaitFFI :: Ptr Sem -> IO CInt
-foreign import ccall "SDL.h SDL_SemValue" semValueFFI :: Ptr Sem -> IO Word32
-foreign import ccall "SDL.h SDL_SemWait" semWaitFFI :: Ptr Sem -> IO CInt
-foreign import ccall "SDL.h SDL_SemWaitTimeout" semWaitTimeoutFFI :: Ptr Sem -> Word32 -> IO CInt
+foreign import ccall "SDL.h SDL_SignalSemaphore" semPostFFI :: Ptr Sem -> IO CInt
+foreign import ccall "SDL.h SDL_TryWaitSemaphore" semTryWaitFFI :: Ptr Sem -> IO CInt
+foreign import ccall "SDL.h SDL_GetSemaphoreValue" semValueFFI :: Ptr Sem -> IO Word32
+foreign import ccall "SDL.h SDL_WaitSemaphore" semWaitFFI :: Ptr Sem -> IO CInt
+foreign import ccall "SDL.h SDL_WaitSemaphoreTimeout" semWaitTimeoutFFI :: Ptr Sem -> Word32 -> IO CInt
 foreign import ccall "SDL.h SDL_TryLockMutex" tryLockMutexFFI :: Ptr Mutex -> IO CInt
 foreign import ccall "SDL.h SDL_UnlockMutex" unlockMutexFFI :: Ptr Mutex -> IO CInt
 
-foreign import ccall "SDL.h SDL_AtomicAdd" atomicAddFFI :: Ptr Atomic -> CInt -> IO CInt
-foreign import ccall "SDL.h SDL_AtomicCAS" atomicCASFFI :: Ptr Atomic -> CInt -> CInt -> IO Bool
-foreign import ccall "SDL.h SDL_AtomicCASPtr" atomicCASPtrFFI :: Ptr (Ptr ()) -> Ptr () -> Ptr () -> IO Bool
-foreign import ccall "SDL.h SDL_AtomicGet" atomicGetFFI :: Ptr Atomic -> IO CInt
-foreign import ccall "SDL.h SDL_AtomicGetPtr" atomicGetPtrFFI :: Ptr (Ptr ()) -> IO (Ptr ())
-foreign import ccall "SDL.h SDL_AtomicLock" atomicLockFFI :: Ptr SpinLock -> IO ()
-foreign import ccall "SDL.h SDL_AtomicSet" atomicSetFFI :: Ptr Atomic -> CInt -> IO CInt
-foreign import ccall "SDL.h SDL_AtomicSetPtr" atomicSetPtrFFI :: Ptr (Ptr ()) -> Ptr () -> IO (Ptr ())
-foreign import ccall "SDL.h SDL_AtomicTryLock" atomicTryLockFFI :: Ptr SpinLock -> IO Bool
-foreign import ccall "SDL.h SDL_AtomicUnlock" atomicUnlockFFI :: Ptr SpinLock -> IO ()
+foreign import ccall "SDL.h SDL_AddAtomicInt" atomicAddFFI :: Ptr Atomic -> CInt -> IO CInt
+foreign import ccall "SDL.h SDL_CompareAndSwapAtomicInt" atomicCASFFI :: Ptr Atomic -> CInt -> CInt -> IO Bool
+foreign import ccall "SDL.h SDL_CompareAndSwapAtomicPointer" atomicCASPtrFFI :: Ptr (Ptr ()) -> Ptr () -> Ptr () -> IO Bool
+foreign import ccall "SDL.h SDL_GetAtomicInt" atomicGetFFI :: Ptr Atomic -> IO CInt
+foreign import ccall "SDL.h SDL_GetAtomicPointer" atomicGetPtrFFI :: Ptr (Ptr ()) -> IO (Ptr ())
+foreign import ccall "SDL.h SDL_LockSpinlock" atomicLockFFI :: Ptr SpinLock -> IO ()
+foreign import ccall "SDL.h SDL_SetAtomicInt" atomicSetFFI :: Ptr Atomic -> CInt -> IO CInt
+foreign import ccall "SDL.h SDL_SetAtomicPointer" atomicSetPtrFFI :: Ptr (Ptr ()) -> Ptr () -> IO (Ptr ())
+foreign import ccall "SDL.h SDL_TryLockSpinlock" atomicTryLockFFI :: Ptr SpinLock -> IO Bool
+foreign import ccall "SDL.h SDL_UnlockSpinlock" atomicUnlockFFI :: Ptr SpinLock -> IO ()
 
 createThread :: MonadIO m => ThreadFunction -> CString -> m (Ptr ())
 createThread v1 v2 = liftIO $ createThreadFFI v1 v2

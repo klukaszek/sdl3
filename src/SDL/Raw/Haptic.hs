@@ -39,35 +39,35 @@ import Foreign.C.Types
 import Foreign.Ptr
 import SDL.Raw.Types
 
-foreign import ccall "SDL.h SDL_HapticClose" hapticCloseFFI :: Haptic -> IO ()
-foreign import ccall "SDL.h SDL_HapticDestroyEffect" hapticDestroyEffectFFI :: Haptic -> CInt -> IO ()
+foreign import ccall "SDL.h SDL_CloseHaptic" hapticCloseFFI :: Haptic -> IO ()
+foreign import ccall "SDL.h SDL_DestroyHapticEffect" hapticDestroyEffectFFI :: Haptic -> CInt -> IO ()
 foreign import ccall "SDL.h SDL_HapticEffectSupported" hapticEffectSupportedFFI :: Haptic -> Ptr HapticEffect -> IO CInt
-foreign import ccall "SDL.h SDL_HapticGetEffectStatus" hapticGetEffectStatusFFI :: Haptic -> CInt -> IO CInt
+foreign import ccall "SDL.h SDL_GetHapticEffectStatus" hapticGetEffectStatusFFI :: Haptic -> CInt -> IO CInt
 foreign import ccall "SDL.h SDL_HapticIndex" hapticIndexFFI :: Haptic -> IO CInt
 foreign import ccall "SDL.h SDL_HapticName" hapticNameFFI :: CInt -> IO CString
-foreign import ccall "SDL.h SDL_HapticNewEffect" hapticNewEffectFFI :: Haptic -> Ptr HapticEffect -> IO CInt
-foreign import ccall "SDL.h SDL_HapticNumAxes" hapticNumAxesFFI :: Haptic -> IO CInt
-foreign import ccall "SDL.h SDL_HapticNumEffects" hapticNumEffectsFFI :: Haptic -> IO CInt
-foreign import ccall "SDL.h SDL_HapticNumEffectsPlaying" hapticNumEffectsPlayingFFI :: Haptic -> IO CInt
-foreign import ccall "SDL.h SDL_HapticOpen" hapticOpenFFI :: CInt -> IO Haptic
-foreign import ccall "SDL.h SDL_HapticOpenFromJoystick" hapticOpenFromJoystickFFI :: Joystick -> IO Haptic
-foreign import ccall "SDL.h SDL_HapticOpenFromMouse" hapticOpenFromMouseFFI :: IO Haptic
+foreign import ccall "SDL.h SDL_CreateHapticEffect" hapticNewEffectFFI :: Haptic -> Ptr HapticEffect -> IO CInt
+foreign import ccall "SDL.h SDL_GetNumHapticAxes" hapticNumAxesFFI :: Haptic -> IO CInt
+foreign import ccall "SDL.h SDL_GetMaxHapticEffects" hapticNumEffectsFFI :: Haptic -> IO CInt
+foreign import ccall "SDL.h SDL_GetMaxHapticEffectsPlaying" hapticNumEffectsPlayingFFI :: Haptic -> IO CInt
+foreign import ccall "SDL.h SDL_OpenHaptic" hapticOpenFFI :: CInt -> IO Haptic
+foreign import ccall "SDL.h SDL_OpenHapticFromJoystick" hapticOpenFromJoystickFFI :: Joystick -> IO Haptic
+foreign import ccall "SDL.h SDL_OpenHapticFromMouse" hapticOpenFromMouseFFI :: IO Haptic
 foreign import ccall "SDL.h SDL_HapticOpened" hapticOpenedFFI :: CInt -> IO CInt
-foreign import ccall "SDL.h SDL_HapticPause" hapticPauseFFI :: Haptic -> IO CInt
-foreign import ccall "SDL.h SDL_HapticQuery" hapticQueryFFI :: Haptic -> IO CUInt
-foreign import ccall "SDL.h SDL_HapticRumbleInit" hapticRumbleInitFFI :: Haptic -> IO CInt
-foreign import ccall "SDL.h SDL_HapticRumblePlay" hapticRumblePlayFFI :: Haptic -> CFloat -> Word32 -> IO CInt
-foreign import ccall "SDL.h SDL_HapticRumbleStop" hapticRumbleStopFFI :: Haptic -> IO CInt
+foreign import ccall "SDL.h SDL_PauseHaptic" hapticPauseFFI :: Haptic -> IO CInt
+foreign import ccall "SDL.h SDL_GetHapticFeatures" hapticQueryFFI :: Haptic -> IO CUInt
+foreign import ccall "SDL.h SDL_InitHapticRumble" hapticRumbleInitFFI :: Haptic -> IO CInt
+foreign import ccall "SDL.h SDL_PlayHapticRumble" hapticRumblePlayFFI :: Haptic -> CFloat -> Word32 -> IO CInt
+foreign import ccall "SDL.h SDL_StopHapticRumble" hapticRumbleStopFFI :: Haptic -> IO CInt
 foreign import ccall "SDL.h SDL_HapticRumbleSupported" hapticRumbleSupportedFFI :: Haptic -> IO CInt
-foreign import ccall "SDL.h SDL_HapticRunEffect" hapticRunEffectFFI :: Haptic -> CInt -> Word32 -> IO CInt
-foreign import ccall "SDL.h SDL_HapticSetAutocenter" hapticSetAutocenterFFI :: Haptic -> CInt -> IO CInt
-foreign import ccall "SDL.h SDL_HapticSetGain" hapticSetGainFFI :: Haptic -> CInt -> IO CInt
-foreign import ccall "SDL.h SDL_HapticStopAll" hapticStopAllFFI :: Haptic -> IO CInt
-foreign import ccall "SDL.h SDL_HapticStopEffect" hapticStopEffectFFI :: Haptic -> CInt -> IO CInt
-foreign import ccall "SDL.h SDL_HapticUnpause" hapticUnpauseFFI :: Haptic -> IO CInt
-foreign import ccall "SDL.h SDL_HapticUpdateEffect" hapticUpdateEffectFFI :: Haptic -> CInt -> Ptr HapticEffect -> IO CInt
-foreign import ccall "SDL.h SDL_JoystickIsHaptic" joystickIsHapticFFI :: Joystick -> IO CInt
-foreign import ccall "SDL.h SDL_MouseIsHaptic" mouseIsHapticFFI :: IO CInt
+foreign import ccall "SDL.h SDL_RunHapticEffect" hapticRunEffectFFI :: Haptic -> CInt -> Word32 -> IO CInt
+foreign import ccall "SDL.h SDL_SetHapticAutocenter" hapticSetAutocenterFFI :: Haptic -> CInt -> IO CInt
+foreign import ccall "SDL.h SDL_SetHapticGain" hapticSetGainFFI :: Haptic -> CInt -> IO CInt
+foreign import ccall "SDL.h SDL_StopHapticEffects" hapticStopAllFFI :: Haptic -> IO CInt
+foreign import ccall "SDL.h SDL_StopHapticEffect" hapticStopEffectFFI :: Haptic -> CInt -> IO CInt
+foreign import ccall "SDL.h SDL_ResumeHaptic" hapticUnpauseFFI :: Haptic -> IO CInt
+foreign import ccall "SDL.h SDL_UpdateHapticEffect" hapticUpdateEffectFFI :: Haptic -> CInt -> Ptr HapticEffect -> IO CInt
+foreign import ccall "SDL.h SDL_IsJoystickHaptic" joystickIsHapticFFI :: Joystick -> IO CInt
+foreign import ccall "SDL.h SDL_IsMouseHaptic" mouseIsHapticFFI :: IO CInt
 foreign import ccall "SDL.h SDL_NumHaptics" numHapticsFFI :: IO CInt
 
 hapticClose :: MonadIO m => Haptic -> m ()

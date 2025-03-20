@@ -121,8 +121,8 @@ createWindow title config = liftIO $ do
   where
     flags = foldr (.|.) 0
       [ if windowBorder config then 0 else Raw.SDL_WINDOW_BORDERLESS
-      , if windowHighDPI config then Raw.SDL_WINDOW_ALLOW_HIGHDPI else 0
-      , if windowInputGrabbed config then Raw.SDL_WINDOW_INPUT_GRABBED else 0
+      , if windowHighDPI config then Raw.SDL_WINDOW_HIGH_PIXEL_DENSITY else 0
+      , if windowInputGrabbed config then Raw.SDL_WINDOW_MOUSE_GRABBED else 0
       , toNumber $ windowMode config
       , if ctxIsOpenGL (windowGraphicsContext config) then Raw.SDL_WINDOW_OPENGL else 0
       , if windowResizable config then Raw.SDL_WINDOW_RESIZABLE else 0
@@ -393,8 +393,8 @@ getWindowConfig (Window w) = do
 
     return WindowConfig {
         windowBorder          = wFlags .&. Raw.SDL_WINDOW_BORDERLESS == 0
-      , windowHighDPI         = wFlags .&. Raw.SDL_WINDOW_ALLOW_HIGHDPI > 0
-      , windowInputGrabbed    = wFlags .&. Raw.SDL_WINDOW_INPUT_GRABBED > 0
+      , windowHighDPI         = wFlags .&. Raw.SDL_WINDOW_HIGH_PIXEL_DENSITY > 0
+      , windowInputGrabbed    = wFlags .&. Raw.SDL_WINDOW_MOUSE_GRABBED > 0
       , windowMode            = fromNumber wFlags
         -- Should we store the OpenGL config that was used to create the window?
       , windowGraphicsContext = if wFlags .&. Raw.SDL_WINDOW_VULKAN > 0

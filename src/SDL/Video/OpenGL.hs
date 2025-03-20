@@ -128,7 +128,7 @@ glMakeCurrent (Window w) (GLContext ctx) =
 -- The @glFinish@ command will block until the command queue has been fully
 -- processed. You should call that function before deleting a context.
 --
--- See @<https://wiki.libsdl.org/SDL_GL_DeleteContext SDL_GL_DeleteContext>@ for C documentation.
+-- See @<https://wiki.libsdl.org/SDL_GL_DestroyContext SDL_GL_DestroyContext>@ for C documentation.
 glDeleteContext :: MonadIO m => GLContext -> m ()
 glDeleteContext (GLContext ctx) = Raw.glDeleteContext ctx
 

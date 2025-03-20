@@ -28,7 +28,7 @@ foreign import ccall "SDL.h SDL_GetTicks" getTicksFFI :: IO Word32
 foreign import ccall "SDL.h SDL_RemoveTimer" removeTimerFFI :: TimerID -> IO Bool
 
 #ifdef RECENT_ISH
-foreign import ccall "SDL.h SDL_GetTicks64" getTicks64FFI :: IO Word64
+foreign import ccall "SDL.h SDL_GetTicks" getTicks64FFI :: IO Word64
 #endif
 
 addTimer :: MonadIO m => Word32 -> TimerCallback -> Ptr () -> m TimerID
