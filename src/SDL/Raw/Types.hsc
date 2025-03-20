@@ -28,28 +28,30 @@ module SDL.Raw.Types (
   DisplayID,
   EventType,
   FingerID,
-  GameController,
+  Gamepad,
+  GamepadBindingType,
   GestureID,
   GLContext,
   Haptic,
   Joystick,
   JoystickID,
+  KeyboardID,
   Mutex,
   Renderer,
   Sem,
   SpinLock,
-  SysWMinfo,
-  SysWMmsg,
+  SurfaceFlags,
   Texture,
   Thread,
   ThreadID,
   TimerID,
   TLSID,
   TouchID,
+  Version,
   VkInstance,
   VkSurfaceKHR,
   Window,
-  WindowID
+  WindowID,
   
   -- * Data Structures
   Atomic(..),
@@ -58,11 +60,10 @@ module SDL.Raw.Types (
   DisplayMode(..),
   Event(..),
   Finger(..),
-  GameControllerButtonBind(..),
+  GamepadBinding(..),
   HapticDirection(..),
   HapticEffect(..),
   JoystickGUID(..),
-  Keysym(..),
   MessageBoxButtonData(..),
   MessageBoxColor(..),
   MessageBoxColorScheme(..),
@@ -71,13 +72,11 @@ module SDL.Raw.Types (
   PixelFormat(..),
   Point(..),
   Rect(..),
-#ifdef RECENT_ISH
   FPoint(..),
   FRect(..),
   Vertex(..),
-#endif
-  RendererInfo(..),
-  RWops(..),
+  IOStream(..),
+  IOStreamInterface(..),
   Surface(..),
   Version(..)
 ) where
@@ -139,7 +138,8 @@ type Cursor = Ptr ()
 type DisplayID = Word32
 type EventType = Word32
 type FingerID = Int64
-type GameController = Ptr ()
+type Gamepad = Ptr ()
+type GamepadBindingType = Word32
 type GestureID = Int64
 type GLContext = Ptr ()
 type Haptic = Ptr ()
@@ -149,8 +149,7 @@ type Mutex = Ptr ()
 type Renderer = Ptr ()
 type Sem = Ptr ()
 type SpinLock = CInt
-type SysWMinfo = Ptr ()
-type SysWMmsg = Ptr ()
+type SurfaceFlags = Word32
 type Texture = Ptr ()
 type Thread = Ptr ()
 type ThreadID = CULong
@@ -159,6 +158,7 @@ type TLSID = CUInt
 type TouchID = Int64
 type VkInstance = Ptr ()
 type VkSurfaceKHR = Word64
+type Version = Word32
 type Window = Ptr ()
 type WindowID = Word32
 
@@ -256,41 +256,44 @@ instance Storable DisplayMode where
 data Event
   = WindowEvent
     { eventType :: !EventType
-    , eventReserved :: !Word32
     , eventTimestamp :: !Word64
     , windowEventWindowID :: !WindowID
     , windowEventData1 :: !Int32
     , windowEventData2 :: !Int32
     }
   | KeyboardEvent
-    { eventType :: !Word32
-    , eventTimestamp :: !Word32
-    , keyboardEventWindowID :: !Word32
-    , keyboardEventState :: !Word8
-    , keyboardEventRepeat :: !Word8
-    , keyboardEventKeysym :: !Keysym
+    { eventType :: !EventType
+    , eventTimestamp :: !Word64
+    , keyboardEventWindowID :: !WindowID
+    , keyboardEventKeyboardID :: !KeyboardID
+    , keyboardEventScancode :: !Scancode
+    , keyboardEventKeycode :: !Keycode
+    , keyboardEventKeymod :: !Keymod
+    , keyboardEventRaw :: !Word16
+    , keyboardEventKeyDown :: !CBool
+    , keyboardEventRepeat :: !CBool
     }
   | TextEditingEvent
-    { eventType :: !Word32
-    , eventTimestamp :: !Word32
+    { eventType :: !EventType
+    , eventTimestamp :: !Word64
     , textEditingEventWindowID :: !Word32
     , textEditingEventText :: ![CChar]
     , textEditingEventStart :: !Int32
     , textEditingEventLength :: !Int32
     }
   | TextInputEvent
-    { eventType :: !Word32
-    , eventTimestamp :: !Word32
+    { eventType :: !EventType
+    , eventTimestamp :: !Word64
     , textInputEventWindowID :: !Word32
     , textInputEventText :: ![CChar]
     }
   | KeymapChangedEvent
-    { eventType :: !Word32
-    , eventTimestamp :: !Word32
+    { eventType :: !EventType
+    , eventTimestamp :: !Word64
     }
   | MouseMotionEvent
-    { eventType :: !Word32
-    , eventTimestamp :: !Word32
+    { eventType :: !EventType
+    , eventTimestamp :: !Word64
     , mouseMotionEventWindowID :: !Word32
     , mouseMotionEventWhich :: !Word32
     , mouseMotionEventState :: !Word32
@@ -300,19 +303,20 @@ data Event
     , mouseMotionEventYRel :: !Int32
     }
   | MouseButtonEvent
-    { eventType :: !Word32
-    , eventTimestamp :: !Word32
+    { eventType :: !EventType
+    , eventTimestamp :: !Word64
     , mouseButtonEventWindowID :: !Word32
     , mouseButtonEventWhich :: !Word32
     , mouseButtonEventButton :: !Word8
-    , mouseButtonEventState :: !Word8
+    , mouseButtonEventDown :: !CBool
     , mouseButtonEventClicks :: !Word8
+    , mouseButtonPadding :: !Word8
     , mouseButtonEventX :: !Int32
     , mouseButtonEventY :: !Int32
     }
   | MouseWheelEvent
-    { eventType :: !Word32
-    , eventTimestamp :: !Word32
+    { eventType :: !EventType
+    , eventTimestamp :: !Word64
     , mouseWheelEventWindowID :: !Word32
     , mouseWheelEventWhich :: !Word32
     , mouseWheelEventX :: !Int32
@@ -320,84 +324,83 @@ data Event
     , mouseWheelEventDirection :: !Word32
     }
   | JoyAxisEvent
-    { eventType :: !Word32
-    , eventTimestamp :: !Word32
+    { eventType :: !EventType
+    , eventTimestamp :: !Word64
     , joyAxisEventWhich :: !JoystickID
     , joyAxisEventAxis :: !Word8
     , joyAxisEventValue :: !Int16
     }
   | JoyBallEvent
-    { eventType :: !Word32
-    , eventTimestamp :: !Word32
+    { eventType :: !EventType
+    , eventTimestamp :: !Word64
     , joyBallEventWhich :: !JoystickID
     , joyBallEventBall :: !Word8
     , joyBallEventXRel :: !Int16
     , joyBallEventYRel :: !Int16
     }
   | JoyHatEvent
-    { eventType :: !Word32
-    , eventTimestamp :: !Word32
+    { eventType :: !EventType
+    , eventTimestamp :: !Word64
     , joyHatEventWhich :: !JoystickID
     , joyHatEventHat :: !Word8
     , joyHatEventValue :: !Word8
     }
   | JoyButtonEvent
-    { eventType :: !Word32
-    , eventTimestamp :: !Word32
+    { eventType :: !EventType
+    , eventTimestamp :: !Word64
     , joyButtonEventWhich :: !JoystickID
     , joyButtonEventButton :: !Word8
-    , joyButtonEventState :: !Word8
+    , joyButtonEventDown :: !CBool
+    , joyButtonEventPadding1 :: !Word8
+    , joyButtonEventPadding2 :: !Word8
     }
   | JoyDeviceEvent
-    { eventType :: !Word32
-    , eventTimestamp :: !Word32
+    { eventType :: !EventType
+    , eventTimestamp :: !Word64
     , joyDeviceEventWhich :: !Int32
     }
-  | ControllerAxisEvent
-    { eventType :: !Word32
-    , eventTimestamp :: !Word32
-    , controllerAxisEventWhich :: !JoystickID
-    , controllerAxisEventAxis :: !Word8
-    , controllerAxisEventValue :: !Int16
+  | GamepadAxisEvent
+    { eventType :: !EventType
+    , eventTimestamp :: !Word64
+    , gamepadAxisEventWhich :: !JoystickID
+    , gamepadAxisEventAxis :: !Word8
+    , gamepadAxisEventValue :: !Int16
     }
-  | ControllerButtonEvent
-    { eventType :: !Word32
-    , eventTimestamp :: !Word32
-    , controllerButtonEventWhich :: !JoystickID
-    , controllerButtonEventButton :: !Word8
-    , controllerButtonEventState :: !Word8
+  | GamepadButtonEvent
+    { eventType :: !EventType
+    , eventTimestamp :: !Word64
+    , gamepadButtonEventWhich :: !JoystickID
+    , gamepadButtonEventButton :: !Word8
+    , gamepadButtonEventDown :: !CBool
+    , gamepadButtonPadding1 :: !Word8
+    , gamepadButtonPadding2 :: !Word8
     }
-  | ControllerDeviceEvent
-    { eventType :: !Word32
-    , eventTimestamp :: !Word32
-    , controllerDeviceEventWhich :: !Int32
+  | GamepadDeviceEvent
+    { eventType :: !EventType
+    , eventTimestamp :: !Word64
+    , gamepadDeviceEventWhich :: !Int32
     }
   | AudioDeviceEvent
-    { eventType :: !Word32
-    , eventTimestamp :: !Word32
-    , audioDeviceEventWhich :: !Word32
-    , audioDeviceEventIsCapture :: !Word8
+    { eventType :: !EventType
+    , eventTimestamp :: !Word64
+    , audioDeviceEventWhich :: !AudioDeviceID
+    , audioDeviceEventRecording :: !CBool
     }
   | QuitEvent
-    { eventType :: !Word32
-    , eventTimestamp :: !Word32
+    { eventType :: !EventType
+    , eventTimestamp :: !Word64
     }
   | UserEvent
-    { eventType :: !Word32
-    , eventTimestamp :: !Word32
+    { eventType :: !EventType
+    , eventTimestamp :: !Word64
     , userEventWindowID :: !Word32
     , userEventCode :: !Int32
     , userEventData1 :: !(Ptr ())
     , userEventData2 :: !(Ptr ())
     }
-  | SysWMEvent
-    { eventType :: !Word32
-    , eventTimestamp :: !Word32
-    , sysWMEventMsg :: !SysWMmsg
-    }
   | TouchFingerEvent
-    { eventType :: !Word32
-    , eventTimestamp :: !Word32
+    { eventType :: !EventType
+    , eventTimestamp :: !Word64
     , touchFingerEventTouchID :: !TouchID
     , touchFingerEventFingerID :: !FingerID
     , touchFingerEventX :: !CFloat
@@ -407,25 +410,15 @@ data Event
     , touchFingerEventPressure :: !CFloat
     }
   | MultiGestureEvent
-    { eventType :: !Word32
-    , eventTimestamp :: !Word32
+    { eventType :: !EventType
+    , eventTimestamp :: !Word64
     , multiGestureEventTouchID :: !TouchID
     , multiGestureEventDTheta :: !CFloat
     , multiGestureEventDDist :: !CFloat
     , multiGestureEventX :: !CFloat
     , multiGestureEventY :: !CFloat
     , multiGestureEventNumFingers :: !Word16
-    }
-  | DollarGestureEvent
-    { eventType :: !Word32
-    , eventTimestamp :: !Word32
-    , dollarGestureEventTouchID :: !TouchID
-    , dollarGestureEventGestureID :: !GestureID
-    , dollarGestureEventNumFingers :: !Word32
-    , dollarGestureEventError :: !CFloat
-    , dollarGestureEventX :: !CFloat
-    , dollarGestureEventY :: !CFloat
-    }
+    }  
   | DropEvent
     { eventType :: !EventType
     , eventReserved :: !Word32
@@ -437,12 +430,12 @@ data Event
     , dropEventData :: !CString
     }
   | ClipboardUpdateEvent
-    { eventType :: !Word32
-    , eventTimestamp :: !Word32
+    { eventType :: !EventType
+    , eventTimestamp :: !Word64
     }
   | UnknownEvent
-    { eventType :: !Word32
-    , eventTimestamp :: !Word32
+    { eventType :: !EventType
+    , eventTimestamp :: !Word64
     }
   deriving (Eq, Show, Typeable)
 
@@ -451,7 +444,6 @@ instance Storable Event where
   alignment _ = (#alignment SDL_Event)
   peek ptr = do
     typ <- (#peek SDL_Event, common.type) ptr
-    reserved <- (#peek SDL_Event, common.reserved) ptr
     timestamp <- (#peek SDL_Event, common.timestamp) ptr
     case typ of
       (#const SDL_EVENT_QUIT) ->
@@ -461,7 +453,7 @@ instance Storable Event where
         wid <- (#peek SDL_Event, window.windowID) ptr
         data1 <- (#peek SDL_Event, window.data1) ptr
         data2 <- (#peek SDL_Event, window.data2) ptr
-        return $! WindowEvent event reserved timestamp wid data1 data2
+        return $! WindowEvent event timestamp wid data1 data2
       (#const SDL_EVENT_KEY_DOWN) -> key $ KeyboardEvent typ timestamp
       (#const SDL_EVENT_KEY_UP) -> key $ KeyboardEvent typ timestamp
       -- (#const SDL_EVENT_TEXT_EDITING) -> do
@@ -520,12 +512,12 @@ instance Storable Event where
         which <- (#peek SDL_Event, gaxis.which) ptr
         axis <- (#peek SDL_Event, gaxis.axis) ptr
         value <- (#peek SDL_Event, gaxis.value) ptr
-        return $! ControllerAxisEvent typ timestamp which axis value
-      (#const SDL_EVENT_GAMEPAD_BUTTON_DOWN) -> controllerbutton $ ControllerButtonEvent typ timestamp
-      (#const SDL_EVENT_GAMEPAD_BUTTON_UP) -> controllerbutton $ ControllerButtonEvent typ timestamp
-      (#const SDL_EVENT_GAMEPAD_ADDED) -> controllerdevice $ ControllerDeviceEvent typ timestamp
-      (#const SDL_EVENT_GAMEPAD_REMOVED) -> controllerdevice $ ControllerDeviceEvent typ timestamp
-      (#const SDL_EVENT_GAMEPAD_REMAPPED) -> controllerdevice $ ControllerDeviceEvent typ timestamp
+        return GamepadAxisEvent typ timestamp which axis value
+      (#const SDL_EVENT_GAMEPAD_BUTTON_DOWN) gamepadbutton $ GamepadButtonEvent typ timestamp
+      (#const SDL_EVENT_GAMEPAD_BUTTON_UP) gamepadbutton $ GamepadButtonEvent typ timestamp
+      (#const SDL_EVENT_GAMEPAD_ADDED) gamepaddevice $ GamepadDeviceEvent typ timestamp
+      (#const SDL_EVENT_GAMEPAD_REMOVED) gamepaddevice $ GamepadDeviceEvent typ timestamp
+      (#const SDL_EVENT_GAMEPAD_REMAPPED) gamepaddevice $ GamepadDeviceEvent typ timestamp
       (#const SDL_EVENT_AUDIO_DEVICE_ADDED) -> audiodevice $ AudioDeviceEvent typ timestamp
       (#const SDL_EVENT_AUDIO_DEVICE_REMOVED) -> audiodevice $ AudioDeviceEvent typ timestamp
       (#const SDL_EVENT_FINGER_DOWN) -> finger $ TouchFingerEvent typ timestamp
@@ -539,7 +531,7 @@ instance Storable Event where
         y <- (#peek SDL_Event, drop.y) ptr
         src <- (#peek SDL_Event, drop.source) ptr
         data <- (#peek SDL_Event, drop.data) ptr
-        return $! DropEvent typ reserved timestamp wid x y src data
+        return $! DropEvent typ timestamp wid x y src data
       x | x >= (#const SDL_EVENT_USER) -> do
         wid <- (#peek SDL_Event, user.windowID) ptr
         code <- (#peek SDL_Event, user.code) ptr
@@ -550,16 +542,19 @@ instance Storable Event where
     where
     key f = do
       wid <- (#peek SDL_Event, key.windowID) ptr
-      state <- (#peek SDL_Event, key.state) ptr
-      repeat' <- (#peek SDL_Event, key.repeat) ptr
-      keysym <- (#peek SDL_Event, key.keysym) ptr
-      return $! f wid state repeat' keysym
+      which <- (#peek SDL_Event, key.which) ptr
+      scancode <- (#peek SDL_Event, key.scancode) ptr
+      key <- (#peek SDL_Event, key.key) ptr
+      mod <- (#peek SDL_Event, key.mod) ptr
+      down <- (#peek SDL_Event, key.down) ptr
+      repeat <- (#peek SDL_Event, key.repeat) ptr
+      return $! f wid which scancode key mod down repeat
 
     mouse f = do
       wid <- (#peek SDL_Event, button.windowID) ptr
       which <- (#peek SDL_Event, button.which) ptr
       button <- (#peek SDL_Event, button.button) ptr
-      state <- (#peek SDL_Event, button.state) ptr
+      down <- (#peek SDL_Event, button.down) ptr
       clicks <- (#peek SDL_Event, button.clicks) ptr
       x <- (#peek SDL_Event, button.x) ptr
       y <- (#peek SDL_Event, button.y) ptr
@@ -568,63 +563,61 @@ instance Storable Event where
     joybutton f = do
       which <- (#peek SDL_Event, jbutton.which) ptr
       button <- (#peek SDL_Event, jbutton.button) ptr
-      state <- (#peek SDL_Event, jbutton.state) ptr
-      return $! f which button state
+      down <- (#peek SDL_Event, jbutton.down) ptr
+      return $! f which button down
 
     joydevice f = do
       which <- (#peek SDL_Event, jdevice.which) ptr
       return $! f which
 
-    controllerbutton f = do
-      which <- (#peek SDL_Event, cbutton.which) ptr
-      button <- (#peek SDL_Event, cbutton.button) ptr
-      state <- (#peek SDL_Event, cbutton.state) ptr
+    gamepadbutton f = do
+      which <- (#peek SDL_Event, gbutton.which) ptr
+      button <- (#peek SDL_Event, gbutton.button) ptr
+      down <- (#peek SDL_Event, gbutton.down) ptr
       return $! f which button state
 
-    controllerdevice f = do
-      which <- (#peek SDL_Event, cdevice.which) ptr
+    gamepaddevice f = do
+      which <- (#peek SDL_Event, gdevice.which) ptr
       return $! f which
 
     audiodevice f = do
       which <- (#peek SDL_Event, adevice.which) ptr
-      iscapture <- (#peek SDL_Event, adevice.iscapture) ptr
+      recording <- (#peek SDL_Event, adevice.recording) ptr
       return $! f which iscapture
 
     finger f = do
-      touchId <- (#peek SDL_Event, tfinger.touchId) ptr
-      fingerId <- (#peek SDL_Event, tfinger.fingerId) ptr
+      touchID <- (#peek SDL_Event, tfinger.touchID) ptr
+      fingerID <- (#peek SDL_Event, tfinger.fingerID) ptr
       x <- (#peek SDL_Event, tfinger.x) ptr
       y <- (#peek SDL_Event, tfinger.y) ptr
       dx <- (#peek SDL_Event, tfinger.dx) ptr
       dy <- (#peek SDL_Event, tfinger.dy) ptr
       pressure <- (#peek SDL_Event, tfinger.pressure) ptr
-      return $! f touchId fingerId x y dx dy pressure
+      return $! f touchID fingerID x y dx dy pressure
 
-    dollargesture f = do
-      touchId <- (#peek SDL_Event, dgesture.touchId) ptr
-      gestureId <- (#peek SDL_Event, dgesture.gestureId) ptr
-      numFingers <- (#peek SDL_Event, dgesture.numFingers) ptr
-      err <- (#peek SDL_Event, dgesture.error) ptr
-      x <- (#peek SDL_Event, dgesture.x) ptr
-      y <- (#peek SDL_Event, dgesture.y) ptr
-      return $! f touchId gestureId numFingers err x y
   poke ptr ev = case ev of
-    WindowEvent typ reserved timestamp wid data1 data2 -> do
+    WindowEvent typ timestamp wid data1 data2 -> do
       (#poke SDL_Event, common.type) ptr typ
-      (#poke SDL_Event, commond.reserved) ptr reserved
       (#poke SDL_Event, common.timestamp) ptr timestamp
       (#poke SDL_Event, window.type) ptr typ
       (#poke SDL_Event, window.windowID) ptr wid
       (#poke SDL_Event, window.timestamp) ptr timestamp
       (#poke SDL_Event, window.data1) ptr data1
       (#poke SDL_Event, window.data2) ptr data2
-    KeyboardEvent typ timestamp wid state repeat' keysym -> do
+    KeyboardEvent typ timestamp wid which scancode key mod raw down repeat -> do
       (#poke SDL_Event, common.type) ptr typ
       (#poke SDL_Event, common.timestamp) ptr timestamp
+            
+      (#poke SDL_Event, key.type) ptr typ
+      (#poke SDL_Event, key.timestamp) ptr timestamp
       (#poke SDL_Event, key.windowID) ptr wid
-      (#poke SDL_Event, key.state) ptr state
-      (#poke SDL_Event, key.repeat) ptr repeat'
-      (#poke SDL_Event, key.keysym) ptr keysym
+      (#poke SDL_Event, key.which) ptr which
+      (#poke SDL_Event, key.scancode) ptr scancode
+      (#poke SDL_Event, key.key) ptr key
+      (#poke SDL_Event, key.mod) ptr mod
+      (#poke SDL_Event, key.raw) ptr raw
+      (#poke SDL_Event, key.down) ptr down
+      (#poke SDL_Event, key.repeat) ptr repeat
     TextEditingEvent typ timestamp wid text start len -> do
       (#poke SDL_Event, common.type) ptr typ
       (#poke SDL_Event, common.timestamp) ptr timestamp
@@ -650,13 +643,16 @@ instance Storable Event where
       (#poke SDL_Event, motion.y) ptr y
       (#poke SDL_Event, motion.xrel) ptr xrel
       (#poke SDL_Event, motion.yrel) ptr yrel
-    MouseButtonEvent typ timestamp wid which button state clicks x y -> do
+    MouseButtonEvent typ timestamp wid which button down clicks x y -> do
       (#poke SDL_Event, common.type) ptr typ
       (#poke SDL_Event, common.timestamp) ptr timestamp
+
+      (#poke SDL_Event, button.type) ptr typ
+      (#poke SDL_Event, button.timestamp) ptr timestamp
       (#poke SDL_Event, button.windowID) ptr wid
       (#poke SDL_Event, button.which) ptr which
       (#poke SDL_Event, button.button) ptr button
-      (#poke SDL_Event, button.state) ptr state
+      (#poke SDL_Event, button.down) ptr down
       (#poke SDL_Event, button.clicks) ptr clicks
       (#poke SDL_Event, button.x) ptr x
       (#poke SDL_Event, button.y) ptr y
@@ -687,37 +683,40 @@ instance Storable Event where
       (#poke SDL_Event, jhat.which) ptr which
       (#poke SDL_Event, jhat.hat) ptr hat
       (#poke SDL_Event, jhat.value) ptr value
-    JoyButtonEvent typ timestamp which button state -> do
+    JoyButtonEvent typ timestamp which button down -> do
       (#poke SDL_Event, common.type) ptr typ
       (#poke SDL_Event, common.timestamp) ptr timestamp
       (#poke SDL_Event, jbutton.which) ptr which
       (#poke SDL_Event, jbutton.button) ptr button
-      (#poke SDL_Event, jbutton.state) ptr state
+      (#poke SDL_Event, jbutton.down) ptr down
     JoyDeviceEvent typ timestamp which -> do
       (#poke SDL_Event, common.type) ptr typ
       (#poke SDL_Event, common.timestamp) ptr timestamp
       (#poke SDL_Event, jdevice.which) ptr which
-    ControllerAxisEvent typ timestamp which axis value -> do
+    GamepadAxisEvent typ timestamp which axis value -> do
       (#poke SDL_Event, common.type) ptr typ
       (#poke SDL_Event, common.timestamp) ptr timestamp
       (#poke SDL_Event, gaxis.which) ptr which
       (#poke SDL_Event, gaxis.axis) ptr axis
       (#poke SDL_Event, gaxis.value) ptr value
-    ControllerButtonEvent typ timestamp which button state -> do
+    GamepadButtonEvent typ timestamp which button down -> do
       (#poke SDL_Event, common.type) ptr typ
       (#poke SDL_Event, common.timestamp) ptr timestamp
-      (#poke SDL_Event, cbutton.which) ptr which
-      (#poke SDL_Event, cbutton.button) ptr button
-      (#poke SDL_Event, cbutton.state) ptr state
-    ControllerDeviceEvent typ timestamp which -> do
+
+      (#poke SDL_Event, gbutton.type) ptr typ
+      (#poke SDL_Event, gbutton.timestamp) ptr timestamp
+      (#poke SDL_Event, gbutton.which) ptr which
+      (#poke SDL_Event, gbutton.button) ptr button
+      (#poke SDL_Event, gbutton.down) ptr down
+    GamepadDeviceEvent typ timestamp which -> do
       (#poke SDL_Event, common.type) ptr typ
       (#poke SDL_Event, common.timestamp) ptr timestamp
       (#poke SDL_Event, cdevice.which) ptr which
-    AudioDeviceEvent typ timestamp which iscapture -> do
+    AudioDeviceEvent typ timestamp which recording -> do
       (#poke SDL_Event, common.type) ptr typ
       (#poke SDL_Event, common.timestamp) ptr timestamp
       (#poke SDL_Event, adevice.which) ptr which
-      (#poke SDL_Event, adevice.iscapture) ptr iscapture
+      (#poke SDL_Event, adevice.recording) ptr recording
     QuitEvent typ timestamp -> do
       (#poke SDL_Event, common.type) ptr typ
       (#poke SDL_Event, common.timestamp) ptr timestamp
@@ -731,8 +730,8 @@ instance Storable Event where
     TouchFingerEvent typ timestamp touchid fingerid x y dx dy pressure -> do
       (#poke SDL_Event, common.type) ptr typ
       (#poke SDL_Event, common.timestamp) ptr timestamp
-      (#poke SDL_Event, tfinger.touchId) ptr touchid
-      (#poke SDL_Event, tfinger.fingerId) ptr fingerid
+      (#poke SDL_Event, tfinger.touchID) ptr touchid
+      (#poke SDL_Event, tfinger.fingerID) ptr fingerid
       (#poke SDL_Event, tfinger.x) ptr x
       (#poke SDL_Event, tfinger.y) ptr y
       (#poke SDL_Event, tfinger.dx) ptr dx
@@ -741,19 +740,17 @@ instance Storable Event where
     ClipboardUpdateEvent typ timestamp -> do
       (#poke SDL_Event, common.type) ptr typ
       (#poke SDL_Event, common.timestamp) ptr timestamp
-    DropEvent typ reserved timestamp wid x y source file -> do
+    DropEvent typ timestamp wid x y source data -> do
       (#poke SDL_Event, common.type) ptr typ 
-      (#poke SDL_Event, common.reserved) pt reserved
       (#poke SDL_Event, common.timestamp) ptr timestamp
 
       (#poke SDL_Event, drop.type) ptr typ
-      (#poke SDL_Event, drop.reserved) ptr reserved
       (#poke SDL_Event, drop.timestamp) ptr timestamp
       (#poke SDL_Event, drop.windowID) ptr wid
       (#poke SDL_Event, drop.x) ptr x
       (#poke SDL_Event, drop.y) ptr y
       (#poke SDL_Event, drop.source) ptr source
-      (#poke SDL_Event, drop.file) ptr file
+      (#poke SDL_Event, drop.data) ptr data
       
     UnknownEvent typ timestamp -> do
       (#poke SDL_Event, common.type) ptr typ
@@ -781,52 +778,140 @@ instance Storable Finger where
     (#poke SDL_Finger, y) ptr y
     (#poke SDL_Finger, pressure) ptr pressure
 
-data GameControllerButtonBind
-  = GameControllerButtonBindNone
-  | GameControllerButtonBindButton
-    { gameControllerButtonBindButton :: !CInt
+data GamepadBinding
+  = GamepadBindingNone -- Implicitly input_type = NONE, output_type = NONE
+  | GamepadBindingButtonToButton
+    { inputButton :: !CInt
+    , outputButton :: !GamepadButton
     }
-  | GameControllerButtonBindAxis
-    { gameControllerButtonBindAxis :: !CInt
+  | GamepadBindingAxisToButton
+    { inputAxis :: !CInt
+    , inputAxisMin :: !CInt
+    , inputAxisMax :: !CInt
+    , outputButton :: !GamepadButton
     }
-  | GameControllerButtonBindHat
-    { gameControllerButtonBindHat :: !CInt
-    , gameControllerButtonBindHatMask :: !CInt
+  | GamepadBindingHatToButton
+    { inputHat :: !CInt
+    , inputHatMask :: !CInt
+    , outputButton :: !GamepadButton
     }
-  deriving (Eq, Show, Typeable)
+  | GamepadBindingButtonToAxis
+    { inputButton :: !CInt
+    , outputAxis :: !GamepadAxis
+    , outputAxisMin :: !CInt
+    , outputAxisMax :: !CInt
+    }
+  | GamepadBindingAxisToAxis
+    { inputAxis :: !CInt
+    , inputAxisMin :: !CInt
+    , inputAxisMax :: !CInt
+    , outputAxis :: !GamepadAxis
+    , outputAxisMin :: !CInt
+    , outputAxisMax :: !CInt
+    }
+  | GamepadBindingHatToAxis
+    { inputHat :: !CInt
+    , inputHatMask :: !CInt
+    , outputAxis :: !GamepadAxis
+    , outputAxisMin :: !CInt
+    , outputAxisMax :: !CInt
+    }
+  deriving (Eq, Show, Generic)
 
-instance Storable GameControllerButtonBind where
-  sizeOf _ = (#size SDL_GameControllerButtonBind)
-  alignment _ = (#alignment SDL_GameControllerButtonBind)
+instance Storable GamepadBinding where
+  sizeOf _ = #{size SDL_GamepadBinding}
+  alignment _ = #{alignment SDL_GamepadBinding}
+
   peek ptr = do
-    bind_type <- (#peek SDL_GameControllerButtonBind, bindType) ptr
-    case bind_type :: (#type SDL_GamepadBindingType) of
-      (#const SDL_GAMEPAD_BINDTYPE_NONE) -> do
-        return $! GameControllerButtonBindNone
-      (#const SDL_GAMEPAD_BINDTYPE_BUTTON) -> do
-        button <- (#peek SDL_GameControllerButtonBind, value.button) ptr
-        return $! GameControllerButtonBindButton button
-      (#const SDL_GAMEPAD_BINDTYPE_AXIS) -> do
-        axis <- (#peek SDL_GameControllerButtonBind, value.axis) ptr
-        return $! GameControllerButtonBindAxis axis
-      (#const SDL_GAMEPAD_BINDTYPE_HAT) -> do
-        hat <- (#peek SDL_GameControllerButtonBind, value.hat.hat) ptr
-        hat_mask <- (#peek SDL_GameControllerButtonBind, value.hat.hat_mask) ptr
-        return $! GameControllerButtonBindHat hat hat_mask
-      _ -> error $ "Unknown type " ++ show bind_type ++ " for SDL_GameControllerButtonBind"
-  poke ptr bind = case bind of
-    GameControllerButtonBindNone -> do
-      (#poke SDL_GameControllerButtonBind, bindType) ptr ((#const SDL_GAMEPAD_BINDTYPE_NONE) :: (#type SDL_GamepadBindingType))
-    GameControllerButtonBindButton button -> do
-      (#poke SDL_GameControllerButtonBind, bindType) ptr ((#const SDL_GAMEPAD_BINDTYPE_BUTTON) :: (#type SDL_GamepadBindingType))
-      (#poke SDL_GameControllerButtonBind, value.button) ptr button
-    GameControllerButtonBindAxis axis -> do
-      (#poke SDL_GameControllerButtonBind, bindType) ptr ((#const SDL_GAMEPAD_BINDTYPE_AXIS) :: (#type SDL_GamepadBindingType))
-      (#poke SDL_GameControllerButtonBind, value.axis) ptr axis
-    GameControllerButtonBindHat hat hat_mask -> do
-      (#poke SDL_GameControllerButtonBind, bindType) ptr ((#const SDL_GAMEPAD_BINDTYPE_HAT) :: (#type SDL_GamepadBindingType))
-      (#poke SDL_GameControllerButtonBind, value.hat.hat) ptr hat
-      (#poke SDL_GameControllerButtonBind, value.hat.hat_mask) ptr hat_mask
+    inputType <- #{peek SDL_GamepadBinding, input_type} ptr :: IO SDL_GamepadBindingType
+    outputType <- #{peek SDL_GamepadBinding, output_type} ptr :: IO SDL_GamepadBindingType
+    case (inputType, outputType) of
+      (SDL_GamepadBindingType #{const SDL_GAMEPAD_BINDTYPE_NONE}, SDL_GamepadBindingType #{const SDL_GAMEPAD_BINDTYPE_NONE}) ->
+        return GamepadBindingNone
+      (SDL_GamepadBindingType #{const SDL_GAMEPAD_BINDTYPE_BUTTON}, SDL_GamepadBindingType #{const SDL_GAMEPAD_BINDTYPE_BUTTON}) -> do
+        btn <- #{peek SDL_GamepadBinding, input.button} ptr
+        outBtn <- #{peek SDL_GamepadBinding, output.button} ptr
+        return $ GamepadBindingButtonToButton btn outBtn
+      (SDL_GamepadBindingType #{const SDL_GAMEPAD_BINDTYPE_AXIS}, SDL_GamepadBindingType #{const SDL_GAMEPAD_BINDTYPE_BUTTON}) -> do
+        axis <- #{peek SDL_GamepadBinding, input.axis.axis} ptr
+        axisMin <- #{peek SDL_GamepadBinding, input.axis.axis_min} ptr
+        axisMax <- #{peek SDL_GamepadBinding, input.axis.axis_max} ptr
+        outBtn <- #{peek SDL_GamepadBinding, output.button} ptr
+        return $ GamepadBindingAxisToButton axis axisMin axisMax outBtn
+      (SDL_GamepadBindingType #{const SDL_GAMEPAD_BINDTYPE_HAT}, SDL_GamepadBindingType #{const SDL_GAMEPAD_BINDTYPE_BUTTON}) -> do
+        hat <- #{peek SDL_GamepadBinding, input.hat.hat} ptr
+        hatMask <- #{peek SDL_GamepadBinding, input.hat.hat_mask} ptr
+        outBtn <- #{peek SDL_GamepadBinding, output.button} ptr
+        return $ GamepadBindingHatToButton hat hatMask outBtn
+      (SDL_GamepadBindingType #{const SDL_GAMEPAD_BINDTYPE_BUTTON}, SDL_GamepadBindingType #{const SDL_GAMEPAD_BINDTYPE_AXIS}) -> do
+        btn <- #{peek SDL_GamepadBinding, input.button} ptr
+        outAxis <- #{peek SDL_GamepadBinding, output.axis.axis} ptr
+        outAxisMin <- #{peek SDL_GamepadBinding, output.axis.axis_min} ptr
+        outAxisMax <- #{peek SDL_GamepadBinding, output.axis.axis_max} ptr
+        return $ GamepadBindingButtonToAxis btn outAxis outAxisMin outAxisMax
+      (SDL_GamepadBindingType #{const SDL_GAMEPAD_BINDTYPE_AXIS}, SDL_GamepadBindingType #{const SDL_GAMEPAD_BINDTYPE_AXIS}) -> do
+        axis <- #{peek SDL_GamepadBinding, input.axis.axis} ptr
+        axisMin <- #{peek SDL_GamepadBinding, input.axis.axis_min} ptr
+        axisMax <- #{peek SDL_GamepadBinding, input.axis.axis_max} ptr
+        outAxis <- #{peek SDL_GamepadBinding, output.axis.axis} ptr
+        outAxisMin <- #{peek SDL_GamepadBinding, output.axis.axis_min} ptr
+        outAxisMax <- #{peek SDL_GamepadBinding, output.axis.axis_max} ptr
+        return $ GamepadBindingAxisToAxis axis axisMin axisMax outAxis outAxisMin outAxisMax
+      (SDL_GamepadBindingType #{const SDL_GAMEPAD_BINDTYPE_HAT}, SDL_GamepadBindingType #{const SDL_GAMEPAD_BINDTYPE_AXIS}) -> do
+        hat <- #{peek SDL_GamepadBinding, input.hat.hat} ptr
+        hatMask <- #{peek SDL_GamepadBinding, input.hat.hat_mask} ptr
+        outAxis <- #{peek SDL_GamepadBinding, output.axis.axis} ptr
+        outAxisMin <- #{peek SDL_GamepadBinding, output.axis.axis_min} ptr
+        outAxisMax <- #{peek SDL_GamepadBinding, output.axis.axis_max} ptr
+        return $ GamepadBindingHatToAxis hat hatMask outAxis outAxisMin outAxisMax
+      _ -> error $ "Unknown input/output type combination: " ++ show (inputType, outputType)
+
+  poke ptr binding = case binding of
+    GamepadBindingNone -> do
+      #{poke SDL_GamepadBinding, input_type} ptr (SDL_GamepadBindingType #{const SDL_GAMEPAD_BINDTYPE_NONE})
+      #{poke SDL_GamepadBinding, output_type} ptr (SDL_GamepadBindingType #{const SDL_GAMEPAD_BINDTYPE_NONE})
+    GamepadBindingButtonToButton btn outBtn -> do
+      #{poke SDL_GamepadBinding, input_type} ptr (SDL_GamepadBindingType #{const SDL_GAMEPAD_BINDTYPE_BUTTON})
+      #{poke SDL_GamepadBinding, output_type} ptr (SDL_GamepadBindingType #{const SDL_GAMEPAD_BINDTYPE_BUTTON})
+      #{poke SDL_GamepadBinding, input.button} ptr btn
+      #{poke SDL_GamepadBinding, output.button} ptr outBtn
+    GamepadBindingAxisToButton axis axisMin axisMax outBtn -> do
+      #{poke SDL_GamepadBinding, input_type} ptr (SDL_GamepadBindingType #{const SDL_GAMEPAD_BINDTYPE_AXIS})
+      #{poke SDL_GamepadBinding, output_type} ptr (SDL_GamepadBindingType #{const SDL_GAMEPAD_BINDTYPE_BUTTON})
+      #{poke SDL_GamepadBinding, input.axis.axis} ptr axis
+      #{poke SDL_GamepadBinding, input.axis.axis_min} ptr axisMin
+      #{poke SDL_GamepadBinding, input.axis.axis_max} ptr axisMax
+      #{poke SDL_GamepadBinding, output.button} ptr outBtn
+    GamepadBindingHatToButton hat hatMask outBtn -> do
+      #{poke SDL_GamepadBinding, input_type} ptr (SDL_GamepadBindingType #{const SDL_GAMEPAD_BINDTYPE_HAT})
+      #{poke SDL_GamepadBinding, output_type} ptr (SDL_GamepadBindingType #{const SDL_GAMEPAD_BINDTYPE_BUTTON})
+      #{poke SDL_GamepadBinding, input.hat.hat} ptr hat
+      #{poke SDL_GamepadBinding, input.hat.hat_mask} ptr hatMask
+      #{poke SDL_GamepadBinding, output.button} ptr outBtn
+    GamepadBindingButtonToAxis btn outAxis outAxisMin outAxisMax -> do
+      #{poke SDL_GamepadBinding, input_type} ptr (SDL_GamepadBindingType #{const SDL_GAMEPAD_BINDTYPE_BUTTON})
+      #{poke SDL_GamepadBinding, output_type} ptr (SDL_GamepadBindingType #{const SDL_GAMEPAD_BINDTYPE_AXIS})
+      #{poke SDL_GamepadBinding, input.button} ptr btn
+      #{poke SDL_GamepadBinding, output.axis.axis} ptr outAxis
+      #{poke SDL_GamepadBinding, output.axis.axis_min} ptr outAxisMin
+      #{poke SDL_GamepadBinding, output.axis.axis_max} ptr outAxisMax
+    GamepadBindingAxisToAxis axis axisMin axisMax outAxis outAxisMin outAxisMax -> do
+      #{poke SDL_GamepadBinding, input_type} ptr (SDL_GamepadBindingType #{const SDL_GAMEPAD_BINDTYPE_AXIS})
+      #{poke SDL_GamepadBinding, output_type} ptr (SDL_GamepadBindingType #{const SDL_GAMEPAD_BINDTYPE_AXIS})
+      #{poke SDL_GamepadBinding, input.axis.axis} ptr axis
+      #{poke SDL_GamepadBinding, input.axis.axis_min} ptr axisMin
+      #{poke SDL_GamepadBinding, input.axis.axis_max} ptr axisMax
+      #{poke SDL_GamepadBinding, output.axis.axis} ptr outAxis
+      #{poke SDL_GamepadBinding, output.axis.axis_min} ptr outAxisMin
+      #{poke SDL_GamepadBinding, output.axis.axis_max} ptr outAxisMax
+    GamepadBindingHatToAxis hat hatMask outAxis outAxisMin outAxisMax -> do
+      #{poke SDL_GamepadBinding, input_type} ptr (SDL_GamepadBindingType #{const SDL_GAMEPAD_BINDTYPE_HAT})
+      #{poke SDL_GamepadBinding, output_type} ptr (SDL_GamepadBindingType #{const SDL_GAMEPAD_BINDTYPE_AXIS})
+      #{poke SDL_GamepadBinding, input.hat.hat} ptr hat
+      #{poke SDL_GamepadBinding, input.hat.hat_mask} ptr hatMask
+      #{poke SDL_GamepadBinding, output.axis.axis} ptr outAxis
+      #{poke SDL_GamepadBinding, output.axis.axis_min} ptr outAxisMin
+      #{poke SDL_GamepadBinding, output.axis.axis_max} ptr outAxisMax
 
 data HapticDirection = HapticDirection
   { hapticDirectionType :: !Word8
@@ -1112,25 +1197,6 @@ instance Storable JoystickGUID where
   poke ptr (JoystickGUID guid) =
     pokeArray ((#ptr SDL_GUID, data) ptr) guid
 
-data Keysym = Keysym
-  { keysymScancode :: !Scancode
-  , keysymKeycode :: !Keycode
-  , keysymMod :: !Word16
-  } deriving (Eq, Show, Typeable)
-
-instance Storable Keysym where
-  sizeOf _ = (#size SDL_Keysym)
-  alignment _ = (#alignment SDL_Keysym)
-  peek ptr = do
-    scancode <- (#peek SDL_Keysym, scancode) ptr
-    sym <- (#peek SDL_Keysym, sym) ptr
-    mod' <- (#peek SDL_Keysym, mod) ptr
-    return $! Keysym scancode sym mod'
-  poke ptr (Keysym scancode sym mod') = do
-    (#poke SDL_Keysym, scancode) ptr scancode
-    (#poke SDL_Keysym, sym) ptr sym
-    (#poke SDL_Keysym, mod) ptr mod'
-
 data MessageBoxButtonData = MessageBoxButtonData
   { messageBoxButtonDataFlags :: !Word32
   , messageBoxButtonButtonID :: !CInt
@@ -1142,12 +1208,12 @@ instance Storable MessageBoxButtonData where
   alignment _ = (#alignment SDL_MessageBoxButtonData)
   peek ptr = do
     flags <- (#peek SDL_MessageBoxButtonData, flags) ptr
-    buttonid <- (#peek SDL_MessageBoxButtonData, buttonid) ptr
+    buttonid <- (#peek SDL_MessageBoxButtonData, buttonID) ptr
     text <- (#peek SDL_MessageBoxButtonData, text) ptr
     return $! MessageBoxButtonData flags buttonid text
   poke ptr (MessageBoxButtonData flags buttonid text) = do
     (#poke SDL_MessageBoxButtonData, flags) ptr flags
-    (#poke SDL_MessageBoxButtonData, buttonid) ptr buttonid
+    (#poke SDL_MessageBoxButtonData, buttonID) ptr buttonid
     (#poke SDL_MessageBoxButtonData, text) ptr text
 
 data MessageBoxColor = MessageBoxColor
@@ -1243,7 +1309,6 @@ instance Storable Palette where
 
 data PixelFormat = PixelFormat
   { pixelFormatFormat :: !Word32
-  , pixelFormatPalette :: !(Ptr Palette)
   , pixelFormatBitsPerPixel :: !Word8
   , pixelFormatBytesPerPixel :: !Word8
   , pixelFormatRMask :: !Word32
@@ -1253,27 +1318,25 @@ data PixelFormat = PixelFormat
   } deriving (Eq, Show, Typeable)
 
 instance Storable PixelFormat where
-  sizeOf _ = (#size SDL_PixelFormat)
-  alignment _ = (#alignment SDL_PixelFormat)
+  sizeOf _ = (#size SDL_PixelFormatDetails)
+  alignment _ = (#alignment SDL_PixelFormatDetails)
   peek ptr = do
-    format <- (#peek SDL_PixelFormat, format) ptr
-    palette <- (#peek SDL_PixelFormat, palette) ptr
-    bits_per_pixel <- (#peek SDL_PixelFormat, BitsPerPixel) ptr
-    bytes_per_pixel <- (#peek SDL_PixelFormat, BytesPerPixel) ptr
-    rmask <- (#peek SDL_PixelFormat, Rmask) ptr
-    gmask <- (#peek SDL_PixelFormat, Gmask) ptr
-    bmask <- (#peek SDL_PixelFormat, Bmask) ptr
-    amask <- (#peek SDL_PixelFormat, Amask) ptr
-    return $! PixelFormat format palette bits_per_pixel bytes_per_pixel rmask gmask bmask amask
-  poke ptr (PixelFormat format palette bits_per_pixel bytes_per_pixel rmask gmask bmask amask) = do
-    (#poke SDL_PixelFormat, format) ptr format
-    (#poke SDL_PixelFormat, palette) ptr palette
-    (#poke SDL_PixelFormat, BitsPerPixel) ptr bits_per_pixel
-    (#poke SDL_PixelFormat, BytesPerPixel) ptr bytes_per_pixel
-    (#poke SDL_PixelFormat, Rmask) ptr rmask
-    (#poke SDL_PixelFormat, Gmask) ptr gmask
-    (#poke SDL_PixelFormat, Bmask) ptr bmask
-    (#poke SDL_PixelFormat, Amask) ptr amask
+    format <- (#peek SDL_PixelFormatDetails, format) ptr
+    bits_per_pixel <- (#peek SDL_PixelFormatDetails, bits_per_pixel) ptr
+    bytes_per_pixel <- (#peek SDL_PixelFormatDetails, bytes_per_pixel) ptr
+    rmask <- (#peek SDL_PixelFormatDetails, Rmask) ptr
+    gmask <- (#peek SDL_PixelFormatDetails, Gmask) ptr
+    bmask <- (#peek SDL_PixelFormatDetails, Bmask) ptr
+    amask <- (#peek SDL_PixelFormatDetails, Amask) ptr
+    return $! PixelFormat format bits_per_pixel bytes_per_pixel rmask gmask bmask amask
+  poke ptr (PixelFormat format bits_per_pixel bytes_per_pixel rmask gmask bmask amask) = do
+    (#poke SDL_PixelFormatDetails, format) ptr format
+    (#poke SDL_PixelFormatDetails, bits_per_pixel) ptr bits_per_pixel
+    (#poke SDL_PixelFormatDetails, bytes_per_pixel) ptr bytes_per_pixel
+    (#poke SDL_PixelFormatDetails, Rmask) ptr rmask
+    (#poke SDL_PixelFormatDetails, Gmask) ptr gmask
+    (#poke SDL_PixelFormatDetails, Bmask) ptr bmask
+    (#poke SDL_PixelFormatDetails, Amask) ptr amask
 
 data Point = Point
   { pointX :: !CInt
@@ -1373,69 +1436,53 @@ instance Storable Vertex where
     (#poke SDL_Vertex, tex_coord) ptr tex_coord
 #endif
 
-data RendererInfo = RendererInfo
-  { rendererInfoName :: !CString
-  , rendererInfoFlags :: !Word32
-  , rendererInfoNumTextureFormats :: !Word32
-  , rendererInfoTextureFormats :: ![Word32]
-  , rendererInfoMaxTextureWidth :: !CInt
-  , rendererInfoMaxTextureHeight :: !CInt
-  } deriving (Eq, Show, Typeable)
+data IOStream -- Opaque, no fields
+newtype IOWhence = IOWhence CInt
+  deriving (Eq, Show, Storable)
+newtype IOStatus = IOStatus CInt
+  deriving (Eq, Show, Storable)
 
-instance Storable RendererInfo where
-  sizeOf _ = (#size SDL_RendererInfo)
-  alignment _ = (#alignment SDL_RendererInfo)
+-- Interface used for creating an IOStream
+data IOStreamInterface = IOStreamInterface
+  { iostreamVersion :: !Word32
+  , iostreamSize :: !(FunPtr (Ptr () -> IO Int64))                  -- Sint64 (*size)(void *userdata)
+  , iostreamSeek :: !(FunPtr (Ptr () -> Int64 -> IOWhence -> IO Int64)) -- Sint64 (*seek)(void *userdata, Sint64 offset, SDL_IOWhence whence)
+  , iostreamRead :: !(FunPtr (Ptr () -> Ptr () -> CSize -> Ptr IOStatus -> IO CSize)) -- size_t (*read)(void *userdata, void *ptr, size_t size, SDL_IOStatus *status)
+  , iostreamWrite :: !(FunPtr (Ptr () -> Ptr () -> CSize -> Ptr IOStatus -> IO CSize)) -- size_t (*write)(void *userdata, const void *ptr, size_t size, SDL_IOStatus *status)
+  , iostreamFlush :: !(FunPtr (Ptr () -> Ptr IOStatus -> IO CBool)) -- bool (*flush)(void *userdata, SDL_IOStatus *status)
+  , iostreamClose :: !(FunPtr (Ptr () -> IO CBool))                 -- bool (*close)(void *userdata)
+  } deriving (Eq, Show, Generic)
+
+instance Storable IOStreamInterface where
+  sizeOf _ = (#size SDL_IOStreamInterface)
+  alignment _ = (#alignment SDL_IOStreamInterface)
+
   peek ptr = do
-    name <- (#peek SDL_RendererInfo, name) ptr
-    flags <- (#peek SDL_RendererInfo, flags) ptr
-    num_texture_formats <- (#peek SDL_RendererInfo, num_texture_formats) ptr
-    texture_formats <- peekArray 16 $ (#ptr SDL_RendererInfo, texture_formats) ptr
-    max_texture_width <- (#peek SDL_RendererInfo, max_texture_width) ptr
-    max_texture_height <- (#peek SDL_RendererInfo, max_texture_height) ptr
-    return $! RendererInfo name flags num_texture_formats texture_formats max_texture_width max_texture_height
-  poke ptr (RendererInfo name flags num_texture_formats texture_formats max_texture_width max_texture_height) = do
-    (#poke SDL_RendererInfo, name) ptr name
-    (#poke SDL_RendererInfo, flags) ptr flags
-    (#poke SDL_RendererInfo, num_texture_formats) ptr num_texture_formats
-    pokeArray ((#ptr SDL_RendererInfo, texture_formats) ptr) texture_formats
-    (#poke SDL_RendererInfo, max_texture_width) ptr max_texture_width
-    (#poke SDL_RendererInfo, max_texture_height) ptr max_texture_height
+    version <- (#peek SDL_IOStreamInterface, version) ptr
+    size <- (#peek SDL_IOStreamInterface, size) ptr
+    seek <- (#peek SDL_IOStreamInterface, seek) ptr
+    read' <- (#peek SDL_IOStreamInterface, read) ptr
+    write <- (#peek SDL_IOStreamInterface, write) ptr
+    flush <- (#peek SDL_IOStreamInterface, flush) ptr
+    close <- (#peek SDL_IOStreamInterface, close) ptr
+    return $ IOStreamInterface version size seek read' write flush close
 
-data RWops = RWops
-  { rwopsSize :: !(FunPtr (Ptr RWops -> IO Int64))
-  , rwopsSeek :: !(FunPtr (Ptr RWops -> Int64 -> CInt -> IO Int64))
-  , rwopsRead :: !(FunPtr (Ptr RWops -> Ptr () -> CSize -> CSize -> IO CSize))
-  , rwopsWrite :: !(FunPtr (Ptr RWops -> Ptr () -> CSize -> CSize -> IO CSize))
-  , rwopsClose :: !(FunPtr (Ptr RWops -> IO CInt))
-  , rwopsType :: !Word32
-  } deriving (Eq, Show, Typeable)
-
-instance Storable RWops where
-  sizeOf _ = (#size SDL_IOStream)
-  alignment _ = (#alignment SDL_IOStream)
-  peek ptr = do
-    size <- (#peek SDL_IOStream, size) ptr
-    seek <- (#peek SDL_IOStream, seek) ptr
-    read' <- (#peek SDL_IOStream, read) ptr
-    write <- (#peek SDL_IOStream, write) ptr
-    close <- (#peek SDL_IOStream, close) ptr
-    typ <- (#peek SDL_IOStream, type) ptr
-    return $! RWops size seek read' write close typ
-  poke ptr (RWops size seek read' write close typ) = do
-    (#poke SDL_IOStream, size) ptr size
-    (#poke SDL_IOStream, seek) ptr seek
-    (#poke SDL_IOStream, read) ptr read'
-    (#poke SDL_IOStream, write) ptr write
-    (#poke SDL_IOStream, close) ptr close
-    (#poke SDL_IOStream, type) ptr typ
+  poke ptr (IOStreamInterface version size seek read' write flush close) = do
+    (#poke SDL_IOStreamInterface, version) ptr version
+    (#poke SDL_IOStreamInterface, size) ptr size
+    (#poke SDL_IOStreamInterface, seek) ptr seek
+    (#poke SDL_IOStreamInterface, read) ptr read'
+    (#poke SDL_IOStreamInterface, write) ptr write
+    (#poke SDL_IOStreamInterface, flush) ptr flush
+    (#poke SDL_IOStreamInterface, close) ptr close
 
 data Surface = Surface
-  { surfaceFormat :: !(Ptr PixelFormat)
+  { surfaceFlags :: !SurfaceFlags
+  , surfaceFormat :: !PixelFormat
   , surfaceW :: !CInt
   , surfaceH :: !CInt
+  , surfacePitch :: !CInt
   , surfacePixels :: !(Ptr ())
-  , surfaceUserdata :: !(Ptr ())
-  , surfaceClipRect :: !Rect
   , surfaceRefcount :: !CInt
   } deriving (Eq, Show, Typeable)
 
@@ -1443,38 +1490,17 @@ instance Storable Surface where
   sizeOf _ = (#size SDL_Surface)
   alignment _ = (#alignment SDL_Surface)
   peek ptr = do
+    flags <- (#peek SDL_Surface, flags) ptr
     format <- (#peek SDL_Surface, format) ptr
     w <- (#peek SDL_Surface, w) ptr
     h <- (#peek SDL_Surface, h) ptr
     pixels <- (#peek SDL_Surface, pixels) ptr
-    userdata <- (#peek SDL_Surface, userdata) ptr
-    cliprect <- (#peek SDL_Surface, clip_rect) ptr
     refcount <- (#peek SDL_Surface, refcount) ptr
-    return $! Surface format w h pixels userdata cliprect refcount
-  poke ptr (Surface format w h pixels userdata cliprect refcount) = do
+    return $! Surface flags format w h pixels refcount
+  poke ptr (Surface flags format w h pixels refcount) = do
+    (#poke SDL_Surface, flags) ptr flags
     (#poke SDL_Surface, format) ptr format
     (#poke SDL_Surface, w) ptr w
     (#poke SDL_Surface, h) ptr h
     (#poke SDL_Surface, pixels) ptr pixels
-    (#poke SDL_Surface, userdata) ptr userdata
-    (#poke SDL_Surface, clip_rect) ptr cliprect
     (#poke SDL_Surface, refcount) ptr refcount
-
-data Version = Version
-  { versionMajor :: !Word8
-  , versionMinor :: !Word8
-  , versionPatch :: !Word8
-  } deriving (Eq, Show, Typeable)
-
-instance Storable Version where
-  sizeOf _ = (#size SDL_version)
-  alignment _ = (#alignment SDL_version)
-  peek ptr = do
-    major <- (#peek SDL_version, major) ptr
-    minor <- (#peek SDL_version, minor) ptr
-    patch <- (#peek SDL_version, patch) ptr
-    return $! Version major minor patch
-  poke ptr (Version major minor patch) = do
-    (#poke SDL_version, major) ptr major
-    (#poke SDL_version, minor) ptr minor
-    (#poke SDL_version, patch) ptr patch

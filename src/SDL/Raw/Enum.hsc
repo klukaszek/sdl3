@@ -16,20 +16,13 @@ module SDL.Raw.Enum (
   pattern SDL_AUDIO_U8,
   pattern SDL_AUDIO_S16MSB,
   pattern SDL_AUDIO_S16SYS,
-  pattern SDL_AUDIO_U16LSB,
   pattern SDL_AUDIO_S32LSB,
   pattern SDL_AUDIO_S32MSB,
   pattern SDL_AUDIO_S32SYS,
   pattern SDL_AUDIO_F32LSB,
   pattern SDL_AUDIO_F32MSB,
   pattern SDL_AUDIO_F32SYS,
-
-  -- ** Audio Status
-  AudioStatus,
-  pattern SDL_AUDIO_STOPPED,
-  pattern SDL_AUDIO_PLAYING,
-  pattern SDL_AUDIO_PAUSED,
-
+  
   -- ** Blend Mode
   BlendMode,
   pattern SDL_BLENDMODE_NONE,
@@ -70,7 +63,7 @@ module SDL.Raw.Enum (
   pattern SDL_GETEVENT,
 
   -- ** Game Controller Axis
-  GameControllerAxis,
+  GamepadAxis,
   pattern SDL_GAMEPAD_AXIS_INVALID,
   pattern SDL_GAMEPAD_AXIS_LEFTX,
   pattern SDL_GAMEPAD_AXIS_LEFTY,
@@ -81,7 +74,7 @@ module SDL.Raw.Enum (
   pattern SDL_GAMEPAD_AXIS_COUNT,
 
   -- ** Game Controller Button
-  GameControllerButton,
+  GamepadButton,
   pattern SDL_GAMEPAD_BUTTON_INVALID,
   pattern SDL_GAMEPAD_BUTTON_SOUTH,
   pattern SDL_GAMEPAD_BUTTON_EAST,
@@ -369,7 +362,6 @@ module SDL.Raw.Enum (
   pattern SDLK_MEDIA_PREVIOUS_TRACK,
   pattern SDLK_MEDIA_STOP,
   pattern SDLK_MEDIA_PLAY,
-  pattern SDLK_MUTE,
   pattern SDLK_MEDIA_SELECT,
   pattern SDLK_AC_SEARCH,
   pattern SDLK_AC_HOME,
@@ -644,8 +636,6 @@ module SDL.Raw.Enum (
   pattern SDL_SCANCODE_MEDIA_PREVIOUS_TRACK,
   pattern SDL_SCANCODE_MEDIA_STOP,
   pattern SDL_SCANCODE_MEDIA_PLAY,
-  pattern SDL_SCANCODE_MUTE,
-  pattern SDL_SCANCODE_MEDIA_SELECT,
   pattern SDL_SCANCODE_AC_SEARCH,
   pattern SDL_SCANCODE_AC_HOME,
   pattern SDL_SCANCODE_AC_BACK,
@@ -828,13 +818,7 @@ module SDL.Raw.Enum (
   pattern SDL_PIXELFORMAT_YUY2,
   pattern SDL_PIXELFORMAT_UYVY,
   pattern SDL_PIXELFORMAT_YVYU,
-
-  -- ** Renderer Flags
-  pattern SDL_RENDERER_SOFTWARE,
-  pattern SDL_RENDERER_ACCELERATED,
-  pattern SDL_RENDERER_PRESENTVSYNC,
-  pattern SDL_RENDERER_TARGETTEXTURE,
-
+  
   -- ** Texture Access
   pattern SDL_TEXTUREACCESS_STATIC,
   pattern SDL_TEXTUREACCESS_STREAMING,
@@ -844,7 +828,6 @@ module SDL.Raw.Enum (
   pattern SDL_TOUCH_MOUSEID,
 
   -- ** Window Event
-  pattern SDL_EVENT_WINDOW_SHOWN,
   pattern SDL_EVENT_WINDOW_HIDDEN,
   pattern SDL_EVENT_WINDOW_EXPOSED,
   pattern SDL_EVENT_WINDOW_MOVED,
@@ -862,7 +845,6 @@ module SDL.Raw.Enum (
   -- ** Window Flags
   pattern SDL_WINDOW_FULLSCREEN,
   pattern SDL_WINDOW_OPENGL,
-  pattern SDL_WINDOW_SHOWN,
   pattern SDL_WINDOW_HIDDEN,
   pattern SDL_WINDOW_BORDERLESS,
   pattern SDL_WINDOW_RESIZABLE,
@@ -871,8 +853,6 @@ module SDL.Raw.Enum (
   pattern SDL_WINDOW_MOUSE_GRABBED,
   pattern SDL_WINDOW_INPUT_FOCUS,
   pattern SDL_WINDOW_MOUSE_FOCUS,
-  pattern SDL_WINDOW_FULLSCREEN_DESKTOP,
-  pattern SDL_WINDOW_FOREIGN,
   pattern SDL_WINDOW_HIGH_PIXEL_DENSITY,
   pattern SDL_WINDOW_MOUSE_CAPTURE,
   pattern SDL_WINDOW_VULKAN,
@@ -914,8 +894,8 @@ type BlendOperation = (#type SDL_BlendOperation)
 type BlendFactor = (#type SDL_BlendFactor)
 type Endian = CInt
 type EventAction = (#type SDL_EventAction)
-type GameControllerAxis = (#type SDL_GamepadAxis)
-type GameControllerButton = (#type SDL_GamepadButton)
+type GamepadAxis = (#type SDL_GamepadAxis)
+type GamepadButton = (#type SDL_GamepadButton)
 type GLattr = (#type SDL_GLAttr)
 type HintPriority = (#type SDL_HintPriority)
 type InitFlag = Word32
@@ -970,32 +950,32 @@ pattern SDL_ADDEVENT = (#const SDL_ADDEVENT) :: EventAction
 pattern SDL_PEEKEVENT = (#const SDL_PEEKEVENT) :: EventAction
 pattern SDL_GETEVENT = (#const SDL_GETEVENT) :: EventAction
 
-pattern SDL_GAMEPAD_AXIS_INVALID = (#const SDL_GAMEPAD_AXIS_INVALID) :: GameControllerAxis
-pattern SDL_GAMEPAD_AXIS_LEFTX = (#const SDL_GAMEPAD_AXIS_LEFTX) :: GameControllerAxis
-pattern SDL_GAMEPAD_AXIS_LEFTY = (#const SDL_GAMEPAD_AXIS_LEFTY) :: GameControllerAxis
-pattern SDL_GAMEPAD_AXIS_RIGHTX = (#const SDL_GAMEPAD_AXIS_RIGHTX) :: GameControllerAxis
-pattern SDL_GAMEPAD_AXIS_RIGHTY = (#const SDL_GAMEPAD_AXIS_RIGHTY) :: GameControllerAxis
-pattern SDL_GAMEPAD_AXIS_LEFT_TRIGGER = (#const SDL_GAMEPAD_AXIS_LEFT_TRIGGER) :: GameControllerAxis
-pattern SDL_GAMEPAD_AXIS_RIGHT_TRIGGER = (#const SDL_GAMEPAD_AXIS_RIGHT_TRIGGER) :: GameControllerAxis
-pattern SDL_GAMEPAD_AXIS_COUNT = (#const SDL_GAMEPAD_AXIS_COUNT) :: GameControllerAxis
+pattern SDL_GAMEPAD_AXIS_INVALID = (#const SDL_GAMEPAD_AXIS_INVALID) :: GamepadAxis
+pattern SDL_GAMEPAD_AXIS_LEFTX = (#const SDL_GAMEPAD_AXIS_LEFTX) :: GamepadAxis
+pattern SDL_GAMEPAD_AXIS_LEFTY = (#const SDL_GAMEPAD_AXIS_LEFTY) :: GamepadAxis
+pattern SDL_GAMEPAD_AXIS_RIGHTX = (#const SDL_GAMEPAD_AXIS_RIGHTX) :: GamepadAxis
+pattern SDL_GAMEPAD_AXIS_RIGHTY = (#const SDL_GAMEPAD_AXIS_RIGHTY) :: GamepadAxis
+pattern SDL_GAMEPAD_AXIS_LEFT_TRIGGER = (#const SDL_GAMEPAD_AXIS_LEFT_TRIGGER) :: GamepadAxis
+pattern SDL_GAMEPAD_AXIS_RIGHT_TRIGGER = (#const SDL_GAMEPAD_AXIS_RIGHT_TRIGGER) :: GamepadAxis
+pattern SDL_GAMEPAD_AXIS_COUNT = (#const SDL_GAMEPAD_AXIS_COUNT) :: GamepadAxis
 
-pattern SDL_GAMEPAD_BUTTON_INVALID = (#const SDL_GAMEPAD_BUTTON_INVALID) :: GameControllerButton
-pattern SDL_GAMEPAD_BUTTON_SOUTH = (#const SDL_GAMEPAD_BUTTON_SOUTH) :: GameControllerButton
-pattern SDL_GAMEPAD_BUTTON_EAST = (#const SDL_GAMEPAD_BUTTON_EAST) :: GameControllerButton
-pattern SDL_GAMEPAD_BUTTON_WEST = (#const SDL_GAMEPAD_BUTTON_WEST) :: GameControllerButton
-pattern SDL_GAMEPAD_BUTTON_NORTH = (#const SDL_GAMEPAD_BUTTON_NORTH) :: GameControllerButton
-pattern SDL_GAMEPAD_BUTTON_BACK = (#const SDL_GAMEPAD_BUTTON_BACK) :: GameControllerButton
-pattern SDL_GAMEPAD_BUTTON_GUIDE = (#const SDL_GAMEPAD_BUTTON_GUIDE) :: GameControllerButton
-pattern SDL_GAMEPAD_BUTTON_START = (#const SDL_GAMEPAD_BUTTON_START) :: GameControllerButton
-pattern SDL_GAMEPAD_BUTTON_LEFT_STICK = (#const SDL_GAMEPAD_BUTTON_LEFT_STICK) :: GameControllerButton
-pattern SDL_GAMEPAD_BUTTON_RIGHT_STICK = (#const SDL_GAMEPAD_BUTTON_RIGHT_STICK) :: GameControllerButton
-pattern SDL_GAMEPAD_BUTTON_LEFT_SHOULDER = (#const SDL_GAMEPAD_BUTTON_LEFT_SHOULDER) :: GameControllerButton
-pattern SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER = (#const SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER) :: GameControllerButton
-pattern SDL_GAMEPAD_BUTTON_DPAD_UP = (#const SDL_GAMEPAD_BUTTON_DPAD_UP) :: GameControllerButton
-pattern SDL_GAMEPAD_BUTTON_DPAD_DOWN = (#const SDL_GAMEPAD_BUTTON_DPAD_DOWN) :: GameControllerButton
-pattern SDL_GAMEPAD_BUTTON_DPAD_LEFT = (#const SDL_GAMEPAD_BUTTON_DPAD_LEFT) :: GameControllerButton
-pattern SDL_GAMEPAD_BUTTON_DPAD_RIGHT = (#const SDL_GAMEPAD_BUTTON_DPAD_RIGHT) :: GameControllerButton
-pattern SDL_GAMEPAD_BUTTON_COUNT = (#const SDL_GAMEPAD_BUTTON_COUNT) :: GameControllerButton
+pattern SDL_GAMEPAD_BUTTON_INVALID = (#const SDL_GAMEPAD_BUTTON_INVALID) :: GamepadButton
+pattern SDL_GAMEPAD_BUTTON_SOUTH = (#const SDL_GAMEPAD_BUTTON_SOUTH) :: GamepadButton
+pattern SDL_GAMEPAD_BUTTON_EAST = (#const SDL_GAMEPAD_BUTTON_EAST) :: GamepadButton
+pattern SDL_GAMEPAD_BUTTON_WEST = (#const SDL_GAMEPAD_BUTTON_WEST) :: GamepadButton
+pattern SDL_GAMEPAD_BUTTON_NORTH = (#const SDL_GAMEPAD_BUTTON_NORTH) :: GamepadButton
+pattern SDL_GAMEPAD_BUTTON_BACK = (#const SDL_GAMEPAD_BUTTON_BACK) :: GamepadButton
+pattern SDL_GAMEPAD_BUTTON_GUIDE = (#const SDL_GAMEPAD_BUTTON_GUIDE) :: GamepadButton
+pattern SDL_GAMEPAD_BUTTON_START = (#const SDL_GAMEPAD_BUTTON_START) :: GamepadButton
+pattern SDL_GAMEPAD_BUTTON_LEFT_STICK = (#const SDL_GAMEPAD_BUTTON_LEFT_STICK) :: GamepadButton
+pattern SDL_GAMEPAD_BUTTON_RIGHT_STICK = (#const SDL_GAMEPAD_BUTTON_RIGHT_STICK) :: GamepadButton
+pattern SDL_GAMEPAD_BUTTON_LEFT_SHOULDER = (#const SDL_GAMEPAD_BUTTON_LEFT_SHOULDER) :: GamepadButton
+pattern SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER = (#const SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER) :: GamepadButton
+pattern SDL_GAMEPAD_BUTTON_DPAD_UP = (#const SDL_GAMEPAD_BUTTON_DPAD_UP) :: GamepadButton
+pattern SDL_GAMEPAD_BUTTON_DPAD_DOWN = (#const SDL_GAMEPAD_BUTTON_DPAD_DOWN) :: GamepadButton
+pattern SDL_GAMEPAD_BUTTON_DPAD_LEFT = (#const SDL_GAMEPAD_BUTTON_DPAD_LEFT) :: GamepadButton
+pattern SDL_GAMEPAD_BUTTON_DPAD_RIGHT = (#const SDL_GAMEPAD_BUTTON_DPAD_RIGHT) :: GamepadButton
+pattern SDL_GAMEPAD_BUTTON_COUNT = (#const SDL_GAMEPAD_BUTTON_COUNT) :: GamepadButton
 
 pattern SDL_GL_RED_SIZE = (#const SDL_GL_RED_SIZE) :: GLattr
 pattern SDL_GL_GREEN_SIZE = (#const SDL_GL_GREEN_SIZE) :: GLattr
@@ -1248,7 +1228,6 @@ pattern SDLK_MEDIA_NEXT_TRACK = (#const SDLK_MEDIA_NEXT_TRACK) :: Keycode
 pattern SDLK_MEDIA_PREVIOUS_TRACK = (#const SDLK_MEDIA_PREVIOUS_TRACK) :: Keycode
 pattern SDLK_MEDIA_STOP = (#const SDLK_MEDIA_STOP) :: Keycode
 pattern SDLK_MEDIA_PLAY = (#const SDLK_MEDIA_PLAY) :: Keycode
-pattern SDLK_MUTE = (#const SDLK_MUTE) :: Keycode
 pattern SDLK_MEDIA_SELECT = (#const SDLK_MEDIA_SELECT) :: Keycode
 pattern SDLK_AC_SEARCH = (#const SDLK_AC_SEARCH) :: Keycode
 pattern SDLK_AC_HOME = (#const SDLK_AC_HOME) :: Keycode
@@ -1513,7 +1492,6 @@ pattern SDL_SCANCODE_MEDIA_NEXT_TRACK = (#const SDL_SCANCODE_MEDIA_NEXT_TRACK) :
 pattern SDL_SCANCODE_MEDIA_PREVIOUS_TRACK = (#const SDL_SCANCODE_MEDIA_PREVIOUS_TRACK) :: Scancode
 pattern SDL_SCANCODE_MEDIA_STOP = (#const SDL_SCANCODE_MEDIA_STOP) :: Scancode
 pattern SDL_SCANCODE_MEDIA_PLAY = (#const SDL_SCANCODE_MEDIA_PLAY) :: Scancode
-pattern SDL_SCANCODE_MUTE = (#const SDL_SCANCODE_MUTE) :: Scancode
 pattern SDL_SCANCODE_MEDIA_SELECT = (#const SDL_SCANCODE_MEDIA_SELECT) :: Scancode
 pattern SDL_SCANCODE_AC_SEARCH = (#const SDL_SCANCODE_AC_SEARCH) :: Scancode
 pattern SDL_SCANCODE_AC_HOME = (#const SDL_SCANCODE_AC_HOME) :: Scancode

@@ -428,11 +428,11 @@ foreign import ccall "SDL3/SDL.h SDL_GetSurfaceColorKey" getColorKeyFFI :: Ptr S
 foreign import ccall "SDL3/SDL.h SDL_GetSurfaceAlphaMod" getSurfaceAlphaModFFI :: Ptr Surface -> Ptr Word8 -> IO CInt
 foreign import ccall "SDL3/SDL.h SDL_GetSurfaceBlendMode" getSurfaceBlendModeFFI :: Ptr Surface -> Ptr BlendMode -> IO CInt
 foreign import ccall "SDL3/SDL.h SDL_GetSurfaceColorMod" getSurfaceColorModFFI :: Ptr Surface -> Ptr Word8 -> Ptr Word8 -> Ptr Word8 -> IO CInt
-foreign import ccall "SDL3/SDL.h SDL_LoadBMP_IO" loadBMP_RWFFI :: Ptr RWops -> CInt -> IO (Ptr Surface)
+foreign import ccall "SDL3/SDL.h SDL_LoadBMP_IO" loadBMP_RWFFI :: Ptr IOStream -> CInt -> IO (Ptr Surface)
 foreign import ccall "SDL3/SDL.h SDL_LockSurface" lockSurfaceFFI :: Ptr Surface -> IO CInt
 foreign import ccall "SDL3/SDL.h SDL_BlitSurfaceUnchecked" lowerBlitFFI :: Ptr Surface -> Ptr Rect -> Ptr Surface -> Ptr Rect -> IO CInt
 foreign import ccall "SDL3/SDL.h SDL_BlitSurfaceUncheckedScaled" lowerBlitScaledFFI :: Ptr Surface -> Ptr Rect -> Ptr Surface -> Ptr Rect -> IO CInt
-foreign import ccall "SDL3/SDL.h SDL_SaveBMP_IO" saveBMP_RWFFI :: Ptr Surface -> Ptr RWops -> CInt -> IO CInt
+foreign import ccall "SDL3/SDL.h SDL_SaveBMP_IO" saveBMP_RWFFI :: Ptr Surface -> Ptr IOStream -> CInt -> IO CInt
 foreign import ccall "SDL3/SDL.h SDL_SetSurfaceClipRect" setClipRectFFI :: Ptr Surface -> Ptr Rect -> IO Bool
 foreign import ccall "SDL3/SDL.h SDL_SetSurfaceColorKey" setColorKeyFFI :: Ptr Surface -> CInt -> Word32 -> IO CInt
 foreign import ccall "SDL3/SDL.h SDL_SetSurfaceAlphaMod" setSurfaceAlphaModFFI :: Ptr Surface -> Word8 -> IO CInt
@@ -1201,7 +1201,7 @@ loadBMP file = liftIO $ do
   loadBMP_RW rw 1
 {-# INLINE loadBMP #-}
 
-loadBMP_RW :: MonadIO m => Ptr RWops -> CInt -> m (Ptr Surface)
+loadBMP_RW :: MonadIO m => Ptr IOStream -> CInt -> m (Ptr Surface)
 loadBMP_RW v1 v2 = liftIO $ loadBMP_RWFFI v1 v2
 {-# INLINE loadBMP_RW #-}
 
@@ -1223,7 +1223,7 @@ saveBMP surface file = liftIO $ do
   saveBMP_RW surface rw 1
 {-# INLINE saveBMP #-}
 
-saveBMP_RW :: MonadIO m => Ptr Surface -> Ptr RWops -> CInt -> m CInt
+saveBMP_RW :: MonadIO m => Ptr Surface -> Ptr IOStream -> CInt -> m CInt
 saveBMP_RW v1 v2 v3 = liftIO $ saveBMP_RWFFI v1 v2 v3
 {-# INLINE saveBMP_RW #-}
 
