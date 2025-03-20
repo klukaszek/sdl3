@@ -845,7 +845,6 @@ module SDL.Raw.Enum (
   -- ** Window Flags
   pattern SDL_WINDOW_FULLSCREEN,
   pattern SDL_WINDOW_OPENGL,
-  pattern SDL_WINDOW_HIDDEN,
   pattern SDL_WINDOW_BORDERLESS,
   pattern SDL_WINDOW_RESIZABLE,
   pattern SDL_WINDOW_MINIMIZED,

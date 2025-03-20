@@ -119,7 +119,7 @@ module SDL.Raw.Video (
   renderFillRect,
   renderFillRectEx,
   renderFillRects,
-#ifdef RECENT_ISH
+-- #ifdef RECENT_ISH
   renderCopyF,
   renderCopyExF,
   renderDrawLineF,
@@ -132,7 +132,7 @@ module SDL.Raw.Video (
   renderFillRectsF,
   renderGeometry,
   renderGeometryRaw,
-#endif
+-- #endif
   renderGetClipRect,
   renderGetIntegerScale,
   renderGetLogicalSize,
@@ -352,7 +352,7 @@ foreign import ccall "SDL3/SDL.h SDL_RenderPoints" renderDrawPointsFFI :: Render
 foreign import ccall "SDL3/SDL.h SDL_RenderRect" renderDrawRectFFI :: Renderer -> Ptr Rect -> IO CInt
 foreign import ccall "SDL3/SDL.h SDL_RenderRects" renderDrawRectsFFI :: Renderer -> Ptr Rect -> CInt -> IO CInt
 foreign import ccall "SDL3/SDL.h SDL_RenderFillRect" renderFillRectFFI :: Renderer -> Ptr Rect -> IO CInt
-#ifdef RECENT_ISH
+-- #ifdef RECENT_ISH
 foreign import ccall "SDL3/SDL.h SDL_RenderTexture" renderCopyFFFI :: Renderer -> Texture -> Ptr Rect -> Ptr FRect -> IO CInt
 foreign import ccall "SDL3/SDL.h SDL_RenderTextureRotated" renderCopyExFFFI :: Renderer -> Texture -> Ptr Rect -> Ptr FRect -> CDouble -> Ptr FPoint -> RendererFlip -> IO CInt
 foreign import ccall "SDL3/SDL.h SDL_RenderLine" renderDrawLineFFFI :: Renderer -> CFloat -> CFloat -> CFloat -> CFloat -> IO CInt
@@ -365,7 +365,7 @@ foreign import ccall "SDL3/SDL.h SDL_RenderFillRect" renderFillRectFFFI :: Rende
 foreign import ccall "SDL3/SDL.h SDL_RenderFillRects" renderFillRectsFFFI :: Renderer -> Ptr FRect -> CInt -> IO CInt
 foreign import ccall "SDL3/SDL.h SDL_RenderGeometry" renderGeometryFFI :: Renderer -> Texture -> Ptr Vertex -> CInt -> Ptr CInt -> CInt -> IO CInt
 foreign import ccall "SDL3/SDL.h SDL_RenderGeometryRaw" renderGeometryRawFFI :: Renderer -> Texture -> Ptr FPoint -> CInt -> Ptr Color -> CInt -> Ptr FPoint -> CInt -> CInt -> Ptr () -> CInt -> CInt -> IO CInt
-#endif
+-- #endif
 foreign import ccall "sqlhelper.c SDLHelper_RenderFillRectEx" renderFillRectExFFI :: Renderer -> CInt -> CInt -> CInt -> CInt -> IO CInt
 foreign import ccall "SDL3/SDL.h SDL_RenderFillRects" renderFillRectsFFI :: Renderer -> Ptr Rect -> CInt -> IO CInt
 foreign import ccall "SDL3/SDL.h SDL_GetRenderClipRect" renderGetClipRectFFI :: Renderer -> Ptr Rect -> IO ()

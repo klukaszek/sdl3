@@ -507,21 +507,6 @@ data MultiGestureEventData =
                         }
   deriving (Eq,Ord,Generic,Show,Typeable)
 
--- | Complex gesture event information.
-data DollarGestureEventData =
-  DollarGestureEventData {dollarGestureEventTouchID :: !Raw.TouchID
-                          -- ^ The touch device index.
-                         ,dollarGestureEventGestureID :: !Raw.GestureID
-                          -- ^ The unique id of the closest gesture to the performed stroke.
-                         ,dollarGestureEventNumFingers :: !Word32
-                          -- ^ The number of fingers used to draw the stroke.
-                         ,dollarGestureEventError :: !CFloat
-                          -- ^ The difference between the gesture template and the actual performed gesture (lower errors correspond to closer matches).
-                         ,dollarGestureEventPos :: !(Point V2 CFloat)
-                          -- ^ The normalized center of the gesture.
-                         }
-  deriving (Eq,Ord,Generic,Show,Typeable)
-
 -- | An event used to request a file open by the system
 newtype DropEventData =
   DropEventData {dropEventFile :: CString

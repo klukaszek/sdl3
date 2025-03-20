@@ -244,11 +244,6 @@ module SDL.Input.Keyboard.Codes
         pattern ScancodeAudioStop,
         pattern ScancodeAudioPlay,
         pattern ScancodeAudioMute,
-        pattern ScancodeMediaSelect,
-        pattern ScancodeWWW,
-        pattern ScancodeMail,
-        pattern ScancodeCalculator,
-        pattern ScancodeComputer,
         pattern ScancodeACSearch,
         pattern ScancodeACHome,
         pattern ScancodeACBack,
@@ -256,16 +251,8 @@ module SDL.Input.Keyboard.Codes
         pattern ScancodeACStop,
         pattern ScancodeACRefresh,
         pattern ScancodeACBookmarks,
-        pattern ScancodeBrightnessDown,
-        pattern ScancodeBrightnessUp,
-        pattern ScancodeDisplaySwitch,
-        pattern ScancodeKBDIllumToggle,
-        pattern ScancodeKBDIllumDown,
-        pattern ScancodeKBDIllumUp,
         pattern ScancodeEject,
         pattern ScancodeSleep,
-        pattern ScancodeApp1,
-        pattern ScancodeApp2,
 
         -- * Keycode
         -- | Keycodes are layout-dependent codes, in that the code you receive can change for the same physical key depending on the users keyboard layout.
@@ -489,10 +476,6 @@ module SDL.Input.Keyboard.Codes
         pattern KeycodeAudioPlay,
         pattern KeycodeAudioMute,
         pattern KeycodeMediaSelect,
-        pattern KeycodeWWW,
-        pattern KeycodeMail,
-        pattern KeycodeCalculator,
-        pattern KeycodeComputer,
         pattern KeycodeACSearch,
         pattern KeycodeACHome,
         pattern KeycodeACBack,
@@ -500,12 +483,6 @@ module SDL.Input.Keyboard.Codes
         pattern KeycodeACStop,
         pattern KeycodeACRefresh,
         pattern KeycodeACBookmarks,
-        pattern KeycodeBrightnessDown,
-        pattern KeycodeBrightnessUp,
-        pattern KeycodeDisplaySwitch,
-        pattern KeycodeKbdIllumToggle,
-        pattern KeycodeKbdIllumDown,
-        pattern KeycodeKbdIllumUp,
         pattern KeycodeEject,
         pattern KeycodeSleep)
 
@@ -741,11 +718,6 @@ pattern ScancodeAudioPrev = Scancode Raw.SDL_SCANCODE_MEDIA_PREVIOUS_TRACK
 pattern ScancodeAudioStop = Scancode Raw.SDL_SCANCODE_MEDIA_STOP
 pattern ScancodeAudioPlay = Scancode Raw.SDL_SCANCODE_MEDIA_PLAY
 pattern ScancodeAudioMute = Scancode Raw.SDL_SCANCODE_MUTE
-pattern ScancodeMediaSelect = Scancode Raw.SDL_SCANCODE_MEDIA_SELECT
-pattern ScancodeWWW = Scancode Raw.SDL_SCANCODE_WWW
-pattern ScancodeMail = Scancode Raw.SDL_SCANCODE_MAIL
-pattern ScancodeCalculator = Scancode Raw.SDL_SCANCODE_CALCULATOR
-pattern ScancodeComputer = Scancode Raw.SDL_SCANCODE_COMPUTER
 pattern ScancodeACSearch = Scancode Raw.SDL_SCANCODE_AC_SEARCH
 pattern ScancodeACHome = Scancode Raw.SDL_SCANCODE_AC_HOME
 pattern ScancodeACBack = Scancode Raw.SDL_SCANCODE_AC_BACK
@@ -753,16 +725,8 @@ pattern ScancodeACForward = Scancode Raw.SDL_SCANCODE_AC_FORWARD
 pattern ScancodeACStop = Scancode Raw.SDL_SCANCODE_AC_STOP
 pattern ScancodeACRefresh = Scancode Raw.SDL_SCANCODE_AC_REFRESH
 pattern ScancodeACBookmarks = Scancode Raw.SDL_SCANCODE_AC_BOOKMARKS
-pattern ScancodeBrightnessDown = Scancode Raw.SDL_SCANCODE_BRIGHTNESSDOWN
-pattern ScancodeBrightnessUp = Scancode Raw.SDL_SCANCODE_BRIGHTNESSUP
-pattern ScancodeDisplaySwitch = Scancode Raw.SDL_SCANCODE_DISPLAYSWITCH
-pattern ScancodeKBDIllumToggle = Scancode Raw.SDL_SCANCODE_KBDILLUMTOGGLE
-pattern ScancodeKBDIllumDown = Scancode Raw.SDL_SCANCODE_KBDILLUMDOWN
-pattern ScancodeKBDIllumUp = Scancode Raw.SDL_SCANCODE_KBDILLUMUP
 pattern ScancodeEject = Scancode Raw.SDL_SCANCODE_MEDIA_EJECT
 pattern ScancodeSleep = Scancode Raw.SDL_SCANCODE_SLEEP
-pattern ScancodeApp1 = Scancode Raw.SDL_SCANCODE_APP1
-pattern ScancodeApp2 = Scancode Raw.SDL_SCANCODE_APP2
 
 instance FromNumber Scancode Word32 where
   fromNumber = Scancode
@@ -770,7 +734,7 @@ instance FromNumber Scancode Word32 where
 instance ToNumber Scancode Word32 where
   toNumber = unwrapScancode
 
-newtype Keycode = Keycode { unwrapKeycode :: Int32 }
+newtype Keycode = Keycode { unwrapKeycode :: Word32 }
   deriving (Bounded, Data, Eq, Ord, Read, Generic, Show, Typeable)
 
 pattern KeycodeUnknown = Keycode Raw.SDLK_UNKNOWN
@@ -990,10 +954,6 @@ pattern KeycodeAudioStop = Keycode Raw.SDLK_MEDIA_STOP
 pattern KeycodeAudioPlay = Keycode Raw.SDLK_MEDIA_PLAY
 pattern KeycodeAudioMute = Keycode Raw.SDLK_MUTE
 pattern KeycodeMediaSelect = Keycode Raw.SDLK_MEDIA_SELECT
-pattern KeycodeWWW = Keycode Raw.SDLK_WWW
-pattern KeycodeMail = Keycode Raw.SDLK_MAIL
-pattern KeycodeCalculator = Keycode Raw.SDLK_CALCULATOR
-pattern KeycodeComputer = Keycode Raw.SDLK_COMPUTER
 pattern KeycodeACSearch = Keycode Raw.SDLK_AC_SEARCH
 pattern KeycodeACHome = Keycode Raw.SDLK_AC_HOME
 pattern KeycodeACBack = Keycode Raw.SDLK_AC_BACK
@@ -1001,17 +961,11 @@ pattern KeycodeACForward = Keycode Raw.SDLK_AC_FORWARD
 pattern KeycodeACStop = Keycode Raw.SDLK_AC_STOP
 pattern KeycodeACRefresh = Keycode Raw.SDLK_AC_REFRESH
 pattern KeycodeACBookmarks = Keycode Raw.SDLK_AC_BOOKMARKS
-pattern KeycodeBrightnessDown = Keycode Raw.SDLK_BRIGHTNESSDOWN
-pattern KeycodeBrightnessUp = Keycode Raw.SDLK_BRIGHTNESSUP
-pattern KeycodeDisplaySwitch = Keycode Raw.SDLK_DISPLAYSWITCH
-pattern KeycodeKbdIllumToggle = Keycode Raw.SDLK_KBDILLUMTOGGLE
-pattern KeycodeKbdIllumDown = Keycode Raw.SDLK_KBDILLUMDOWN
-pattern KeycodeKbdIllumUp = Keycode Raw.SDLK_KBDILLUMUP
 pattern KeycodeEject = Keycode Raw.SDLK_MEDIA_EJECT
 pattern KeycodeSleep = Keycode Raw.SDLK_SLEEP
 
-instance FromNumber Keycode Int32 where
+instance FromNumber Keycode Word32 where
   fromNumber = Keycode
 
-instance ToNumber Keycode Int32 where
+instance ToNumber Keycode Word32 where
   toNumber = unwrapKeycode
