@@ -28,8 +28,8 @@ module SDL.Raw.Filesystem (
 ) where
 
 import Control.Monad.IO.Class
-import Data.Int
 import Data.Word
+import Data.Int (Int64)
 import Foreign.C.String
 import Foreign.C.Types
 import Foreign.Ptr
@@ -38,16 +38,16 @@ import SDL.Raw.Types
 foreign import ccall "SDL3/SDL.h SDL_GetBasePath" getBasePathFFI :: IO CString
 foreign import ccall "SDL3/SDL.h SDL_GetPrefPath" getPrefPathFFI :: CString -> CString -> IO CString
 
-foreign import ccall "SDL3/SDL.h SDL_OpenIO" openIOFFI :: (Ptr IOStreamInterface) -> Ptr () -> IO (Ptr IOStream)
-foreign import ccall "SDL3/SDL.h SDL_CloseIO" closeIOFFI :: Ptr() -> IO CBool 
+foreign import ccall "SDL3/SDL.h SDL_OpenIO" openIOFFI :: Ptr IOStreamInterface -> Ptr () -> IO (Ptr IOStream)
+foreign import ccall "SDL3/SDL.h SDL_CloseIO" closeIOFFI :: Ptr IOStream -> IO CBool
 foreign import ccall "SDL3/SDL.h SDL_IOFromConstMem" ioFromConstMemFFI :: Ptr () -> CInt -> IO (Ptr IOStream)
 foreign import ccall "SDL3/SDL.h SDL_IOFromFile" ioFromFileFFI :: CString -> CString -> IO (Ptr IOStream)
 foreign import ccall "SDL3/SDL.h SDL_IOFromMem" ioFromMemFFI :: Ptr () -> CInt -> IO (Ptr IOStream)
-foreign import ccall "SDL3/SDL.h SDL_ReadIO" ioReadFFI :: (Ptr IOStream) -> Ptr() -> CInt -> IO (Ptr IOStream)
-foreign import ccall "SDL3/SDL.h SDL_WriteIO" ioWriteFFI :: (Ptr IOStream) -> Ptr() -> Word32 -> IO CSize
-foreign import ccall "SDL3/SDL.h SDL_SeekIO" ioSeekFFI :: (Ptr IOStream) -> Int64 -> IOWhence -> IO Int64
-foreign import ccall "SDL3/SDL.h SDL_TellIO" ioTellFFI :: (Ptr IOStream) -> IO Int64
-foreign import ccall "SDL3/SDL.h SDL_FlushIO" ioFlushFFI :: (Ptr IOStream) -> IO CBool
+foreign import ccall "SDL3/SDL.h SDL_ReadIO" ioReadFFI :: Ptr IOStream -> Ptr () -> CSize -> Ptr IOStatus -> IO CSize
+foreign import ccall "SDL3/SDL.h SDL_SeekIO" ioSeekFFI :: Ptr IOStream -> Int64 -> IOWhence -> IO Int64
+foreign import ccall "SDL3/SDL.h SDL_TellIO" ioTellFFI :: Ptr IOStream -> IO Int64
+foreign import ccall "SDL3/SDL.h SDL_WriteIO" ioWriteFFI :: Ptr IOStream -> Ptr () -> CSize -> Ptr IOStatus -> IO CSize
+foreign import ccall "SDL3/SDL.h SDL_FlushIO" ioFlushFFI :: Ptr IOStream -> IO CBool
 foreign import ccall "SDL3/SDL.h SDL_ReadU16BE" readBE16FFI :: Ptr IOStream -> IO Word16
 foreign import ccall "SDL3/SDL.h SDL_ReadU32BE" readBE32FFI :: Ptr IOStream -> IO Word32
 foreign import ccall "SDL3/SDL.h SDL_ReadU64BE" readBE64FFI :: Ptr IOStream -> IO Word64
@@ -69,7 +69,7 @@ getPrefPath :: MonadIO m => CString -> CString -> m CString
 getPrefPath v1 v2 = liftIO $ getPrefPathFFI v1 v2
 {-# INLINE getPrefPath #-}
 
-ioOpen :: MonadIO m => (Ptr IOStreamInterface) -> Ptr () -> IO (Ptr IOStream)
+ioOpen :: MonadIO m => Ptr IOStreamInterface -> Ptr () -> m (Ptr IOStream)
 ioOpen v1 v2 = liftIO $ openIOFFI v1 v2
 {-# INLINE ioOpen #-}
 
@@ -85,15 +85,15 @@ ioFromMem :: MonadIO m => Ptr () -> CInt -> m (Ptr IOStream)
 ioFromMem v1 v2 = liftIO $ ioFromMemFFI v1 v2
 {-# INLINE ioFromMem #-}
 
-ioClose :: MonadIO m => Ptr IOStream -> m CInt
-ioClose v1 = liftIO $ ioCloseFFI v1
+ioClose :: MonadIO m => Ptr IOStream -> m CBool
+ioClose v1 = liftIO $ closeIOFFI v1
 {-# INLINE ioClose #-}
 
-ioRead :: MonadIO m => Ptr IOStream -> Ptr () -> CSize -> CSize -> m CSize
+ioRead :: MonadIO m => Ptr IOStream -> Ptr () -> CSize -> Ptr IOStatus -> m CSize
 ioRead v1 v2 v3 v4 = liftIO $ ioReadFFI v1 v2 v3 v4
 {-# INLINE ioRead #-}
 
-ioSeek :: MonadIO m => Ptr IOStream -> Int64 -> CInt -> m Int64
+ioSeek :: MonadIO m => Ptr IOStream -> Int64 -> IOWhence -> m Int64
 ioSeek v1 v2 v3 = liftIO $ ioSeekFFI v1 v2 v3
 {-# INLINE ioSeek #-}
 
@@ -101,11 +101,11 @@ ioTell :: MonadIO m => Ptr IOStream -> m Int64
 ioTell v1 = liftIO $ ioTellFFI v1
 {-# INLINE ioTell #-}
 
-ioWrite :: MonadIO m => Ptr IOStream -> Ptr () -> CSize -> CSize -> m CSize
+ioWrite :: MonadIO m => Ptr IOStream -> Ptr () -> CSize -> Ptr IOStatus -> m CSize
 ioWrite v1 v2 v3 v4 = liftIO $ ioWriteFFI v1 v2 v3 v4
 {-# INLINE ioWrite #-}
 
-ioFlush :: MonadIO m => Ptr IOStream -> CBool
+ioFlush :: MonadIO m => Ptr IOStream -> m CBool
 ioFlush v1 = liftIO $ ioFlushFFI v1
 {-# INLINE ioFlush #-}
 

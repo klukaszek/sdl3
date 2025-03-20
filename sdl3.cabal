@@ -74,7 +74,7 @@ library
 
   exposed-modules:
     SDL
-    -- SDL.Audio
+    SDL.Audio
     SDL.Event
     SDL.Exception
     SDL.Filesystem
