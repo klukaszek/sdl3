@@ -60,31 +60,6 @@ module SDL.Raw.Event (
   warpMouseGlobal,
   warpMouseInWindow,
 
-  -- * Joystick Support
-  joystickClose,
-  joystickCurrentPowerInfo,
-  joystickEventState,
-  joystickFromInstanceID,
-  joystickGetAttached,
-  joystickGetAxis,
-  joystickGetBall,
-  joystickGetButton,
-  joystickGetDeviceGUID,
-  joystickGetGUID,
-  joystickGetGUIDFromString,
-  joystickGetGUIDString,
-  joystickGetHat,
-  joystickInstanceID,
-  joystickName,
-  joystickNameForIndex,
-  joystickNumAxes,
-  joystickNumBalls,
-  joystickNumButtons,
-  joystickNumHats,
-  joystickOpen,
-  joystickUpdate,
-  numJoysticks,
-
   -- * Gamepad Support
   gamepadAddMapping,
   gamepadAddMappingsFromFile,
@@ -182,31 +157,6 @@ foreign import ccall "SDL3/SDL.h SDL_SetRelativeMouseMode" setRelativeMouseModeF
 foreign import ccall "SDL3/SDL.h SDL_ShowCursor" showCursorFFI :: CInt -> IO CInt
 foreign import ccall "SDL3/SDL.h SDL_WarpMouseGlobal" warpMouseGlobalFFI :: CInt -> CInt -> IO CInt
 foreign import ccall "SDL3/SDL.h SDL_WarpMouseInWindow" warpMouseInWindowFFI :: Window -> CInt -> CInt -> IO ()
-
-foreign import ccall "SDL3/SDL.h SDL_CloseJoystick" joystickCloseFFI :: Joystick -> IO ()
-foreign import ccall "SDL3/SDL.h SDL_GetJoystickPowerInfo" joystickGetPowerInfoFFI :: Joystick -> Ptr CInt -> IO PowerState
-foreign import ccall "SDL3/SDL.h SDL_JoystickEventState" joystickEventStateFFI :: CInt -> IO CInt
-foreign import ccall "SDL3/SDL.h SDL_GetJoystickFromID" joystickFromInstanceIDFFI :: JoystickID -> IO Joystick
-foreign import ccall "SDL3/SDL.h SDL_JoystickConnected" joystickGetAttachedFFI :: Joystick -> IO Bool
-foreign import ccall "SDL3/SDL.h SDL_GetJoystickAxis" joystickGetAxisFFI :: Joystick -> CInt -> IO Int16
-foreign import ccall "SDL3/SDL.h SDL_GetJoystickBall" joystickGetBallFFI :: Joystick -> CInt -> Ptr CInt -> Ptr CInt -> IO CInt
-foreign import ccall "SDL3/SDL.h SDL_GetJoystickButton" joystickGetButtonFFI :: Joystick -> CInt -> IO Word8
-foreign import ccall "sdlhelper.h SDLHelper_JoystickGetDeviceGUID" joystickGetDeviceGUIDFFI :: CInt -> Ptr JoystickGUID -> IO ()
-foreign import ccall "sdlhelper.h SDLHelper_JoystickGetGUID" joystickGetGUIDFFI :: Joystick -> Ptr JoystickGUID -> IO ()
-foreign import ccall "sdlhelper.h SDLHelper_JoystickGetGUIDFromString" joystickGetGUIDFromStringFFI :: CString -> Ptr JoystickGUID -> IO ()
-foreign import ccall "sdlhelper.h SDLHelper_JoystickGetGUIDString" joystickGetGUIDStringFFI :: Ptr JoystickGUID -> CString -> CInt -> IO ()
-foreign import ccall "SDL3/SDL.h SDL_GetJoystickHat" joystickGetHatFFI :: Joystick -> CInt -> IO Word8
-foreign import ccall "SDL3/SDL.h SDL_GetJoystickID" joystickInstanceIDFFI :: Joystick -> IO JoystickID
-foreign import ccall "SDL3/SDL.h SDL_GetJoystickName" joystickNameFFI :: Joystick -> IO CString
-foreign import ccall "SDL3/SDL.h SDL_JoystickNameForIndex" joystickNameForIndexFFI :: CInt -> IO CString
-foreign import ccall "SDL3/SDL.h SDL_GetNumJoystickAxes" joystickNumAxesFFI :: Joystick -> IO CInt
-foreign import ccall "SDL3/SDL.h SDL_GetNumJoystickBalls" joystickNumBallsFFI :: Joystick -> IO CInt
-foreign import ccall "SDL3/SDL.h SDL_GetNumJoystickButtons" joystickNumButtonsFFI :: Joystick -> IO CInt
-foreign import ccall "SDL3/SDL.h SDL_GetNumJoystickHats" joystickNumHatsFFI :: Joystick -> IO CInt
-foreign import ccall "SDL3/SDL.h SDL_OpenJoystick" joystickOpenFFI :: CInt -> IO Joystick
-foreign import ccall "SDL3/SDL.h SDL_UpdateJoysticks" joystickUpdateFFI :: IO ()
-foreign import ccall "SDL3/SDL.h SDL_NumJoysticks" numJoysticksFFI :: IO CInt
-
 foreign import ccall "SDL3/SDL.h SDL_AddGamepadMapping" gamepadAddMappingFFI :: CString -> IO CInt
 foreign import ccall "SDL3/SDL.h SDL_AddGamepadMappingsFromIO" gamepadAddMappingsFromRWFFI :: Ptr IOStream -> CInt -> IO CInt
 foreign import ccall "SDL3/SDL.h SDL_CloseGamepad" gamepadCloseFFI :: Gamepad -> IO ()
@@ -455,106 +405,6 @@ warpMouseGlobal v1 v2 = liftIO $ warpMouseGlobalFFI v1 v2
 warpMouseInWindow :: MonadIO m => Window -> CInt -> CInt -> m ()
 warpMouseInWindow v1 v2 v3 = liftIO $ warpMouseInWindowFFI v1 v2 v3
 {-# INLINE warpMouseInWindow #-}
-
-joystickClose :: MonadIO m => Joystick -> m ()
-joystickClose v1 = liftIO $ joystickCloseFFI v1
-{-# INLINE joystickClose #-}
-
-joystickCurrentPowerInfo :: MonadIO m => Joystick -> Ptr CInt -> m PowerState
-joystickCurrentPowerInfo v1 v2 = liftIO $ joystickGetPowerInfoFFI v1 v2
-{-# INLINE joystickCurrentPowerInfo #-}
-
-joystickEventState :: MonadIO m => CInt -> m CInt
-joystickEventState v1 = liftIO $ joystickEventStateFFI v1
-{-# INLINE joystickEventState #-}
-
-joystickFromInstanceID :: MonadIO m => JoystickID -> m Joystick
-joystickFromInstanceID v1 = liftIO $ joystickFromInstanceIDFFI v1
-{-# INLINE joystickFromInstanceID #-}
-
-joystickGetAttached :: MonadIO m => Joystick -> m Bool
-joystickGetAttached v1 = liftIO $ joystickGetAttachedFFI v1
-{-# INLINE joystickGetAttached #-}
-
-joystickGetAxis :: MonadIO m => Joystick -> CInt -> m Int16
-joystickGetAxis v1 v2 = liftIO $ joystickGetAxisFFI v1 v2
-{-# INLINE joystickGetAxis #-}
-
-joystickGetBall :: MonadIO m => Joystick -> CInt -> Ptr CInt -> Ptr CInt -> m CInt
-joystickGetBall v1 v2 v3 v4 = liftIO $ joystickGetBallFFI v1 v2 v3 v4
-{-# INLINE joystickGetBall #-}
-
-joystickGetButton :: MonadIO m => Joystick -> CInt -> m Word8
-joystickGetButton v1 v2 = liftIO $ joystickGetButtonFFI v1 v2
-{-# INLINE joystickGetButton #-}
-
-joystickGetDeviceGUID :: MonadIO m => CInt -> m JoystickGUID
-joystickGetDeviceGUID device_index = liftIO . alloca $ \ptr -> do
-  joystickGetDeviceGUIDFFI device_index ptr
-  peek ptr
-{-# INLINE joystickGetDeviceGUID #-}
-
-joystickGetGUID :: MonadIO m => Joystick -> m JoystickGUID
-joystickGetGUID joystick = liftIO . alloca $ \ptr -> do
-  joystickGetGUIDFFI joystick ptr
-  peek ptr
-{-# INLINE joystickGetGUID #-}
-
-joystickGetGUIDFromString :: MonadIO m => CString -> m JoystickGUID
-joystickGetGUIDFromString pchGUID = liftIO . alloca $ \ptr -> do
-  joystickGetGUIDFromStringFFI pchGUID ptr
-  peek ptr
-{-# INLINE joystickGetGUIDFromString #-}
-
-joystickGetGUIDString :: MonadIO m => JoystickGUID -> CString -> CInt -> m ()
-joystickGetGUIDString guid pszGUID cbGUID = liftIO . alloca $ \ptr -> do
-  poke ptr guid
-  joystickGetGUIDStringFFI ptr pszGUID cbGUID
-{-# INLINE joystickGetGUIDString #-}
-
-joystickGetHat :: MonadIO m => Joystick -> CInt -> m Word8
-joystickGetHat v1 v2 = liftIO $ joystickGetHatFFI v1 v2
-{-# INLINE joystickGetHat #-}
-
-joystickInstanceID :: MonadIO m => Joystick -> m JoystickID
-joystickInstanceID v1 = liftIO $ joystickInstanceIDFFI v1
-{-# INLINE joystickInstanceID #-}
-
-joystickName :: MonadIO m => Joystick -> m CString
-joystickName v1 = liftIO $ joystickNameFFI v1
-{-# INLINE joystickName #-}
-
-joystickNameForIndex :: MonadIO m => CInt -> m CString
-joystickNameForIndex v1 = liftIO $ joystickNameForIndexFFI v1
-{-# INLINE joystickNameForIndex #-}
-
-joystickNumAxes :: MonadIO m => Joystick -> m CInt
-joystickNumAxes v1 = liftIO $ joystickNumAxesFFI v1
-{-# INLINE joystickNumAxes #-}
-
-joystickNumBalls :: MonadIO m => Joystick -> m CInt
-joystickNumBalls v1 = liftIO $ joystickNumBallsFFI v1
-{-# INLINE joystickNumBalls #-}
-
-joystickNumButtons :: MonadIO m => Joystick -> m CInt
-joystickNumButtons v1 = liftIO $ joystickNumButtonsFFI v1
-{-# INLINE joystickNumButtons #-}
-
-joystickNumHats :: MonadIO m => Joystick -> m CInt
-joystickNumHats v1 = liftIO $ joystickNumHatsFFI v1
-{-# INLINE joystickNumHats #-}
-
-joystickOpen :: MonadIO m => CInt -> m Joystick
-joystickOpen v1 = liftIO $ joystickOpenFFI v1
-{-# INLINE joystickOpen #-}
-
-joystickUpdate :: MonadIO m => m ()
-joystickUpdate = liftIO joystickUpdateFFI
-{-# INLINE joystickUpdate #-}
-
-numJoysticks :: MonadIO m => m CInt
-numJoysticks = liftIO numJoysticksFFI
-{-# INLINE numJoysticks #-}
 
 gamepadAddMapping :: MonadIO m => CString -> m CInt
 gamepadAddMapping v1 = liftIO $ gamepadAddMappingFFI v1

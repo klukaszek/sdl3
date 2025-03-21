@@ -59,36 +59,6 @@ void SDLHelper_LogMessage (int category, SDL_LogPriority priority, const char *s
   SDL_LogMessage (category, priority, "%s", str);
 }
 
-
-// I think SDL3 made these redundant, might just be able to call the raw functions mentioned here already as the wrapping seems useless.
-
-int SDLHelper_RWclose (SDL_IOStream *ctx)
-{
-  return SDL_CloseIO (ctx);
-}
-
-size_t SDLHelper_RWread (SDL_IOStream *ctx, void *ptr, size_t size, size_t maxnum)
-{
-  (void) maxnum;
-  return SDL_ReadIO (ctx, ptr, size);
-}
-
-Sint64 SDLHelper_RWseek (SDL_IOStream *ctx, Sint64 offset, int whence)
-{
-  return SDL_SeekIO (ctx, offset, whence);
-}
-
-Sint64 SDLHelper_RWtell (SDL_IOStream *ctx)
-{
-  return SDL_TellIO (ctx);
-}
-
-size_t SDLHelper_RWwrite (SDL_IOStream *ctx, const void *ptr, size_t size, size_t num)
-{
-  (void) num;
-  return SDL_WriteIO (ctx, ptr, size);
-}
-
 int SDLHelper_SetError (const char *str)
 {
   return SDL_SetError ("%s", str);

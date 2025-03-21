@@ -10,7 +10,7 @@ module SDL.Init
   , initializeAll
   , InitFlag(..)
   , quit
-  , version
+  -- , version
   ) where
 
 import Control.Monad.IO.Class (MonadIO, liftIO)
@@ -30,17 +30,15 @@ import Data.Foldable
 #endif
 
 data InitFlag
-  = InitTimer
+  = InitEvents
   | InitAudio
   | InitVideo
   | InitJoystick
   | InitHaptic
   | InitGameController
-  | InitEvents
   deriving (Bounded, Data, Enum, Eq, Generic, Ord, Read, Show, Typeable)
 
 instance ToNumber InitFlag Word32 where
-  toNumber InitTimer = Raw.SDL_INIT_TIMER
   toNumber InitAudio = Raw.SDL_INIT_AUDIO
   toNumber InitVideo = Raw.SDL_INIT_VIDEO
   toNumber InitJoystick = Raw.SDL_INIT_JOYSTICK
@@ -69,9 +67,9 @@ initializeAll = initialize [minBound .. maxBound]
 quit :: MonadIO m => m ()
 quit = Raw.quit
 
--- | The major, minor, and patch versions of the SDL library linked with.
--- Does not require initialization.
-version :: (Integral a, MonadIO m) => m (a, a, a)
-version = liftIO $ do
-  Raw.Version major minor patch <- alloca $ \v -> Raw.getVersion v >> peek v
-  return (fromIntegral major, fromIntegral minor, fromIntegral patch)
+-- -- | The major, minor, and patch versions of the SDL library linked with.
+-- -- Does not require initialization.
+-- version :: (Integral a, MonadIO m) => m (a, a, a)
+-- version = liftIO $ do
+--   Raw.Version major minor patch <- alloca $ \v -> Raw.getVersion v >> peek v
+--   return (fromIntegral major, fromIntegral minor, fromIntegral patch)

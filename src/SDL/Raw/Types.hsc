@@ -2,6 +2,8 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE StandaloneDeriving #-}
+{-# LANGUAGE FlexibleInstances #-}
 
 module SDL.Raw.Types (
   -- * Type Aliases
@@ -102,7 +104,7 @@ import Data.Word
 import Foreign.C.String
 import Foreign.C.Types
 import Foreign.Marshal.Array
-import Foreign.Ptr
+import Foreign.Ptr (Ptr, FunPtr, plusPtr, castPtr)
 import Foreign.Storable
 import GHC.Generics (Generic)
 import SDL.Raw.Enum
@@ -125,7 +127,7 @@ type GestureID = Int64
 type GLContext = Ptr ()
 type Haptic = Ptr ()
 type Joystick = Ptr ()
-type JoystickID = Word32
+type JoystickID = CInt
 type KeyboardID = Word32
 type Mutex = Ptr ()
 type PixelFormat = Word32
@@ -1217,18 +1219,31 @@ instance Storable HapticEffect where
       (#poke SDL_HapticEffect, custom.fade_length) ptr fade_length
       (#poke SDL_HapticEffect, custom.fade_level) ptr fade_level
 
+-- JoystickGUID as a fixed-size wrapper around 16 bytes
 data JoystickGUID = JoystickGUID
-  { joystickGUID :: ![Word8]
-  } deriving (Eq, Show, Typeable)
+  { joystickGUID :: (Word8, Word8, Word8, Word8, Word8, Word8, Word8, Word8,
+                     Word8, Word8, Word8, Word8, Word8, Word8, Word8, Word8)
+  } deriving (Typeable)
+
+-- Standalone deriving for the tuple and JoystickGUID
+deriving instance Eq (Word8, Word8, Word8, Word8, Word8, Word8, Word8, Word8,
+                      Word8, Word8, Word8, Word8, Word8, Word8, Word8, Word8)
+deriving instance Show (Word8, Word8, Word8, Word8, Word8, Word8, Word8, Word8,
+                        Word8, Word8, Word8, Word8, Word8, Word8, Word8, Word8)
+deriving instance Eq JoystickGUID
+deriving instance Show JoystickGUID
 
 instance Storable JoystickGUID where
-  sizeOf _ = (#size SDL_GUID)
-  alignment _ = (#alignment SDL_GUID)
+  sizeOf _ = 16
+  alignment _ = 1
   peek ptr = do
-    guid <- peekArray 16 $ (#ptr SDL_GUID, data) ptr
-    return $! JoystickGUID guid
-  poke ptr (JoystickGUID guid) =
-    pokeArray ((#ptr SDL_GUID, data) ptr) guid
+    bytes <- peekArray 16 (castPtr ptr :: Ptr Word8)  -- Explicitly read as Word8s
+    return $ JoystickGUID (bytes !! 0, bytes !! 1, bytes !! 2, bytes !! 3,
+                           bytes !! 4, bytes !! 5, bytes !! 6, bytes !! 7,
+                           bytes !! 8, bytes !! 9, bytes !! 10, bytes !! 11,
+                           bytes !! 12, bytes !! 13, bytes !! 14, bytes !! 15)
+  poke ptr (JoystickGUID (b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,b10,b11,b12,b13,b14,b15)) =
+    pokeArray (castPtr ptr :: Ptr Word8) [b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,b10,b11,b12,b13,b14,b15]
 
 data MessageBoxButtonData = MessageBoxButtonData
   { messageBoxButtonDataFlags :: !Word32

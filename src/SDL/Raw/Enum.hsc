@@ -140,17 +140,7 @@ module SDL.Raw.Enum (
   pattern SDL_INIT_GAMEPAD,
   pattern SDL_INIT_EVENTS,
 
-  -- ** Joystick Power Level
-  -- JoystickPowerLevel,
-  -- pattern SDL_JOYSTICK_POWER_UNKNOWN,
-  -- pattern SDL_JOYSTICK_POWER_EMPTY,
-  -- pattern SDL_JOYSTICK_POWER_LOW,
-  -- pattern SDL_JOYSTICK_POWER_MEDIUM,
-  -- pattern SDL_JOYSTICK_POWER_FULL,
-  -- pattern SDL_JOYSTICK_POWER_WIRED,
-  -- pattern SDL_JOYSTICK_POWER_MAX,
-
-  -- ** Keycode
+    -- ** Keycode
   Keycode,
   pattern SDLK_UNKNOWN,
   pattern SDLK_RETURN,
@@ -409,6 +399,7 @@ module SDL.Raw.Enum (
 
   -- ** Power State
   PowerState,
+  pattern SDL_POWERSTATE_ERROR,
   pattern SDL_POWERSTATE_UNKNOWN,
   pattern SDL_POWERSTATE_ON_BATTERY,
   pattern SDL_POWERSTATE_NO_BATTERY,
@@ -739,6 +730,27 @@ module SDL.Raw.Enum (
   pattern SDL_EVENT_USER,
   pattern SDL_EVENT_LAST,
 
+  -- ** Joystick Types
+  JoystickType,
+  pattern SDL_JOYSTICK_TYPE_UNKNOWN,
+  pattern SDL_JOYSTICK_TYPE_GAMEPAD,
+  pattern SDL_JOYSTICK_TYPE_WHEEL,
+  pattern SDL_JOYSTICK_TYPE_ARCADE_STICK,
+  pattern SDL_JOYSTICK_TYPE_FLIGHT_STICK,
+  pattern SDL_JOYSTICK_TYPE_DANCE_PAD,
+  pattern SDL_JOYSTICK_TYPE_GUITAR,
+  pattern SDL_JOYSTICK_TYPE_DRUM_KIT,
+  pattern SDL_JOYSTICK_TYPE_ARCADE_PAD,
+  pattern SDL_JOYSTICK_TYPE_THROTTLE,
+  pattern SDL_JOYSTICK_TYPE_COUNT,
+
+  -- ** Joystick Connection States
+  JoystickConnectionState,
+  pattern SDL_JOYSTICK_CONNECTION_INVALID,
+  pattern SDL_JOYSTICK_CONNECTION_UNKNOWN, 
+  pattern SDL_JOYSTICK_CONNECTION_WIRED, 
+  pattern SDL_JOYSTICK_CONNECTION_WIRELESS, 
+
   -- ** Joystick Hat Position
   pattern SDL_HAT_CENTERED,
   pattern SDL_HAT_UP,
@@ -904,6 +916,8 @@ type GamepadButton = (#type SDL_GamepadButton)
 type GLAttr = (#type SDL_GLAttr)
 type HintPriority = (#type SDL_HintPriority)
 type InitFlag = Word32
+type JoystickType = (#type SDL_JoystickType)
+type JoystickConnectionState = (#type SDL_JoystickConnectionState)
 type Keycode = (#type SDL_Keycode)
 type Keymod = (#type SDL_Keymod)
 type LogPriority = (#type SDL_LogPriority)
@@ -1021,6 +1035,23 @@ pattern SDL_INIT_JOYSTICK = (#const SDL_INIT_JOYSTICK) :: InitFlag
 pattern SDL_INIT_HAPTIC = (#const SDL_INIT_HAPTIC) :: InitFlag
 pattern SDL_INIT_GAMEPAD = (#const SDL_INIT_GAMEPAD) :: InitFlag
 pattern SDL_INIT_EVENTS = (#const SDL_INIT_EVENTS) :: InitFlag
+
+pattern SDL_JOYSTICK_TYPE_UNKNOWN = (#const SDL_JOYSTICK_TYPE_UNKNOWN) :: JoystickType
+pattern SDL_JOYSTICK_TYPE_GAMEPAD = (#const SDL_JOYSTICK_TYPE_GAMEPAD) :: JoystickType
+pattern SDL_JOYSTICK_TYPE_WHEEL = (#const SDL_JOYSTICK_TYPE_WHEEL) :: JoystickType
+pattern SDL_JOYSTICK_TYPE_ARCADE_STICK = (#const SDL_JOYSTICK_TYPE_ARCADE_STICK) :: JoystickType
+pattern SDL_JOYSTICK_TYPE_FLIGHT_STICK = (#const SDL_JOYSTICK_TYPE_FLIGHT_STICK) :: JoystickType
+pattern SDL_JOYSTICK_TYPE_DANCE_PAD = (#const SDL_JOYSTICK_TYPE_DANCE_PAD) :: JoystickType
+pattern SDL_JOYSTICK_TYPE_GUITAR = (#const SDL_JOYSTICK_TYPE_GUITAR) :: JoystickType
+pattern SDL_JOYSTICK_TYPE_DRUM_KIT = (#const SDL_JOYSTICK_TYPE_DRUM_KIT) :: JoystickType
+pattern SDL_JOYSTICK_TYPE_ARCADE_PAD = (#const SDL_JOYSTICK_TYPE_ARCADE_PAD) :: JoystickType
+pattern SDL_JOYSTICK_TYPE_THROTTLE = (#const SDL_JOYSTICK_TYPE_THROTTLE) :: JoystickType
+pattern SDL_JOYSTICK_TYPE_COUNT = (#const SDL_JOYSTICK_TYPE_COUNT) :: JoystickType
+
+pattern SDL_JOYSTICK_CONNECTION_INVALID = (#const SDL_JOYSTICK_CONNECTION_INVALID) :: JoystickConnectionState
+pattern SDL_JOYSTICK_CONNECTION_UNKNOWN = (#const SDL_JOYSTICK_CONNECTION_UNKNOWN) :: JoystickConnectionState
+pattern SDL_JOYSTICK_CONNECTION_WIRED = (#const SDL_JOYSTICK_CONNECTION_WIRED) :: JoystickConnectionState
+pattern SDL_JOYSTICK_CONNECTION_WIRELESS = (#const SDL_JOYSTICK_CONNECTION_WIRELESS) :: JoystickConnectionState
 
 pattern SDLK_UNKNOWN = (#const SDLK_UNKNOWN) :: Keycode
 pattern SDLK_RETURN = (#const SDLK_RETURN) :: Keycode
@@ -1273,6 +1304,7 @@ pattern SDL_LOG_PRIORITY_ERROR = (#const SDL_LOG_PRIORITY_ERROR) :: LogPriority
 pattern SDL_LOG_PRIORITY_CRITICAL = (#const SDL_LOG_PRIORITY_CRITICAL) :: LogPriority
 pattern SDL_LOG_PRIORITY_COUNT = (#const SDL_LOG_PRIORITY_COUNT) :: LogPriority
 
+pattern SDL_POWERSTATE_ERROR = (#const SDL_POWERSTATE_ERROR) :: PowerState
 pattern SDL_POWERSTATE_UNKNOWN = (#const SDL_POWERSTATE_UNKNOWN) :: PowerState
 pattern SDL_POWERSTATE_ON_BATTERY = (#const SDL_POWERSTATE_ON_BATTERY) :: PowerState
 pattern SDL_POWERSTATE_NO_BATTERY = (#const SDL_POWERSTATE_NO_BATTERY) :: PowerState
