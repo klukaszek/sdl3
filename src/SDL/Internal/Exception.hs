@@ -3,6 +3,7 @@
 module SDL.Internal.Exception
   ( fromC
   , getError
+  , throwSDLError
   , throwIf
   , throwIf_
   , throwIf0
@@ -21,7 +22,8 @@ import Data.Text (Text)
 import Foreign (Ptr, nullPtr)
 import SDL.Exception
 import qualified Data.ByteString as BS
-import qualified Data.Text.Encoding as Text
+import qualified Data.Text as Text
+import qualified Data.Text.Encoding as Encode
 import qualified SDL.Raw as Raw
 
 #if !MIN_VERSION_base(4,8,0)
@@ -31,7 +33,21 @@ import Control.Applicative
 getError :: MonadIO m => m Text
 getError = liftIO $ do
   cstr <- Raw.getError
-  Text.decodeUtf8 <$> BS.packCString cstr
+  Encode.decodeUtf8 <$> BS.packCString cstr
+
+throwSDLError :: String -> String -> IO a
+throwSDLError loc hint = do
+  err <- Raw.getError
+  errText <- if err == nullPtr
+             then return Text.empty  -- Empty Text
+             else do
+                bs <- BS.packCString err 
+                return (Encode.decodeUtf8 bs)  -- Keep as Text
+  
+  let locText = Text.pack loc
+      hintText = Text.pack hint
+      fullMessage = locText <> Text.pack ": " <> hintText <> Text.pack " error: " <> errText
+  fail (Text.unpack fullMessage)  -- Convert back to String at the end
 
 {-# INLINE throwIf #-}
 throwIf :: MonadIO m => (a -> Bool) -> Text -> Text -> m a -> m a

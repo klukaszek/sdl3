@@ -17,7 +17,7 @@ newtype Joystick = Joystick { joystickPtr :: Raw.Joystick }
   deriving (Data, Eq, Generic, Ord, Show, Typeable)
 
 newtype GameController = GameController
-  { gameControllerPtr :: Raw.GameController }
+  { gameControllerPtr :: Raw.Gamepad }
   deriving (Data, Eq, Generic, Ord, Show, Typeable)
 
 newtype Window = Window (Raw.Window)

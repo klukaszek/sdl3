@@ -25,9 +25,17 @@ module SDL.Raw.Types (
   -- ** Common Types
   AudioDeviceID,
   AudioFormat,
+  AudioStream,
   Cond,
   Cursor,
   DisplayID,
+  EGLAttrib,
+  EGLint,
+  EGLAttribArrayCallback,
+  EGLIntArrayCallback,
+  EGLDisplay,
+  EGLConfig,
+  EGLSurface,
   EventType,
   FingerID,
   Gamepad,
@@ -41,6 +49,8 @@ module SDL.Raw.Types (
   JoystickID,
   KeyboardID,
   Mutex,
+  PixelFormat,
+  PropertiesID,
   Renderer,
   Sem,
   SpinLock,
@@ -73,7 +83,7 @@ module SDL.Raw.Types (
   MessageBoxColorScheme(..),
   MessageBoxData(..),
   Palette(..),
-  PixelFormat(..),
+  PixelFormatDetails(..),
   Point(..),
   Rect(..),
   FPoint(..),
@@ -97,8 +107,48 @@ import Foreign.Storable
 import GHC.Generics (Generic)
 import SDL.Raw.Enum
 
-type VkGetInstanceProcAddrFunc = VkInstance -> CString -> IO (FunPtr ())
+type AudioDeviceID = Word32
+type AudioStream = Ptr ()
+type Cond = Ptr ()
+type Cursor = Ptr ()
+type DisplayID = Word32
+type EGLAttrib = CIntPtr
+type EGLint = CInt
+type EGLDisplay = Ptr ()
+type EGLConfig = Ptr ()
+type EGLSurface = Ptr ()
+type EventType = Word32
+type FingerID = Int64
+type Gamepad = Ptr ()
+type GamepadBindingType = Word32
+type GestureID = Int64
+type GLContext = Ptr ()
+type Haptic = Ptr ()
+type Joystick = Ptr ()
+type JoystickID = Word32
+type KeyboardID = Word32
+type Mutex = Ptr ()
+type PixelFormat = Word32
+type PropertiesID = Word32
+type Renderer = Ptr ()
+type Sem = Ptr ()
+type SpinLock = CInt
+type SurfaceFlags = Word32
+type Texture = Ptr ()
+type Thread = Ptr ()
+type ThreadID = CULong
+type TimerID = CInt
+type TLSID = CUInt
+type TouchID = Int64
+type VkInstance = Ptr ()
+type VkSurfaceKHR = Word64
+type Version = Word32
+type Window = Ptr ()
+type WindowID = Word32
 
+type VkGetInstanceProcAddrFunc = VkInstance -> CString -> IO (FunPtr ())
+type EGLAttribArrayCallback = Ptr () -> IO (Ptr EGLAttrib)
+type EGLIntArrayCallback = Ptr () -> EGLDisplay -> EGLConfig -> IO (Ptr EGLint)
 type AudioCallback = FunPtr (Ptr () -> Ptr Word8 -> CInt -> IO ())
 type EventFilter = FunPtr (Ptr () -> Ptr Event -> IO CInt)
 type HintCallback = FunPtr (Ptr () -> CString -> CString -> CString -> IO ())
@@ -136,36 +186,13 @@ foreign import ccall "wrapper"
 foreign import ccall "wrapper"
   mkTimerCallback :: (Word32 -> Ptr () -> IO Word32) -> IO TimerCallback
 
-type AudioDeviceID = Word32
-type Cond = Ptr ()
-type Cursor = Ptr ()
-type DisplayID = Word32
-type EventType = Word32
-type FingerID = Int64
-type Gamepad = Ptr ()
-type GamepadBindingType = Word32
-type GestureID = Int64
-type GLContext = Ptr ()
-type Haptic = Ptr ()
-type Joystick = Ptr ()
-type JoystickID = Word32
-type KeyboardID = Word32
-type Mutex = Ptr ()
-type Renderer = Ptr ()
-type Sem = Ptr ()
-type SpinLock = CInt
-type SurfaceFlags = Word32
-type Texture = Ptr ()
-type Thread = Ptr ()
-type ThreadID = CULong
-type TimerID = CInt
-type TLSID = CUInt
-type TouchID = Int64
-type VkInstance = Ptr ()
-type VkSurfaceKHR = Word64
-type Version = Word32
-type Window = Ptr ()
-type WindowID = Word32
+-- Foreign wrapper for callback functions
+foreign import ccall "wrapper"
+  mkEGLAttribArrayCallback :: (Ptr () -> IO (Ptr EGLAttrib)) -> IO (FunPtr EGLAttribArrayCallback)
+
+foreign import ccall "wrapper"
+  mkEGLIntArrayCallback :: (Ptr () -> EGLDisplay -> EGLConfig -> IO (Ptr EGLint)) -> IO (FunPtr EGLIntArrayCallback)
+
 
 data Atomic = Atomic
   { atomicValue :: !CInt
@@ -1313,7 +1340,7 @@ instance Storable Palette where
     (#poke SDL_Palette, ncolors) ptr ncolors
     (#poke SDL_Palette, colors) ptr colors
 
-data PixelFormat = PixelFormat
+data PixelFormatDetails = PixelFormatDetails
   { pixelFormatFormat :: !Word32
   , pixelFormatBitsPerPixel :: !Word8
   , pixelFormatBytesPerPixel :: !Word8
@@ -1323,7 +1350,7 @@ data PixelFormat = PixelFormat
   , pixelFormatAMask :: !Word32
   } deriving (Eq, Show, Typeable)
 
-instance Storable PixelFormat where
+instance Storable PixelFormatDetails where
   sizeOf _ = (#size SDL_PixelFormatDetails)
   alignment _ = (#alignment SDL_PixelFormatDetails)
   peek ptr = do
@@ -1334,8 +1361,8 @@ instance Storable PixelFormat where
     gmask <- (#peek SDL_PixelFormatDetails, Gmask) ptr
     bmask <- (#peek SDL_PixelFormatDetails, Bmask) ptr
     amask <- (#peek SDL_PixelFormatDetails, Amask) ptr
-    return $! PixelFormat format bits_per_pixel bytes_per_pixel rmask gmask bmask amask
-  poke ptr (PixelFormat format bits_per_pixel bytes_per_pixel rmask gmask bmask amask) = do
+    return $! PixelFormatDetails format bits_per_pixel bytes_per_pixel rmask gmask bmask amask
+  poke ptr (PixelFormatDetails format bits_per_pixel bytes_per_pixel rmask gmask bmask amask) = do
     (#poke SDL_PixelFormatDetails, format) ptr format
     (#poke SDL_PixelFormatDetails, bits_per_pixel) ptr bits_per_pixel
     (#poke SDL_PixelFormatDetails, bytes_per_pixel) ptr bytes_per_pixel

@@ -12,16 +12,21 @@ module SDL.Raw.Enum (
 
   -- ** Audio Format
   AudioFormat,
-  pattern SDL_AUDIO_S8,
   pattern SDL_AUDIO_U8,
-  pattern SDL_AUDIO_S16MSB,
-  pattern SDL_AUDIO_S16SYS,
-  pattern SDL_AUDIO_S32LSB,
-  pattern SDL_AUDIO_S32MSB,
-  pattern SDL_AUDIO_S32SYS,
-  pattern SDL_AUDIO_F32LSB,
-  pattern SDL_AUDIO_F32MSB,
-  pattern SDL_AUDIO_F32SYS,
+  pattern SDL_AUDIO_S8,
+  pattern SDL_AUDIO_S16LE, 
+  pattern SDL_AUDIO_S16BE, 
+  pattern SDL_AUDIO_S16, 
+  pattern SDL_AUDIO_S32LE, 
+  pattern SDL_AUDIO_S32BE, 
+  pattern SDL_AUDIO_S32, 
+  pattern SDL_AUDIO_F32LE, 
+  pattern SDL_AUDIO_F32BE, 
+  pattern SDL_AUDIO_F32, 
+
+  -- Default device constants
+  pattern SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK,
+  pattern SDL_AUDIO_DEVICE_DEFAULT_RECORDING,
   
   -- ** Blend Mode
   BlendMode,
@@ -94,7 +99,7 @@ module SDL.Raw.Enum (
   pattern SDL_GAMEPAD_BUTTON_COUNT,
 
   -- ** OpenGL Attribute
-  GLattr,
+  GLAttr,
   pattern SDL_GL_RED_SIZE,
   pattern SDL_GL_GREEN_SIZE,
   pattern SDL_GL_BLUE_SIZE,
@@ -888,6 +893,7 @@ import Data.Word
 import Foreign.C.Types
 
 type AudioFormat = (#type SDL_AudioFormat)
+type AudioDeviceID = (#type SDL_AudioDeviceID)
 type BlendMode = (#type SDL_BlendMode)
 type BlendOperation = (#type SDL_BlendOperation)
 type BlendFactor = (#type SDL_BlendFactor)
@@ -895,7 +901,7 @@ type Endian = CInt
 type EventAction = (#type SDL_EventAction)
 type GamepadAxis = (#type SDL_GamepadAxis)
 type GamepadButton = (#type SDL_GamepadButton)
-type GLattr = (#type SDL_GLAttr)
+type GLAttr = (#type SDL_GLAttr)
 type HintPriority = (#type SDL_HintPriority)
 type InitFlag = Word32
 type Keycode = (#type SDL_Keycode)
@@ -907,17 +913,21 @@ type Scancode = (#type SDL_Scancode)
 type SystemCursor = (#type SDL_SystemCursor)
 type ThreadPriority = (#type SDL_ThreadPriority)
 
-pattern SDL_AUDIO_S8 = (#const SDL_AUDIO_S8) :: AudioFormat
 pattern SDL_AUDIO_U8 = (#const SDL_AUDIO_U8) :: AudioFormat
-pattern SDL_AUDIO_S16LSB = (#const SDL_AUDIO_S16LE) :: AudioFormat
-pattern SDL_AUDIO_S16MSB = (#const SDL_AUDIO_S16BE) :: AudioFormat
-pattern SDL_AUDIO_S16SYS = (#const SDL_AUDIO_S16) :: AudioFormat
-pattern SDL_AUDIO_S32LSB = (#const SDL_AUDIO_S32LE) :: AudioFormat
-pattern SDL_AUDIO_S32MSB = (#const SDL_AUDIO_S32BE) :: AudioFormat
-pattern SDL_AUDIO_S32SYS = (#const SDL_AUDIO_S32) :: AudioFormat
-pattern SDL_AUDIO_F32LSB = (#const SDL_AUDIO_F32LE) :: AudioFormat
-pattern SDL_AUDIO_F32MSB = (#const SDL_AUDIO_F32BE) :: AudioFormat
-pattern SDL_AUDIO_F32SYS = (#const SDL_AUDIO_F32) :: AudioFormat
+pattern SDL_AUDIO_S8 = (#const SDL_AUDIO_S8) :: AudioFormat
+pattern SDL_AUDIO_S16LE = (#const SDL_AUDIO_S16LE) :: AudioFormat
+pattern SDL_AUDIO_S16BE = (#const SDL_AUDIO_S16BE) :: AudioFormat
+pattern SDL_AUDIO_S16 = (#const SDL_AUDIO_S16) :: AudioFormat  -- System endianness
+pattern SDL_AUDIO_S32LE = (#const SDL_AUDIO_S32LE) :: AudioFormat
+pattern SDL_AUDIO_S32BE = (#const SDL_AUDIO_S32BE) :: AudioFormat
+pattern SDL_AUDIO_S32 = (#const SDL_AUDIO_S32) :: AudioFormat  -- System endianness
+pattern SDL_AUDIO_F32LE = (#const SDL_AUDIO_F32LE) :: AudioFormat
+pattern SDL_AUDIO_F32BE = (#const SDL_AUDIO_F32BE) :: AudioFormat
+pattern SDL_AUDIO_F32 = (#const SDL_AUDIO_F32) :: AudioFormat  -- System endianness
+
+-- Default device constants
+pattern SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK = (#const SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK) :: AudioDeviceID
+pattern SDL_AUDIO_DEVICE_DEFAULT_RECORDING = (#const SDL_AUDIO_DEVICE_DEFAULT_RECORDING) :: AudioDeviceID
 
 pattern SDL_BLENDMODE_NONE = (#const SDL_BLENDMODE_NONE) :: BlendMode
 pattern SDL_BLENDMODE_BLEND = (#const SDL_BLENDMODE_BLEND) :: BlendMode
@@ -976,30 +986,30 @@ pattern SDL_GAMEPAD_BUTTON_DPAD_LEFT = (#const SDL_GAMEPAD_BUTTON_DPAD_LEFT) :: 
 pattern SDL_GAMEPAD_BUTTON_DPAD_RIGHT = (#const SDL_GAMEPAD_BUTTON_DPAD_RIGHT) :: GamepadButton
 pattern SDL_GAMEPAD_BUTTON_COUNT = (#const SDL_GAMEPAD_BUTTON_COUNT) :: GamepadButton
 
-pattern SDL_GL_RED_SIZE = (#const SDL_GL_RED_SIZE) :: GLattr
-pattern SDL_GL_GREEN_SIZE = (#const SDL_GL_GREEN_SIZE) :: GLattr
-pattern SDL_GL_BLUE_SIZE = (#const SDL_GL_BLUE_SIZE) :: GLattr
-pattern SDL_GL_ALPHA_SIZE = (#const SDL_GL_ALPHA_SIZE) :: GLattr
-pattern SDL_GL_BUFFER_SIZE = (#const SDL_GL_BUFFER_SIZE) :: GLattr
-pattern SDL_GL_DOUBLEBUFFER = (#const SDL_GL_DOUBLEBUFFER) :: GLattr
-pattern SDL_GL_DEPTH_SIZE = (#const SDL_GL_DEPTH_SIZE) :: GLattr
-pattern SDL_GL_STENCIL_SIZE = (#const SDL_GL_STENCIL_SIZE) :: GLattr
-pattern SDL_GL_ACCUM_RED_SIZE = (#const SDL_GL_ACCUM_RED_SIZE) :: GLattr
-pattern SDL_GL_ACCUM_GREEN_SIZE = (#const SDL_GL_ACCUM_GREEN_SIZE) :: GLattr
-pattern SDL_GL_ACCUM_BLUE_SIZE = (#const SDL_GL_ACCUM_BLUE_SIZE) :: GLattr
-pattern SDL_GL_ACCUM_ALPHA_SIZE = (#const SDL_GL_ACCUM_ALPHA_SIZE) :: GLattr
-pattern SDL_GL_STEREO = (#const SDL_GL_STEREO) :: GLattr
-pattern SDL_GL_MULTISAMPLEBUFFERS = (#const SDL_GL_MULTISAMPLEBUFFERS) :: GLattr
-pattern SDL_GL_MULTISAMPLESAMPLES = (#const SDL_GL_MULTISAMPLESAMPLES) :: GLattr
-pattern SDL_GL_ACCELERATED_VISUAL = (#const SDL_GL_ACCELERATED_VISUAL) :: GLattr
-pattern SDL_GL_RETAINED_BACKING = (#const SDL_GL_RETAINED_BACKING) :: GLattr
-pattern SDL_GL_CONTEXT_MAJOR_VERSION = (#const SDL_GL_CONTEXT_MAJOR_VERSION) :: GLattr
-pattern SDL_GL_CONTEXT_MINOR_VERSION = (#const SDL_GL_CONTEXT_MINOR_VERSION) :: GLattr
-pattern SDL_GL_CONTEXT_FLAGS = (#const SDL_GL_CONTEXT_FLAGS) :: GLattr
-pattern SDL_GL_CONTEXT_PROFILE_MASK = (#const SDL_GL_CONTEXT_PROFILE_MASK) :: GLattr
-pattern SDL_GL_SHARE_WITH_CURRENT_CONTEXT = (#const SDL_GL_SHARE_WITH_CURRENT_CONTEXT) :: GLattr
-pattern SDL_GL_FRAMEBUFFER_SRGB_CAPABLE = (#const SDL_GL_FRAMEBUFFER_SRGB_CAPABLE) :: GLattr
-pattern SDL_GL_CONTEXT_RELEASE_BEHAVIOR = (#const SDL_GL_CONTEXT_RELEASE_BEHAVIOR) :: GLattr
+pattern SDL_GL_RED_SIZE = (#const SDL_GL_RED_SIZE) :: GLAttr
+pattern SDL_GL_GREEN_SIZE = (#const SDL_GL_GREEN_SIZE) :: GLAttr
+pattern SDL_GL_BLUE_SIZE = (#const SDL_GL_BLUE_SIZE) :: GLAttr
+pattern SDL_GL_ALPHA_SIZE = (#const SDL_GL_ALPHA_SIZE) :: GLAttr
+pattern SDL_GL_BUFFER_SIZE = (#const SDL_GL_BUFFER_SIZE) :: GLAttr
+pattern SDL_GL_DOUBLEBUFFER = (#const SDL_GL_DOUBLEBUFFER) :: GLAttr
+pattern SDL_GL_DEPTH_SIZE = (#const SDL_GL_DEPTH_SIZE) :: GLAttr
+pattern SDL_GL_STENCIL_SIZE = (#const SDL_GL_STENCIL_SIZE) :: GLAttr
+pattern SDL_GL_ACCUM_RED_SIZE = (#const SDL_GL_ACCUM_RED_SIZE) :: GLAttr
+pattern SDL_GL_ACCUM_GREEN_SIZE = (#const SDL_GL_ACCUM_GREEN_SIZE) :: GLAttr
+pattern SDL_GL_ACCUM_BLUE_SIZE = (#const SDL_GL_ACCUM_BLUE_SIZE) :: GLAttr
+pattern SDL_GL_ACCUM_ALPHA_SIZE = (#const SDL_GL_ACCUM_ALPHA_SIZE) :: GLAttr
+pattern SDL_GL_STEREO = (#const SDL_GL_STEREO) :: GLAttr
+pattern SDL_GL_MULTISAMPLEBUFFERS = (#const SDL_GL_MULTISAMPLEBUFFERS) :: GLAttr
+pattern SDL_GL_MULTISAMPLESAMPLES = (#const SDL_GL_MULTISAMPLESAMPLES) :: GLAttr
+pattern SDL_GL_ACCELERATED_VISUAL = (#const SDL_GL_ACCELERATED_VISUAL) :: GLAttr
+pattern SDL_GL_RETAINED_BACKING = (#const SDL_GL_RETAINED_BACKING) :: GLAttr
+pattern SDL_GL_CONTEXT_MAJOR_VERSION = (#const SDL_GL_CONTEXT_MAJOR_VERSION) :: GLAttr
+pattern SDL_GL_CONTEXT_MINOR_VERSION = (#const SDL_GL_CONTEXT_MINOR_VERSION) :: GLAttr
+pattern SDL_GL_CONTEXT_FLAGS = (#const SDL_GL_CONTEXT_FLAGS) :: GLAttr
+pattern SDL_GL_CONTEXT_PROFILE_MASK = (#const SDL_GL_CONTEXT_PROFILE_MASK) :: GLAttr
+pattern SDL_GL_SHARE_WITH_CURRENT_CONTEXT = (#const SDL_GL_SHARE_WITH_CURRENT_CONTEXT) :: GLAttr
+pattern SDL_GL_FRAMEBUFFER_SRGB_CAPABLE = (#const SDL_GL_FRAMEBUFFER_SRGB_CAPABLE) :: GLAttr
+pattern SDL_GL_CONTEXT_RELEASE_BEHAVIOR = (#const SDL_GL_CONTEXT_RELEASE_BEHAVIOR) :: GLAttr
 
 pattern SDL_HINT_DEFAULT = (#const SDL_HINT_DEFAULT) :: HintPriority
 pattern SDL_HINT_NORMAL = (#const SDL_HINT_NORMAL) :: HintPriority

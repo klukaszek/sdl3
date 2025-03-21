@@ -75,7 +75,7 @@ data KeyModifier = KeyModifier
   , keyModifierAltGr      :: Bool
   } deriving (Data, Eq, Ord, Read, Generic, Show, Typeable)
 
-instance FromNumber KeyModifier Word32 where
+instance FromNumber KeyModifier Word16 where
   fromNumber m' = let m = m' in KeyModifier
     { keyModifierLeftShift  = m .&. Raw.SDL_KMOD_LSHIFT > 0
     , keyModifierRightShift = m .&. Raw.SDL_KMOD_RSHIFT > 0

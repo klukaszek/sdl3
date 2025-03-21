@@ -527,13 +527,6 @@ data InputMotion = Released | Pressed
 ccharStringToText :: [CChar] -> Text
 ccharStringToText = Text.decodeUtf8 . BSC8.pack . map castCCharToChar
 
-fromRawKeysym :: Raw.Keysym -> Keysym
-fromRawKeysym (Raw.Keysym scancode keycode modifier) =
-  Keysym scancode' keycode' modifier'
-  where scancode' = fromNumber scancode
-        keycode'  = fromNumber keycode
-        modifier' = fromNumber (fromIntegral modifier)
-
 convertRaw :: Raw.Event -> IO Event
 convertRaw (Raw.WindowEvent t ts a b c d) =
   do w <- fmap Window (Raw.getWindowFromID a)

@@ -95,7 +95,6 @@ module SDL.Video.Renderer
   , paletteColor
   , PixelFormat(..)
   , SurfacePixelFormat(..)
-  , formatPalette
   , setPaletteColors
   , pixelFormatToMasks
   , masksToPixelFormat
@@ -444,51 +443,6 @@ surfacePixels (Surface s _) = liftIO $ Raw.surfacePixels <$> peek s
 -- | Inspect the pixel format under a surface.
 surfaceFormat :: MonadIO m => Surface -> m SurfacePixelFormat
 surfaceFormat (Surface s _) = liftIO $ SurfacePixelFormat . Raw.surfaceFormat <$> peek s
-
-newtype Palette = Palette (Ptr Raw.Palette)
-  deriving (Eq, Typeable)
-
-formatPalette :: MonadIO m => SurfacePixelFormat -> m (Maybe Palette)
-formatPalette (SurfacePixelFormat f) = liftIO $ wrap . Raw.pixelFormatPalette <$> peek f
-  where wrap p
-          | p == nullPtr = Nothing
-          | otherwise = Just (Palette p)
-
-paletteNColors :: MonadIO m => Palette -> m CInt
-paletteNColors (Palette p) = liftIO $ Raw.paletteNColors <$> peek p
-
-paletteColors :: MonadIO m => Palette -> m (Maybe (SV.Vector (V4 Word8)))
-paletteColors q@(Palette p) = do
-  n <- liftIO $ fromIntegral <$> paletteNColors q
-  let wrap p' | p' == nullPtr = Nothing
-              | otherwise     = return p'
-  mv <- liftIO $ wrap . castPtr . Raw.paletteColors <$> peek p
-  mColor <- liftIO $ traverse newForeignPtr_ mv
-  return $ flip SV.unsafeFromForeignPtr0 n <$> mColor
-
-paletteColor :: MonadIO m => Palette -> CInt -> m (Maybe (V4 Word8))
-paletteColor q@(Palette p) i = do
-    rp <- liftIO $ peek p
-    m <- paletteNColors q
-    if m > i && i >= 0 then
-      liftIO $ fmap return . flip peekElemOff (fromIntegral i) . castPtr . Raw.paletteColors $ rp
-    else
-      return Nothing
-
--- | Set a range of colors in a palette.
---
--- See @<https://wiki.libsdl.org/SDL_SetPaletteColors SDL_SetPaletteColors>@ for C documentation.
-setPaletteColors :: MonadIO m
-                 => Palette -- ^ The 'Palette' to modify
-                 -> (SV.Vector (V4 Word8)) -- ^ A 'SV.Vector' of colours to copy into the palette
-                 -> CInt -- ^ The index of the first palette entry to modify
-                 -> m ()
-setPaletteColors (Palette p) colors first = liftIO $
-  throwIfNeg_ "SDL.Video.setPaletteColors" "SDL_SetPaletteColors" $
-  SV.unsafeWith colors $ \cp ->
-    Raw.setPaletteColors p (castPtr cp) first n
-  where
-    n = fromIntegral $ SV.length colors
 
 -- | Get the SDL surface associated with the window.
 --
@@ -1178,30 +1132,6 @@ data RendererConfig = RendererConfig
     -- ^ The renderer supports rendering to texture
   } deriving (Data, Eq, Generic, Ord, Read, Show, Typeable)
 
-instance FromNumber RendererConfig Word32 where
-  fromNumber n = RendererConfig
-    { rendererType          = rendererType'
-                                (n .&. Raw.SDL_RENDERER_SOFTWARE /= 0)
-                                (n .&. Raw.SDL_RENDERER_ACCELERATED /= 0)
-                                (n .&. Raw.SDL_RENDERER_PRESENTVSYNC /= 0)
-    , rendererTargetTexture = n .&. Raw.SDL_RENDERER_TARGETTEXTURE /= 0
-    }
-    where
-      rendererType' s a v | s         = SoftwareRenderer
-                          | a && v    = AcceleratedVSyncRenderer
-                          | a         = AcceleratedRenderer
-                          | otherwise = UnacceleratedRenderer
-
-instance ToNumber RendererConfig Word32 where
-  toNumber config = foldr (.|.) 0
-    [ if isSoftware then Raw.SDL_RENDERER_SOFTWARE else 0
-    , if not isSoftware then Raw.SDL_RENDERER_ACCELERATED else 0
-    , if rendererType config == AcceleratedVSyncRenderer then Raw.SDL_RENDERER_PRESENTVSYNC  else 0
-    , if rendererTargetTexture config then Raw.SDL_RENDERER_TARGETTEXTURE else 0
-    ]
-    where
-      isSoftware = rendererType config == SoftwareRenderer
-
 -- | Default options for 'RendererConfig'.
 --
 -- @
@@ -1231,34 +1161,6 @@ data RendererInfo = RendererInfo
   , rendererInfoMaxTextureHeight  :: CInt
     -- ^ The maximum texture height
   } deriving (Eq, Generic, Ord, Read, Show, Typeable)
-
-fromRawRendererInfo :: MonadIO m => Raw.RendererInfo -> m RendererInfo
-fromRawRendererInfo (Raw.RendererInfo name flgs ntf tfs mtw mth) = liftIO $ do
-    name' <- Text.decodeUtf8 <$> BS.packCString name
-    return $ RendererInfo name' (fromNumber flgs) ntf (fmap fromNumber tfs) mtw mth
-
--- | Get information about a rendering context.
---
--- See @<https://wiki.libsdl.org/SDL_GetRendererInfo SDL_GetRendererInfo>@ for C documentation.
-getRendererInfo :: MonadIO m => Renderer -> m RendererInfo
-getRendererInfo (Renderer renderer) = liftIO $
-  alloca $ \rptr -> do
-    throwIfNeg_ "getRendererInfo" "SDL_GetRendererInfo" $
-      Raw.getRendererInfo renderer rptr
-    peek rptr >>= fromRawRendererInfo
-
--- | Enumerate all known render drivers on the system, and determine their supported features.
---
--- See @<https://wiki.libsdl.org/SDL_GetRenderDriverInfo SDL_GetRenderDriverInfo>@ for C documentation.
-getRenderDriverInfo :: MonadIO m => m [RendererInfo]
-getRenderDriverInfo = liftIO $ do
-  count <- Raw.getNumRenderDrivers
-  traverse go [0..count-1]
-  where
-    go idx = alloca $ \rptr -> do
-               throwIfNeg_ "getRenderDriverInfo" "SDL_GetRenderDriverInfo" $
-                 Raw.getRenderDriverInfo idx rptr
-               peek rptr >>= fromRawRendererInfo
 
 -- | Get or set the additional alpha value multiplied into render copy operations.
 --
