@@ -8,28 +8,12 @@ module SDL.Raw.Video (
   destroyWindow,
   disableScreenSaver,
   enableScreenSaver,
-  glBindTexture,
-  glCreateContext,
-  glDeleteContext,
-  glExtensionSupported,
-  glGetAttribute,
-  glGetCurrentContext,
-  glGetCurrentWindow,
-  glGetProcAddress,
-  glGetSwapInterval,
-  glLoadLibrary,
-  glMakeCurrent,
-  glResetAttributes,
-  glSetAttribute,
-  glSetSwapInterval,
-  glSwapWindow,
-  glUnloadLibrary,
   getClosestFullscreenDisplayMode,
   getCurrentDisplayMode,
   getCurrentVideoDriver,
   getDesktopDisplayMode,
   getDisplayBounds,
-  getDisplayContent,
+  getDisplayContentScale,
   getDisplays,
   getDisplayName,
   getDisplayUsableBounds,
@@ -88,24 +72,10 @@ module SDL.Raw.Video (
   updateWindowSurfaceRects,
   windowHasSurface,
 
-  -- * EGL support functions
-  eglGetProcAddress,
-  eglSetAttributeCallbacks,
-  eglGetCurrentDisplay,
-  eglGetCurrentConfig,
-
-  -- * Vulkan support functions
-  vkLoadLibrary,
-  vkGetVkGetInstanceProcAddr,
-  vkUnloadLibrary,
-  vkGetInstanceExtensions,
-  vkCreateSurface,
-  vkGetDrawableSize,
-
   -- * Clipboard Handling
   getClipboardText,
   hasClipboardText,
-  setClipboardText,
+  setClipboardText
 ) where
 
 import Control.Monad.IO.Class
@@ -113,7 +83,6 @@ import Data.Word
 import Foreign.C.String
 import Foreign.C.Types
 import Foreign.Ptr
-import SDL.Raw.Enum
 import SDL.Raw.Types
 
 -- Display and Window Management
@@ -123,22 +92,6 @@ foreign import ccall "SDL3/SDL.h SDL_CreateWindowWithProperties" createWindowWit
 foreign import ccall "SDL3/SDL.h SDL_DestroyWindow" destroyWindowFFI :: Window -> IO ()
 foreign import ccall "SDL3/SDL.h SDL_DisableScreenSaver" disableScreenSaverFFI :: IO Bool
 foreign import ccall "SDL3/SDL.h SDL_EnableScreenSaver" enableScreenSaverFFI :: IO Bool
-foreign import ccall "SDL3/SDL.h SDL_GL_BindTexture" glBindTextureFFI :: Texture -> Ptr CFloat -> Ptr CFloat -> IO Bool
-foreign import ccall "SDL3/SDL.h SDL_GL_CreateContext" glCreateContextFFI :: Window -> IO GLContext
-foreign import ccall "SDL3/SDL.h SDL_GL_DestroyContext" glDeleteContextFFI :: GLContext -> IO Bool
-foreign import ccall "SDL3/SDL.h SDL_GL_ExtensionSupported" glExtensionSupportedFFI :: CString -> IO Bool
-foreign import ccall "SDL3/SDL.h SDL_GL_GetAttribute" glGetAttributeFFI :: GLAttr -> Ptr CInt -> IO Bool
-foreign import ccall "SDL3/SDL.h SDL_GL_GetCurrentContext" glGetCurrentContextFFI :: IO GLContext
-foreign import ccall "SDL3/SDL.h SDL_GL_GetCurrentWindow" glGetCurrentWindowFFI :: IO Window
-foreign import ccall "SDL3/SDL.h SDL_GL_GetProcAddress" glGetProcAddressFFI :: CString -> IO (Ptr ())
-foreign import ccall "SDL3/SDL.h SDL_GL_GetSwapInterval" glGetSwapIntervalFFI :: Ptr CInt -> IO Bool
-foreign import ccall "SDL3/SDL.h SDL_GL_LoadLibrary" glLoadLibraryFFI :: CString -> IO Bool
-foreign import ccall "SDL3/SDL.h SDL_GL_MakeCurrent" glMakeCurrentFFI :: Window -> GLContext -> IO Bool
-foreign import ccall "SDL3/SDL.h SDL_GL_ResetAttributes" glResetAttributesFFI :: IO ()
-foreign import ccall "SDL3/SDL.h SDL_GL_SetAttribute" glSetAttributeFFI :: GLAttr -> CInt -> IO Bool
-foreign import ccall "SDL3/SDL.h SDL_GL_SetSwapInterval" glSetSwapIntervalFFI :: CInt -> IO Bool
-foreign import ccall "SDL3/SDL.h SDL_GL_SwapWindow" glSwapWindowFFI :: Window -> IO Bool
-foreign import ccall "SDL3/SDL.h SDL_GL_UnloadLibrary" glUnloadLibraryFFI :: IO ()
 foreign import ccall "SDL3/SDL.h SDL_GetClosestFullscreenDisplayMode" getClosestFullscreenDisplayModeFFI :: DisplayID -> CInt -> CInt -> CFloat -> Bool -> Ptr DisplayMode -> IO Bool
 foreign import ccall "SDL3/SDL.h SDL_GetCurrentDisplayMode" getCurrentDisplayModeFFI :: DisplayID -> IO (Ptr DisplayMode)
 foreign import ccall "SDL3/SDL.h SDL_GetCurrentVideoDriver" getCurrentVideoDriverFFI :: IO CString
@@ -147,7 +100,6 @@ foreign import ccall "SDL3/SDL.h SDL_GetDisplayBounds" getDisplayBoundsFFI :: Di
 foreign import ccall "SDL3/SDL.h SDL_GetDisplayContentScale" getDisplayContentScaleFFI :: DisplayID -> IO CFloat
 foreign import ccall "SDL3/SDL.h SDL_GetDisplays" getDisplaysFFI :: Ptr CInt -> IO (Ptr DisplayID)
 foreign import ccall "SDL3/SDL.h SDL_GetDisplayName" getDisplayNameFFI :: DisplayID -> IO CString
-foreign import ccall "SDL3/SDL.h SDL_GetDisplayProperties" getDisplayPropertiesFFI :: DisplayID -> IO PropertiesID
 foreign import ccall "SDL3/SDL.h SDL_GetDisplayUsableBounds" getDisplayUsableBoundsFFI :: DisplayID -> Ptr Rect -> IO Bool
 foreign import ccall "SDL3/SDL.h SDL_GetDisplayForPoint" getDisplayForPointFFI :: Ptr Point -> IO DisplayID
 foreign import ccall "SDL3/SDL.h SDL_GetDisplayForRect" getDisplayForRectFFI :: Ptr Rect -> IO DisplayID
@@ -166,7 +118,6 @@ foreign import ccall "SDL3/SDL.h SDL_GetWindowParent" getWindowParentFFI :: Wind
 foreign import ccall "SDL3/SDL.h SDL_GetWindowPixelDensity" getWindowPixelDensityFFI :: Window -> IO CFloat
 foreign import ccall "SDL3/SDL.h SDL_GetWindowPixelFormat" getWindowPixelFormatFFI :: Window -> IO PixelFormat
 foreign import ccall "SDL3/SDL.h SDL_GetWindowPosition" getWindowPositionFFI :: Window -> Ptr CInt -> Ptr CInt -> IO Bool
-foreign import ccall "SDL3/SDL.h SDL_GetWindowProperties" getWindowPropertiesFFI :: Window -> IO PropertiesID
 foreign import ccall "SDL3/SDL.h SDL_GetWindowSafeArea" getWindowSafeAreaFFI :: Window -> Ptr Rect -> IO Bool
 foreign import ccall "SDL3/SDL.h SDL_GetWindowSize" getWindowSizeFFI :: Window -> Ptr CInt -> Ptr CInt -> IO Bool
 foreign import ccall "SDL3/SDL.h SDL_GetWindowSizeInPixels" getWindowSizeInPixelsFFI :: Window -> Ptr CInt -> Ptr CInt -> IO Bool
@@ -205,20 +156,6 @@ foreign import ccall "SDL3/SDL.h SDL_UpdateWindowSurface" updateWindowSurfaceFFI
 foreign import ccall "SDL3/SDL.h SDL_UpdateWindowSurfaceRects" updateWindowSurfaceRectsFFI :: Window -> Ptr Rect -> CInt -> IO Bool
 foreign import ccall "SDL3/SDL.h SDL_WindowHasSurface" windowHasSurfaceFFI :: Window -> IO Bool
 
--- EGL support functions
-foreign import ccall "SDL3/SDL.h SDL_EGL_GetProcAddress" eglGetProcAddressFFI :: CString -> IO (Ptr ())
-foreign import ccall "SDL3/SDL.h SDL_EGL_SetAttributeCallbacks" eglSetAttributeCallbacksFFI :: FunPtr EGLAttribArrayCallback -> FunPtr EGLIntArrayCallback -> FunPtr EGLIntArrayCallback -> Ptr () -> IO ()
-foreign import ccall "SDL3/SDL.h SDL_EGL_GetCurrentDisplay" eglGetCurrentDisplayFFI :: IO EGLDisplay
-foreign import ccall "SDL3/SDL.h SDL_EGL_GetCurrentConfig" eglGetCurrentConfigFFI :: IO EGLConfig
-
--- Vulkan support functions
-foreign import ccall "SDL3/SDL_vulkan.h SDL_Vulkan_LoadLibrary" vkLoadLibraryFFI :: CString -> IO Bool
-foreign import ccall "SDL3/SDL_vulkan.h SDL_Vulkan_GetVkGetInstanceProcAddr" vkGetVkGetInstanceProcAddrFFI :: IO (FunPtr VkGetInstanceProcAddrFunc)
-foreign import ccall "SDL3/SDL_vulkan.h SDL_Vulkan_UnloadLibrary" vkUnloadLibraryFFI :: IO ()
-foreign import ccall "SDL3/SDL_vulkan.h SDL_Vulkan_GetInstanceExtensions" vkGetInstanceExtensionsFFI :: Window -> Ptr CUInt -> Ptr CString -> IO Bool
-foreign import ccall "SDL3/SDL_vulkan.h SDL_Vulkan_CreateSurface" vkCreateSurfaceFFI :: Window -> VkInstance -> Ptr VkSurfaceKHR -> IO Bool
-foreign import ccall "SDL3/SDL_vulkan.h SDL_Vulkan_GetDrawableSize" vkGetDrawableSizeFFI :: Window -> Ptr CInt -> Ptr CInt -> IO ()
-
 -- Clipboard Handling
 foreign import ccall "SDL3/SDL.h SDL_GetClipboardText" getClipboardTextFFI :: IO CString
 foreign import ccall "SDL3/SDL.h SDL_HasClipboardText" hasClipboardTextFFI :: IO Bool
@@ -249,70 +186,6 @@ enableScreenSaver :: MonadIO m => m Bool
 enableScreenSaver = liftIO enableScreenSaverFFI
 {-# INLINE enableScreenSaver #-}
 
-glBindTexture :: MonadIO m => Texture -> Ptr CFloat -> Ptr CFloat -> m Bool
-glBindTexture texture texw texh = liftIO $ glBindTextureFFI texture texw texh
-{-# INLINE glBindTexture #-}
-
-glCreateContext :: MonadIO m => Window -> m GLContext
-glCreateContext window = liftIO $ glCreateContextFFI window
-{-# INLINE glCreateContext #-}
-
-glDeleteContext :: MonadIO m => GLContext -> m Bool
-glDeleteContext context = liftIO $ glDeleteContextFFI context
-{-# INLINE glDeleteContext #-}
-
-glExtensionSupported :: MonadIO m => CString -> m Bool
-glExtensionSupported extension = liftIO $ glExtensionSupportedFFI extension
-{-# INLINE glExtensionSupported #-}
-
-glGetAttribute :: MonadIO m => GLAttr -> Ptr CInt -> m Bool
-glGetAttribute attr value = liftIO $ glGetAttributeFFI attr value
-{-# INLINE glGetAttribute #-}
-
-glGetCurrentContext :: MonadIO m => m GLContext
-glGetCurrentContext = liftIO glGetCurrentContextFFI
-{-# INLINE glGetCurrentContext #-}
-
-glGetCurrentWindow :: MonadIO m => m Window
-glGetCurrentWindow = liftIO glGetCurrentWindowFFI
-{-# INLINE glGetCurrentWindow #-}
-
-glGetProcAddress :: MonadIO m => CString -> m (Ptr ())
-glGetProcAddress proc = liftIO $ glGetProcAddressFFI proc
-{-# INLINE glGetProcAddress #-}
-
-glGetSwapInterval :: MonadIO m => Ptr CInt -> m Bool
-glGetSwapInterval interval = liftIO $ glGetSwapIntervalFFI interval
-{-# INLINE glGetSwapInterval #-}
-
-glLoadLibrary :: MonadIO m => CString -> m Bool
-glLoadLibrary path = liftIO $ glLoadLibraryFFI path
-{-# INLINE glLoadLibrary #-}
-
-glMakeCurrent :: MonadIO m => Window -> GLContext -> m Bool
-glMakeCurrent window context = liftIO $ glMakeCurrentFFI window context
-{-# INLINE glMakeCurrent #-}
-
-glResetAttributes :: MonadIO m => m ()
-glResetAttributes = liftIO glResetAttributesFFI
-{-# INLINE glResetAttributes #-}
-
-glSetAttribute :: MonadIO m => GLAttr -> CInt -> m Bool
-glSetAttribute attr value = liftIO $ glSetAttributeFFI attr value
-{-# INLINE glSetAttribute #-}
-
-glSetSwapInterval :: MonadIO m => CInt -> m Bool
-glSetSwapInterval interval = liftIO $ glSetSwapIntervalFFI interval
-{-# INLINE glSetSwapInterval #-}
-
-glSwapWindow :: MonadIO m => Window -> m Bool
-glSwapWindow window = liftIO $ glSwapWindowFFI window
-{-# INLINE glSwapWindow #-}
-
-glUnloadLibrary :: MonadIO m => m ()
-glUnloadLibrary = liftIO glUnloadLibraryFFI
-{-# INLINE glUnloadLibrary #-}
-
 getClosestFullscreenDisplayMode :: MonadIO m => DisplayID -> CInt -> CInt -> CFloat -> Bool -> Ptr DisplayMode -> m Bool
 getClosestFullscreenDisplayMode displayID w h refresh_rate include_high_density_modes closest = 
     liftIO $ getClosestFullscreenDisplayModeFFI displayID w h refresh_rate include_high_density_modes closest
@@ -334,9 +207,9 @@ getDisplayBounds :: MonadIO m => DisplayID -> Ptr Rect -> m Bool
 getDisplayBounds displayID rect = liftIO $ getDisplayBoundsFFI displayID rect
 {-# INLINE getDisplayBounds #-}
 
-getDisplayContent :: MonadIO m => DisplayID -> m CFloat
-getDisplayContent displayID = liftIO $ getDisplayContentScaleFFI displayID
-{-# INLINE getDisplayContent #-}
+getDisplayContentScale :: MonadIO m => DisplayID -> m CFloat
+getDisplayContentScale displayID = liftIO $ getDisplayContentScaleFFI displayID
+{-# INLINE getDisplayContentScale #-}
 
 getDisplays :: MonadIO m => Ptr CInt -> m (Ptr DisplayID)
 getDisplays count = liftIO $ getDisplaysFFI count
@@ -568,47 +441,6 @@ updateWindowSurfaceRects window rects numrects =
 windowHasSurface :: MonadIO m => Window -> m Bool
 windowHasSurface window = liftIO $ windowHasSurfaceFFI window
 {-# INLINE windowHasSurface #-}
-
-eglGetProcAddress :: MonadIO m => CString -> m (Ptr ())
-eglGetProcAddress proc = liftIO $ eglGetProcAddressFFI proc
-{-# INLINE eglGetProcAddress #-}
-
-eglSetAttributeCallbacks :: MonadIO m => FunPtr EGLAttribArrayCallback -> FunPtr EGLIntArrayCallback -> FunPtr EGLIntArrayCallback -> Ptr () -> m ()
-eglSetAttributeCallbacks platformAttribCallback surfaceAttribCallback contextAttribCallback userdata = 
-    liftIO $ eglSetAttributeCallbacksFFI platformAttribCallback surfaceAttribCallback contextAttribCallback userdata
-{-# INLINE eglSetAttributeCallbacks #-}
-
-eglGetCurrentDisplay :: MonadIO m => m EGLDisplay
-eglGetCurrentDisplay = liftIO eglGetCurrentDisplayFFI
-{-# INLINE eglGetCurrentDisplay #-}
-
-eglGetCurrentConfig :: MonadIO m => m EGLConfig
-eglGetCurrentConfig = liftIO eglGetCurrentConfigFFI
-{-# INLINE eglGetCurrentConfig #-}
-
-vkLoadLibrary :: MonadIO m => CString -> m Bool
-vkLoadLibrary path = liftIO $ vkLoadLibraryFFI path
-{-# INLINE vkLoadLibrary #-}
-
-vkGetVkGetInstanceProcAddr :: MonadIO m => m (FunPtr VkGetInstanceProcAddrFunc)
-vkGetVkGetInstanceProcAddr = liftIO vkGetVkGetInstanceProcAddrFFI
-{-# INLINE vkGetVkGetInstanceProcAddr #-}
-
-vkUnloadLibrary :: MonadIO m => m ()
-vkUnloadLibrary = liftIO vkUnloadLibraryFFI
-{-# INLINE vkUnloadLibrary #-}
-
-vkGetInstanceExtensions :: MonadIO m => Window -> Ptr CUInt -> Ptr CString -> m Bool
-vkGetInstanceExtensions window count names = liftIO $ vkGetInstanceExtensionsFFI window count names
-{-# INLINE vkGetInstanceExtensions #-}
-
-vkCreateSurface :: MonadIO m => Window -> VkInstance -> Ptr VkSurfaceKHR -> m Bool
-vkCreateSurface window instance_ surface = liftIO $ vkCreateSurfaceFFI window instance_ surface
-{-# INLINE vkCreateSurface #-}
-
-vkGetDrawableSize :: MonadIO m => Window -> Ptr CInt -> Ptr CInt -> m ()
-vkGetDrawableSize window w h = liftIO $ vkGetDrawableSizeFFI window w h
-{-# INLINE vkGetDrawableSize #-}
 
 getClipboardText :: MonadIO m => m CString
 getClipboardText = liftIO getClipboardTextFFI

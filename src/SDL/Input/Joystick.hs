@@ -210,7 +210,7 @@ getJoystickType :: MonadIO m => Joystick -> m RawEnum.JoystickType
 getJoystickType (Joystick j) = Raw.getJoystickType j
 
 -- | Get the implementation-dependent GUID for the joystick.
-getJoystickGUID :: MonadIO m => Joystick -> m RawTypes.JoystickGUID
+getJoystickGUID :: MonadIO m => Joystick -> m RawTypes.GUID
 getJoystickGUID (Joystick j) = liftIO $ do
   guidPtr <- Raw.getJoystickGUID j
   peek guidPtr

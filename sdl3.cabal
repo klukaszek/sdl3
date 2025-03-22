@@ -81,7 +81,7 @@ library
     SDL.Hint
     SDL.Init
     SDL.Input
-    SDL.Input.GameController
+    SDL.Input.Gamepad
     SDL.Input.Joystick
     SDL.Input.Keyboard
     SDL.Input.Keyboard.Codes
@@ -102,18 +102,22 @@ library
     SDL.Raw
     SDL.Raw.Audio
     SDL.Raw.Basic
+    SDL.Raw.EGL
     SDL.Raw.Enum
     SDL.Raw.Error
     SDL.Raw.Event
     SDL.Raw.Filesystem
+    SDL.Raw.Gamepad
     SDL.Raw.Haptic
     SDL.Raw.Joystick
+    SDL.Raw.OpenGL
     SDL.Raw.Platform
     SDL.Raw.Power
     SDL.Raw.Thread
     SDL.Raw.Timer
     SDL.Raw.Types
     SDL.Raw.Video
+    SDL.Raw.Vulkan
 
   other-modules:
     Data.Bitmask

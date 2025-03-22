@@ -59,33 +59,6 @@ module SDL.Raw.Event (
   showCursor,
   warpMouseGlobal,
   warpMouseInWindow,
-
-  -- * Gamepad Support
-  gamepadAddMapping,
-  gamepadAddMappingsFromFile,
-  gamepadAddMappingsFromRW,
-  gamepadClose,
-  gamepadEventState,
-  gamepadFromInstanceID,
-  gamepadGetAttached,
-  gamepadGetAxis,
-  gamepadGetAxisFromString,
-  gamepadGetBindForAxis,
-  gamepadGetBindForButton,
-  gamepadGetButton,
-  gamepadGetButtonFromString,
-  gamepadGetJoystick,
-  gamepadGetStringForAxis,
-  gamepadGetStringForButton,
-  gamepadMapping,
-  gamepadMappingForGUID,
-  gamepadName,
-  gamepadNameForIndex,
-  gamepadOpen,
-  gamepadUpdate,
-  isGamepad,
-  eventBuffer,
-  eventBufferSize
 ) where
 
 import Control.Monad.IO.Class
@@ -157,28 +130,6 @@ foreign import ccall "SDL3/SDL.h SDL_SetRelativeMouseMode" setRelativeMouseModeF
 foreign import ccall "SDL3/SDL.h SDL_ShowCursor" showCursorFFI :: CInt -> IO CInt
 foreign import ccall "SDL3/SDL.h SDL_WarpMouseGlobal" warpMouseGlobalFFI :: CInt -> CInt -> IO CInt
 foreign import ccall "SDL3/SDL.h SDL_WarpMouseInWindow" warpMouseInWindowFFI :: Window -> CInt -> CInt -> IO ()
-foreign import ccall "SDL3/SDL.h SDL_AddGamepadMapping" gamepadAddMappingFFI :: CString -> IO CInt
-foreign import ccall "SDL3/SDL.h SDL_AddGamepadMappingsFromIO" gamepadAddMappingsFromRWFFI :: Ptr IOStream -> CInt -> IO CInt
-foreign import ccall "SDL3/SDL.h SDL_CloseGamepad" gamepadCloseFFI :: Gamepad -> IO ()
-foreign import ccall "SDL3/SDL.h SDL_GamepadEventState" gamepadEventStateFFI :: CInt -> IO CInt
-foreign import ccall "SDL3/SDL.h SDL_GetGamepadFromID" gamepadFromInstanceIDFFI :: JoystickID -> IO Gamepad
-foreign import ccall "SDL3/SDL.h SDL_GamepadConnected" gamepadGetAttachedFFI :: Gamepad -> IO Bool
-foreign import ccall "SDL3/SDL.h SDL_GetGamepadAxis" gamepadGetAxisFFI :: Gamepad -> GamepadAxis -> IO Int16
-foreign import ccall "SDL3/SDL.h SDL_GetGamepadAxisFromString" gamepadGetAxisFromStringFFI :: CString -> IO GamepadAxis
-foreign import ccall "sdlhelper.h SDLHelper_GamepadGetBindForAxis" gamepadGetBindForAxisFFI :: Gamepad -> GamepadAxis -> Ptr GamepadBinding -> IO ()
-foreign import ccall "sdlhelper.h SDLHelper_GamepadGetBindForButton" gamepadGetBindForButtonFFI :: Gamepad -> GamepadButton -> Ptr GamepadBinding -> IO ()
-foreign import ccall "SDL3/SDL.h SDL_GetGamepadButton" gamepadGetButtonFFI :: Gamepad -> GamepadButton -> IO Word8
-foreign import ccall "SDL3/SDL.h SDL_GetGamepadButtonFromString" gamepadGetButtonFromStringFFI :: CString -> IO GamepadButton
-foreign import ccall "SDL3/SDL.h SDL_GetGamepadJoystick" gamepadGetJoystickFFI :: Gamepad -> IO Joystick
-foreign import ccall "SDL3/SDL.h SDL_GetGamepadStringForAxis" gamepadGetStringForAxisFFI :: GamepadAxis -> IO CString
-foreign import ccall "SDL3/SDL.h SDL_GetGamepadStringForButton" gamepadGetStringForButtonFFI :: GamepadButton -> IO CString
-foreign import ccall "SDL3/SDL.h SDL_GetGamepadMapping" gamepadMappingFFI :: Gamepad -> IO CString
-foreign import ccall "sdlhelper.h SDLHelper_GamepadMappingForGUID" gamepadMappingForGUIDFFI :: Ptr JoystickGUID -> IO CString
-foreign import ccall "SDL3/SDL.h SDL_GetGamepadName" gamepadNameFFI :: Gamepad -> IO CString
-foreign import ccall "SDL3/SDL.h SDL_GamepadNameForIndex" gamepadNameForIndexFFI :: CInt -> IO CString
-foreign import ccall "SDL3/SDL.h SDL_OpenGamepad" gamepadOpenFFI :: CInt -> IO Gamepad
-foreign import ccall "SDL3/SDL.h SDL_UpdateGamepads" gamepadUpdateFFI :: IO ()
-foreign import ccall "SDL3/SDL.h SDL_IsGamepad" isGamepadFFI :: CInt -> IO Bool
 
 foreign import ccall "sdlhelper.c SDLHelper_GetEventBufferSize" eventBufferSize :: CInt
 foreign import ccall "sdlhelper.c SDLHelper_GetEventBuffer"  eventBuffer :: Ptr Event
@@ -405,103 +356,3 @@ warpMouseGlobal v1 v2 = liftIO $ warpMouseGlobalFFI v1 v2
 warpMouseInWindow :: MonadIO m => Window -> CInt -> CInt -> m ()
 warpMouseInWindow v1 v2 v3 = liftIO $ warpMouseInWindowFFI v1 v2 v3
 {-# INLINE warpMouseInWindow #-}
-
-gamepadAddMapping :: MonadIO m => CString -> m CInt
-gamepadAddMapping v1 = liftIO $ gamepadAddMappingFFI v1
-{-# INLINE gamepadAddMapping #-}
-
-gamepadAddMappingsFromFile :: MonadIO m => CString -> m CInt
-gamepadAddMappingsFromFile file = liftIO $ do
-  rw <- withCString "rb" $ ioFromFile file
-  gamepadAddMappingsFromRW rw 1
-{-# INLINE gamepadAddMappingsFromFile #-}
-
-gamepadAddMappingsFromRW :: MonadIO m => Ptr IOStream -> CInt -> m CInt
-gamepadAddMappingsFromRW v1 v2 = liftIO $ gamepadAddMappingsFromRWFFI v1 v2
-{-# INLINE gamepadAddMappingsFromRW #-}
-
-gamepadClose :: MonadIO m => Gamepad -> m ()
-gamepadClose v1 = liftIO $ gamepadCloseFFI v1
-{-# INLINE gamepadClose #-}
-
-gamepadEventState :: MonadIO m => CInt -> m CInt
-gamepadEventState v1 = liftIO $ gamepadEventStateFFI v1
-{-# INLINE gamepadEventState #-}
-
-gamepadFromInstanceID :: MonadIO m => JoystickID -> m Gamepad
-gamepadFromInstanceID v1 = liftIO $ gamepadFromInstanceIDFFI v1
-{-# INLINE gamepadFromInstanceID #-}
-
-gamepadGetAttached :: MonadIO m => Gamepad -> m Bool
-gamepadGetAttached v1 = liftIO $ gamepadGetAttachedFFI v1
-{-# INLINE gamepadGetAttached #-}
-
-gamepadGetAxis :: MonadIO m => Gamepad -> GamepadAxis -> m Int16
-gamepadGetAxis v1 v2 = liftIO $ gamepadGetAxisFFI v1 v2
-{-# INLINE gamepadGetAxis #-}
-
-gamepadGetAxisFromString :: MonadIO m => CString -> m GamepadAxis
-gamepadGetAxisFromString v1 = liftIO $ gamepadGetAxisFromStringFFI v1
-{-# INLINE gamepadGetAxisFromString #-}
-
-gamepadGetBindForAxis :: MonadIO m => Gamepad -> GamepadAxis -> m GamepadBinding
-gamepadGetBindForAxis gamecontroller axis = liftIO . alloca $ \ptr -> do
-  gamepadGetBindForAxisFFI gamecontroller axis ptr
-  peek ptr
-{-# INLINE gamepadGetBindForAxis #-}
-
-gamepadGetBindForButton :: MonadIO m => Gamepad -> GamepadButton -> m GamepadBinding
-gamepadGetBindForButton gamecontroller button = liftIO . alloca $ \ptr -> do
-  gamepadGetBindForButtonFFI gamecontroller button ptr
-  peek ptr
-{-# INLINE gamepadGetBindForButton #-}
-
-gamepadGetButton :: MonadIO m => Gamepad -> GamepadButton -> m Word8
-gamepadGetButton v1 v2 = liftIO $ gamepadGetButtonFFI v1 v2
-{-# INLINE gamepadGetButton #-}
-
-gamepadGetButtonFromString :: MonadIO m => CString -> m GamepadButton
-gamepadGetButtonFromString v1 = liftIO $ gamepadGetButtonFromStringFFI v1
-{-# INLINE gamepadGetButtonFromString #-}
-
-gamepadGetJoystick :: MonadIO m => Gamepad -> m Joystick
-gamepadGetJoystick v1 = liftIO $ gamepadGetJoystickFFI v1
-{-# INLINE gamepadGetJoystick #-}
-
-gamepadGetStringForAxis :: MonadIO m => GamepadAxis -> m CString
-gamepadGetStringForAxis v1 = liftIO $ gamepadGetStringForAxisFFI v1
-{-# INLINE gamepadGetStringForAxis #-}
-
-gamepadGetStringForButton :: MonadIO m => GamepadButton -> m CString
-gamepadGetStringForButton v1 = liftIO $ gamepadGetStringForButtonFFI v1
-{-# INLINE gamepadGetStringForButton #-}
-
-gamepadMapping :: MonadIO m => Gamepad -> m CString
-gamepadMapping v1 = liftIO $ gamepadMappingFFI v1
-{-# INLINE gamepadMapping #-}
-
-gamepadMappingForGUID :: MonadIO m => JoystickGUID -> m CString
-gamepadMappingForGUID guid = liftIO . alloca $ \ptr -> do
-  poke ptr guid
-  gamepadMappingForGUIDFFI ptr
-{-# INLINE gamepadMappingForGUID #-}
-
-gamepadName :: MonadIO m => Gamepad -> m CString
-gamepadName v1 = liftIO $ gamepadNameFFI v1
-{-# INLINE gamepadName #-}
-
-gamepadNameForIndex :: MonadIO m => CInt -> m CString
-gamepadNameForIndex v1 = liftIO $ gamepadNameForIndexFFI v1
-{-# INLINE gamepadNameForIndex #-}
-
-gamepadOpen :: MonadIO m => CInt -> m Gamepad
-gamepadOpen v1 = liftIO $ gamepadOpenFFI v1
-{-# INLINE gamepadOpen #-}
-
-gamepadUpdate :: MonadIO m => m ()
-gamepadUpdate = liftIO gamepadUpdateFFI
-{-# INLINE gamepadUpdate #-}
-
-isGamepad :: MonadIO m => CInt -> m Bool
-isGamepad v1 = liftIO $ isGamepadFFI v1
-{-# INLINE isGamepad #-}

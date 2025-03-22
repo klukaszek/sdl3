@@ -2,25 +2,26 @@
 {-# LANGUAGE DeriveGeneric #-}
 module SDL.Internal.Types
   ( Joystick(..)
-  , GameController(..)
+  , Gamepad(..)
   , Window(..)
   , Renderer(..)
   ) where
 
 import Data.Data (Data)
 import Data.Typeable
+import Foreign.ForeignPtr (ForeignPtr)
 import GHC.Generics (Generic)
 
-import qualified SDL.Raw as Raw
+import qualified SDL.Raw.Types as Raw
 
 newtype Joystick = Joystick { joystickPtr :: Raw.Joystick }
   deriving (Data, Eq, Generic, Ord, Show, Typeable)
 
-newtype GameController = GameController
-  { gameControllerPtr :: Raw.Gamepad }
+newtype Gamepad = Gamepad
+  { gameControllerPtr :: ForeignPtr () }
   deriving (Data, Eq, Generic, Ord, Show, Typeable)
 
-newtype Window = Window (Raw.Window)
+newtype Window = Window Raw.Window
   deriving (Data, Eq, Generic, Ord, Show, Typeable)
 
 -- | An SDL rendering device. This can be created with 'SDL.Video.createRenderer'.

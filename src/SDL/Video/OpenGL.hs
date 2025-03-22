@@ -14,17 +14,7 @@ module SDL.Video.OpenGL
   , Profile(..)
   , Mode(..)
   , glMakeCurrent
-  , glDeleteContext
-
-  -- * Querying for the drawable size without a Renderer
-  , glGetDrawableSize
-
-  -- * Swapping
-  -- | The process of \"swapping\" means to move the back-buffer into the window contents itself.
-  , glSwapWindow
-  , SwapInterval(..)
-  , swapInterval
-
+    
   -- * Function Loading
   , Raw.glGetProcAddress
   ) where
@@ -33,7 +23,7 @@ import Control.Monad.IO.Class (MonadIO, liftIO)
 import Data.Data (Data)
 import Data.StateVar
 import Data.Typeable
-import Foreign hiding (void, throwIfNull, throwIfNeg, throwIfNeg_)
+import Foreign hiding (void, throwIf_, throwIfNull, throwIfNeg, throwIfNeg_)
 import Foreign.C.Types
 import GHC.Generics (Generic)
 import SDL.Vect
@@ -116,75 +106,5 @@ glCreateContext (Window w) =
 -- See @<https://wiki.libsdl.org/SDL_GL_MakeCurrent SDL_GL_MakeCurrent>@ for C documentation.
 glMakeCurrent :: (Functor m, MonadIO m) => Window -> GLContext -> m ()
 glMakeCurrent (Window w) (GLContext ctx) =
-  throwIfNeg_ "SDL.Video.OpenGL.glMakeCurrent" "SDL_GL_MakeCurrent" $
+  throwIf_ not "SDL.Video.OpenGL.glMakeCurrent" "SDL_GL_MakeCurrent" $
     Raw.glMakeCurrent w ctx
-
--- | Delete the given OpenGL context.
---
--- You /must/ make sure that there are no pending commands in the OpenGL
--- command queue, the driver may still be processing commands even if you have
--- stopped issuing them!
---
--- The @glFinish@ command will block until the command queue has been fully
--- processed. You should call that function before deleting a context.
---
--- See @<https://wiki.libsdl.org/SDL_GL_DestroyContext SDL_GL_DestroyContext>@ for C documentation.
-glDeleteContext :: MonadIO m => GLContext -> m ()
-glDeleteContext (GLContext ctx) = Raw.glDeleteContext ctx
-
--- | Replace the contents of the front buffer with the back buffer's. The
--- contents of the back buffer are undefined, clear them with @glClear@ or
--- equivalent before drawing to them again.
---
--- See @<https://wiki.libsdl.org/SDL_GL_SwapWindow SDL_GL_SwapWindow>@ for C documentation.
-glSwapWindow :: MonadIO m => Window -> m ()
-glSwapWindow (Window w) = Raw.glSwapWindow w
-
--- | The swap interval for the current OpenGL context.
-data SwapInterval
-  = ImmediateUpdates
-    -- ^ No vertical retrace synchronization
-  | SynchronizedUpdates
-    -- ^ The buffer swap is synchronized with the vertical retrace
-  | LateSwapTearing
-  deriving (Bounded, Data, Enum, Eq, Generic, Ord, Read, Show, Typeable)
-
-instance ToNumber SwapInterval CInt where
-  toNumber ImmediateUpdates = 0
-  toNumber SynchronizedUpdates = 1
-  toNumber LateSwapTearing = -1
-
-instance FromNumber SwapInterval CInt where
-  fromNumber n' =
-    case n' of
-      0 -> ImmediateUpdates
-      1 -> SynchronizedUpdates
-      -1 -> LateSwapTearing
-      _ ->
-        error ("Unknown SwapInterval: " ++ show n')
-
--- | Get or set the swap interval for the current OpenGL context.
---
--- This 'StateVar' can be modified using '$=' and the current value retrieved with 'get'.
---
--- See @<https://wiki.libsdl.org/SDL_GL_SetSwapInterval SDL_GL_SetSwapInterval>@ and @<https://wiki.libsdl.org/SDL_GL_GetSwapInterval SDL_GL_GetSwapInterval>@ for C documentation.
-swapInterval :: StateVar SwapInterval
-swapInterval = makeStateVar glGetSwapInterval glSetSwapInterval
-  where
-  glGetSwapInterval = fmap fromNumber $ Raw.glGetSwapInterval
-
-  glSetSwapInterval i =
-    throwIfNeg_ "SDL.Video.glSetSwapInterval" "SDL_GL_SetSwapInterval" $
-      Raw.glSetSwapInterval (toNumber i)
-
--- | Get the size of a window's underlying drawable area in pixels (for use
--- with glViewport).
---
--- It may differ from 'SDL.Video.windowSize' if window was created with 'SDL.Video.windowHighDPI' flag.
-glGetDrawableSize :: MonadIO m => Window -> m (V2 CInt)
-glGetDrawableSize (Window w) =
-    liftIO $
-    alloca $ \wptr ->
-    alloca $ \hptr -> do
-        Raw.glGetDrawableSize w wptr hptr
-        V2 <$> peek wptr <*> peek hptr

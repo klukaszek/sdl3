@@ -68,7 +68,7 @@ module SDL.Raw.Enum (
   pattern SDL_GETEVENT,
 
   -- ** Game Controller Axis
-  GamepadAxis,
+  GamepadAxis(..),
   pattern SDL_GAMEPAD_AXIS_INVALID,
   pattern SDL_GAMEPAD_AXIS_LEFTX,
   pattern SDL_GAMEPAD_AXIS_LEFTY,
@@ -79,7 +79,7 @@ module SDL.Raw.Enum (
   pattern SDL_GAMEPAD_AXIS_COUNT,
 
   -- ** Game Controller Button
-  GamepadButton,
+  GamepadButton(..),
   pattern SDL_GAMEPAD_BUTTON_INVALID,
   pattern SDL_GAMEPAD_BUTTON_SOUTH,
   pattern SDL_GAMEPAD_BUTTON_EAST,
@@ -97,6 +97,33 @@ module SDL.Raw.Enum (
   pattern SDL_GAMEPAD_BUTTON_DPAD_LEFT,
   pattern SDL_GAMEPAD_BUTTON_DPAD_RIGHT,
   pattern SDL_GAMEPAD_BUTTON_COUNT,
+
+  -- ** Gamepad Types
+  GamepadType,
+  pattern SDL_GAMEPAD_TYPE_UNKNOWN,
+  pattern SDL_GAMEPAD_TYPE_STANDARD,
+  pattern SDL_GAMEPAD_TYPE_XBOX360,
+  pattern SDL_GAMEPAD_TYPE_XBOXONE,
+  pattern SDL_GAMEPAD_TYPE_PS3,
+  pattern SDL_GAMEPAD_TYPE_PS4,
+  pattern SDL_GAMEPAD_TYPE_PS5,
+  pattern SDL_GAMEPAD_TYPE_NINTENDO_SWITCH_PRO,
+  pattern SDL_GAMEPAD_TYPE_NINTENDO_SWITCH_JOYCON_LEFT,
+  pattern SDL_GAMEPAD_TYPE_NINTENDO_SWITCH_JOYCON_RIGHT,
+  pattern SDL_GAMEPAD_TYPE_NINTENDO_SWITCH_JOYCON_PAIR,
+  pattern SDL_GAMEPAD_TYPE_COUNT,
+
+  -- ** Gamepad Button Labels
+  GamepadButtonLabel,
+  pattern SDL_GAMEPAD_BUTTON_LABEL_UNKNOWN,
+  pattern SDL_GAMEPAD_BUTTON_LABEL_A,
+  pattern SDL_GAMEPAD_BUTTON_LABEL_B,
+  pattern SDL_GAMEPAD_BUTTON_LABEL_X,
+  pattern SDL_GAMEPAD_BUTTON_LABEL_Y,
+  pattern SDL_GAMEPAD_BUTTON_LABEL_CROSS,
+  pattern SDL_GAMEPAD_BUTTON_LABEL_CIRCLE,
+  pattern SDL_GAMEPAD_BUTTON_LABEL_SQUARE,
+  pattern SDL_GAMEPAD_BUTTON_LABEL_TRIANGLE,
 
   -- ** OpenGL Attribute
   GLAttr,
@@ -643,12 +670,22 @@ module SDL.Raw.Enum (
   pattern SDL_SCANCODE_SLEEP,
   pattern SDL_SCANCODE_COUNT,
 
-  pattern SDL_SYSTEM_CURSOR_DEFAULT,
-  pattern SDL_SYSTEM_CURSOR_TEXT,
-  pattern SDL_SYSTEM_CURSOR_WAIT,
+  -- ** Sensor Types
+  SensorType,
+  pattern SDL_SENSOR_INVALID,
+  pattern SDL_SENSOR_UNKNOWN,
+  pattern SDL_SENSOR_ACCEL,
+  pattern SDL_SENSOR_GYRO,
+  pattern SDL_SENSOR_ACCEL_L,
+  pattern SDL_SENSOR_GYRO_L,
+  pattern SDL_SENSOR_ACCEL_R,
+  pattern SDL_SENSOR_GYRO_R,
 
   -- ** System Cursor
   SystemCursor,
+  pattern SDL_SYSTEM_CURSOR_DEFAULT,
+  pattern SDL_SYSTEM_CURSOR_TEXT,
+  pattern SDL_SYSTEM_CURSOR_WAIT,
   pattern SDL_SYSTEM_CURSOR_CROSSHAIR,
   pattern SDL_SYSTEM_CURSOR_PROGRESS,
   pattern SDL_SYSTEM_CURSOR_NWSE_RESIZE,
@@ -903,6 +940,8 @@ import Data.Int
 import Data.Word
 
 import Foreign.C.Types
+import Foreign.Storable (Storable(..))
+import Foreign.Ptr (Ptr, plusPtr, castPtr)
 
 type AudioFormat = (#type SDL_AudioFormat)
 type AudioDeviceID = (#type SDL_AudioDeviceID)
@@ -911,8 +950,27 @@ type BlendOperation = (#type SDL_BlendOperation)
 type BlendFactor = (#type SDL_BlendFactor)
 type Endian = CInt
 type EventAction = (#type SDL_EventAction)
-type GamepadAxis = (#type SDL_GamepadAxis)
-type GamepadButton = (#type SDL_GamepadButton)
+
+newtype GamepadAxis = GamepadAxis (#type SDL_GamepadAxis)
+  deriving (Eq, Show)
+
+instance Storable GamepadAxis where
+  sizeOf _ = sizeOf (undefined :: Int32)
+  alignment _ = alignment (undefined :: Int32)
+  peek ptr = GamepadAxis <$> peek (castPtr ptr :: Ptr Int32)
+  poke ptr (GamepadAxis a) = poke (castPtr ptr :: Ptr Int32) a
+
+newtype GamepadButton = GamepadButton (#type SDL_GamepadButton)
+  deriving (Eq, Show)
+instance Storable GamepadButton where
+  sizeOf _ = sizeOf (undefined :: CInt)
+  alignment _ = alignment (undefined :: CInt)
+  peek ptr = GamepadButton <$> peek (castPtr ptr :: Ptr Int32)
+  poke ptr (GamepadButton b) = poke (castPtr ptr :: Ptr Int32) b
+ 
+type GamepadType = (#type SDL_GamepadType)
+type GamepadButtonLabel = (#type SDL_GamepadButtonLabel)
+type SensorType = (#type SDL_SensorType)
 type GLAttr = (#type SDL_GLAttr)
 type HintPriority = (#type SDL_HintPriority)
 type InitFlag = Word32
@@ -973,32 +1031,55 @@ pattern SDL_ADDEVENT = (#const SDL_ADDEVENT) :: EventAction
 pattern SDL_PEEKEVENT = (#const SDL_PEEKEVENT) :: EventAction
 pattern SDL_GETEVENT = (#const SDL_GETEVENT) :: EventAction
 
-pattern SDL_GAMEPAD_AXIS_INVALID = (#const SDL_GAMEPAD_AXIS_INVALID) :: GamepadAxis
-pattern SDL_GAMEPAD_AXIS_LEFTX = (#const SDL_GAMEPAD_AXIS_LEFTX) :: GamepadAxis
-pattern SDL_GAMEPAD_AXIS_LEFTY = (#const SDL_GAMEPAD_AXIS_LEFTY) :: GamepadAxis
-pattern SDL_GAMEPAD_AXIS_RIGHTX = (#const SDL_GAMEPAD_AXIS_RIGHTX) :: GamepadAxis
-pattern SDL_GAMEPAD_AXIS_RIGHTY = (#const SDL_GAMEPAD_AXIS_RIGHTY) :: GamepadAxis
-pattern SDL_GAMEPAD_AXIS_LEFT_TRIGGER = (#const SDL_GAMEPAD_AXIS_LEFT_TRIGGER) :: GamepadAxis
-pattern SDL_GAMEPAD_AXIS_RIGHT_TRIGGER = (#const SDL_GAMEPAD_AXIS_RIGHT_TRIGGER) :: GamepadAxis
-pattern SDL_GAMEPAD_AXIS_COUNT = (#const SDL_GAMEPAD_AXIS_COUNT) :: GamepadAxis
+pattern SDL_GAMEPAD_AXIS_INVALID      <- GamepadAxis (#const SDL_GAMEPAD_AXIS_INVALID)      where SDL_GAMEPAD_AXIS_INVALID      = GamepadAxis (#const SDL_GAMEPAD_AXIS_INVALID)
+pattern SDL_GAMEPAD_AXIS_LEFTX        <- GamepadAxis (#const SDL_GAMEPAD_AXIS_LEFTX)        where SDL_GAMEPAD_AXIS_LEFTX        = GamepadAxis (#const SDL_GAMEPAD_AXIS_LEFTX)
+pattern SDL_GAMEPAD_AXIS_LEFTY        <- GamepadAxis (#const SDL_GAMEPAD_AXIS_LEFTY)        where SDL_GAMEPAD_AXIS_LEFTY        = GamepadAxis (#const SDL_GAMEPAD_AXIS_LEFTY)
+pattern SDL_GAMEPAD_AXIS_RIGHTX       <- GamepadAxis (#const SDL_GAMEPAD_AXIS_RIGHTX)       where SDL_GAMEPAD_AXIS_RIGHTX       = GamepadAxis (#const SDL_GAMEPAD_AXIS_RIGHTX)
+pattern SDL_GAMEPAD_AXIS_RIGHTY       <- GamepadAxis (#const SDL_GAMEPAD_AXIS_RIGHTY)       where SDL_GAMEPAD_AXIS_RIGHTY       = GamepadAxis (#const SDL_GAMEPAD_AXIS_RIGHTY)
+pattern SDL_GAMEPAD_AXIS_LEFT_TRIGGER <- GamepadAxis (#const SDL_GAMEPAD_AXIS_LEFT_TRIGGER) where SDL_GAMEPAD_AXIS_LEFT_TRIGGER = GamepadAxis (#const SDL_GAMEPAD_AXIS_LEFT_TRIGGER)
+pattern SDL_GAMEPAD_AXIS_RIGHT_TRIGGER<- GamepadAxis (#const SDL_GAMEPAD_AXIS_RIGHT_TRIGGER)where SDL_GAMEPAD_AXIS_RIGHT_TRIGGER= GamepadAxis (#const SDL_GAMEPAD_AXIS_RIGHT_TRIGGER)
+pattern SDL_GAMEPAD_AXIS_COUNT        <- GamepadAxis (#const SDL_GAMEPAD_AXIS_COUNT)
 
-pattern SDL_GAMEPAD_BUTTON_INVALID = (#const SDL_GAMEPAD_BUTTON_INVALID) :: GamepadButton
-pattern SDL_GAMEPAD_BUTTON_SOUTH = (#const SDL_GAMEPAD_BUTTON_SOUTH) :: GamepadButton
-pattern SDL_GAMEPAD_BUTTON_EAST = (#const SDL_GAMEPAD_BUTTON_EAST) :: GamepadButton
-pattern SDL_GAMEPAD_BUTTON_WEST = (#const SDL_GAMEPAD_BUTTON_WEST) :: GamepadButton
-pattern SDL_GAMEPAD_BUTTON_NORTH = (#const SDL_GAMEPAD_BUTTON_NORTH) :: GamepadButton
-pattern SDL_GAMEPAD_BUTTON_BACK = (#const SDL_GAMEPAD_BUTTON_BACK) :: GamepadButton
-pattern SDL_GAMEPAD_BUTTON_GUIDE = (#const SDL_GAMEPAD_BUTTON_GUIDE) :: GamepadButton
-pattern SDL_GAMEPAD_BUTTON_START = (#const SDL_GAMEPAD_BUTTON_START) :: GamepadButton
-pattern SDL_GAMEPAD_BUTTON_LEFT_STICK = (#const SDL_GAMEPAD_BUTTON_LEFT_STICK) :: GamepadButton
-pattern SDL_GAMEPAD_BUTTON_RIGHT_STICK = (#const SDL_GAMEPAD_BUTTON_RIGHT_STICK) :: GamepadButton
-pattern SDL_GAMEPAD_BUTTON_LEFT_SHOULDER = (#const SDL_GAMEPAD_BUTTON_LEFT_SHOULDER) :: GamepadButton
-pattern SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER = (#const SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER) :: GamepadButton
-pattern SDL_GAMEPAD_BUTTON_DPAD_UP = (#const SDL_GAMEPAD_BUTTON_DPAD_UP) :: GamepadButton
-pattern SDL_GAMEPAD_BUTTON_DPAD_DOWN = (#const SDL_GAMEPAD_BUTTON_DPAD_DOWN) :: GamepadButton
-pattern SDL_GAMEPAD_BUTTON_DPAD_LEFT = (#const SDL_GAMEPAD_BUTTON_DPAD_LEFT) :: GamepadButton
-pattern SDL_GAMEPAD_BUTTON_DPAD_RIGHT = (#const SDL_GAMEPAD_BUTTON_DPAD_RIGHT) :: GamepadButton
-pattern SDL_GAMEPAD_BUTTON_COUNT = (#const SDL_GAMEPAD_BUTTON_COUNT) :: GamepadButton
+pattern SDL_GAMEPAD_BUTTON_INVALID      <- GamepadButton (#const SDL_GAMEPAD_BUTTON_INVALID)      where SDL_GAMEPAD_BUTTON_INVALID      = GamepadButton (#const SDL_GAMEPAD_BUTTON_INVALID)
+pattern SDL_GAMEPAD_BUTTON_SOUTH        <- GamepadButton (#const SDL_GAMEPAD_BUTTON_SOUTH)        where SDL_GAMEPAD_BUTTON_SOUTH        = GamepadButton (#const SDL_GAMEPAD_BUTTON_SOUTH)
+pattern SDL_GAMEPAD_BUTTON_EAST         <- GamepadButton (#const SDL_GAMEPAD_BUTTON_EAST)         where SDL_GAMEPAD_BUTTON_EAST         = GamepadButton (#const SDL_GAMEPAD_BUTTON_EAST)
+pattern SDL_GAMEPAD_BUTTON_WEST         <- GamepadButton (#const SDL_GAMEPAD_BUTTON_WEST)         where SDL_GAMEPAD_BUTTON_WEST         = GamepadButton (#const SDL_GAMEPAD_BUTTON_WEST)
+pattern SDL_GAMEPAD_BUTTON_NORTH        <- GamepadButton (#const SDL_GAMEPAD_BUTTON_NORTH)        where SDL_GAMEPAD_BUTTON_NORTH        = GamepadButton (#const SDL_GAMEPAD_BUTTON_NORTH)
+pattern SDL_GAMEPAD_BUTTON_BACK         <- GamepadButton (#const SDL_GAMEPAD_BUTTON_BACK)         where SDL_GAMEPAD_BUTTON_BACK         = GamepadButton (#const SDL_GAMEPAD_BUTTON_BACK)
+pattern SDL_GAMEPAD_BUTTON_GUIDE        <- GamepadButton (#const SDL_GAMEPAD_BUTTON_GUIDE)        where SDL_GAMEPAD_BUTTON_GUIDE        = GamepadButton (#const SDL_GAMEPAD_BUTTON_GUIDE)
+pattern SDL_GAMEPAD_BUTTON_START        <- GamepadButton (#const SDL_GAMEPAD_BUTTON_START)        where SDL_GAMEPAD_BUTTON_START        = GamepadButton (#const SDL_GAMEPAD_BUTTON_START)
+pattern SDL_GAMEPAD_BUTTON_LEFT_STICK   <- GamepadButton (#const SDL_GAMEPAD_BUTTON_LEFT_STICK)   where SDL_GAMEPAD_BUTTON_LEFT_STICK   = GamepadButton (#const SDL_GAMEPAD_BUTTON_LEFT_STICK)
+pattern SDL_GAMEPAD_BUTTON_RIGHT_STICK  <- GamepadButton (#const SDL_GAMEPAD_BUTTON_RIGHT_STICK)  where SDL_GAMEPAD_BUTTON_RIGHT_STICK  = GamepadButton (#const SDL_GAMEPAD_BUTTON_RIGHT_STICK)
+pattern SDL_GAMEPAD_BUTTON_LEFT_SHOULDER<- GamepadButton (#const SDL_GAMEPAD_BUTTON_LEFT_SHOULDER)where SDL_GAMEPAD_BUTTON_LEFT_SHOULDER= GamepadButton (#const SDL_GAMEPAD_BUTTON_LEFT_SHOULDER)
+pattern SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER<-GamepadButton (#const SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER)where SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER=GamepadButton (#const SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER)
+pattern SDL_GAMEPAD_BUTTON_DPAD_UP      <- GamepadButton (#const SDL_GAMEPAD_BUTTON_DPAD_UP)      where SDL_GAMEPAD_BUTTON_DPAD_UP      = GamepadButton (#const SDL_GAMEPAD_BUTTON_DPAD_UP)
+pattern SDL_GAMEPAD_BUTTON_DPAD_DOWN    <- GamepadButton (#const SDL_GAMEPAD_BUTTON_DPAD_DOWN)    where SDL_GAMEPAD_BUTTON_DPAD_DOWN    = GamepadButton (#const SDL_GAMEPAD_BUTTON_DPAD_DOWN)
+pattern SDL_GAMEPAD_BUTTON_DPAD_LEFT    <- GamepadButton (#const SDL_GAMEPAD_BUTTON_DPAD_LEFT)    where SDL_GAMEPAD_BUTTON_DPAD_LEFT    = GamepadButton (#const SDL_GAMEPAD_BUTTON_DPAD_LEFT)
+pattern SDL_GAMEPAD_BUTTON_DPAD_RIGHT   <- GamepadButton (#const SDL_GAMEPAD_BUTTON_DPAD_RIGHT)   where SDL_GAMEPAD_BUTTON_DPAD_RIGHT   = GamepadButton (#const SDL_GAMEPAD_BUTTON_DPAD_RIGHT)
+pattern SDL_GAMEPAD_BUTTON_COUNT        <- GamepadButton (#const SDL_GAMEPAD_BUTTON_COUNT)        where SDL_GAMEPAD_BUTTON_COUNT        = GamepadButton (#const SDL_GAMEPAD_BUTTON_COUNT)
+
+pattern SDL_GAMEPAD_TYPE_UNKNOWN = (#const SDL_GAMEPAD_TYPE_UNKNOWN) :: GamepadType
+pattern SDL_GAMEPAD_TYPE_STANDARD = (#const SDL_GAMEPAD_TYPE_STANDARD) :: GamepadType
+pattern SDL_GAMEPAD_TYPE_XBOX360 = (#const SDL_GAMEPAD_TYPE_XBOX360) :: GamepadType
+pattern SDL_GAMEPAD_TYPE_XBOXONE = (#const SDL_GAMEPAD_TYPE_XBOXONE) :: GamepadType
+pattern SDL_GAMEPAD_TYPE_PS3 = (#const SDL_GAMEPAD_TYPE_PS3) :: GamepadType
+pattern SDL_GAMEPAD_TYPE_PS4 = (#const SDL_GAMEPAD_TYPE_PS4) :: GamepadType
+pattern SDL_GAMEPAD_TYPE_PS5 = (#const SDL_GAMEPAD_TYPE_PS5) :: GamepadType
+pattern SDL_GAMEPAD_TYPE_NINTENDO_SWITCH_PRO = (#const SDL_GAMEPAD_TYPE_NINTENDO_SWITCH_PRO) :: GamepadType
+pattern SDL_GAMEPAD_TYPE_NINTENDO_SWITCH_JOYCON_LEFT = (#const SDL_GAMEPAD_TYPE_NINTENDO_SWITCH_JOYCON_LEFT) :: GamepadType
+pattern SDL_GAMEPAD_TYPE_NINTENDO_SWITCH_JOYCON_RIGHT = (#const SDL_GAMEPAD_TYPE_NINTENDO_SWITCH_JOYCON_RIGHT) :: GamepadType
+pattern SDL_GAMEPAD_TYPE_NINTENDO_SWITCH_JOYCON_PAIR = (#const SDL_GAMEPAD_TYPE_NINTENDO_SWITCH_JOYCON_PAIR) :: GamepadType
+pattern SDL_GAMEPAD_TYPE_COUNT = (#const SDL_GAMEPAD_TYPE_COUNT) :: GamepadType
+
+pattern SDL_GAMEPAD_BUTTON_LABEL_UNKNOWN = (#const SDL_GAMEPAD_BUTTON_LABEL_UNKNOWN) :: GamepadButtonLabel
+pattern SDL_GAMEPAD_BUTTON_LABEL_A = (#const SDL_GAMEPAD_BUTTON_LABEL_A) :: GamepadButtonLabel
+pattern SDL_GAMEPAD_BUTTON_LABEL_B = (#const SDL_GAMEPAD_BUTTON_LABEL_B) :: GamepadButtonLabel
+pattern SDL_GAMEPAD_BUTTON_LABEL_X = (#const SDL_GAMEPAD_BUTTON_LABEL_X) :: GamepadButtonLabel
+pattern SDL_GAMEPAD_BUTTON_LABEL_Y = (#const SDL_GAMEPAD_BUTTON_LABEL_Y) :: GamepadButtonLabel
+pattern SDL_GAMEPAD_BUTTON_LABEL_CROSS = (#const SDL_GAMEPAD_BUTTON_LABEL_CROSS) :: GamepadButtonLabel
+pattern SDL_GAMEPAD_BUTTON_LABEL_CIRCLE = (#const SDL_GAMEPAD_BUTTON_LABEL_CIRCLE) :: GamepadButtonLabel
+pattern SDL_GAMEPAD_BUTTON_LABEL_SQUARE = (#const SDL_GAMEPAD_BUTTON_LABEL_SQUARE) :: GamepadButtonLabel
+pattern SDL_GAMEPAD_BUTTON_LABEL_TRIANGLE = (#const SDL_GAMEPAD_BUTTON_LABEL_TRIANGLE) :: GamepadButtonLabel
 
 pattern SDL_GL_RED_SIZE = (#const SDL_GL_RED_SIZE) :: GLAttr
 pattern SDL_GL_GREEN_SIZE = (#const SDL_GL_GREEN_SIZE) :: GLAttr
@@ -1544,6 +1625,15 @@ pattern SDL_SCANCODE_AC_BOOKMARKS = (#const SDL_SCANCODE_AC_BOOKMARKS) :: Scanco
 pattern SDL_SCANCODE_MEDIA_EJECT = (#const SDL_SCANCODE_MEDIA_EJECT) :: Scancode
 pattern SDL_SCANCODE_SLEEP = (#const SDL_SCANCODE_SLEEP) :: Scancode
 pattern SDL_SCANCODE_COUNT = (#const SDL_SCANCODE_COUNT) :: Scancode
+
+pattern SDL_SENSOR_INVALID = (#const SDL_SENSOR_INVALID) :: SensorType
+pattern SDL_SENSOR_UNKNOWN = (#const SDL_SENSOR_UNKNOWN) :: SensorType
+pattern SDL_SENSOR_ACCEL = (#const SDL_SENSOR_ACCEL) :: SensorType
+pattern SDL_SENSOR_GYRO = (#const SDL_SENSOR_GYRO) :: SensorType
+pattern SDL_SENSOR_ACCEL_L = (#const SDL_SENSOR_ACCEL_L) :: SensorType
+pattern SDL_SENSOR_GYRO_L = (#const SDL_SENSOR_GYRO_L) :: SensorType
+pattern SDL_SENSOR_ACCEL_R = (#const SDL_SENSOR_ACCEL_R) :: SensorType
+pattern SDL_SENSOR_GYRO_R = (#const SDL_SENSOR_GYRO_R) :: SensorType
 
 pattern SDL_SYSTEM_CURSOR_DEFAULT = (#const SDL_SYSTEM_CURSOR_DEFAULT) :: SystemCursor
 pattern SDL_SYSTEM_CURSOR_TEXT = (#const SDL_SYSTEM_CURSOR_TEXT) :: SystemCursor

@@ -74,7 +74,7 @@ import Foreign.Ptr (Ptr, castPtr)
 import Foreign.Marshal.Alloc
 import Foreign.Marshal.Utils
 import Foreign.Storable (peek)
-import SDL.Raw.Types (Joystick, JoystickID, JoystickGUID)
+import SDL.Raw.Types (Joystick, JoystickID, GUID)
 import SDL.Raw.Enum (JoystickType, JoystickConnectionState, PowerState)
 
 -- Basic joystick management
@@ -90,7 +90,7 @@ foreign import ccall "SDL3/SDL_joystick.h SDL_CloseJoystick" closeJoystickFFI ::
 foreign import ccall "SDL3/SDL_joystick.h SDL_GetJoystickNameForID" getJoystickNameForIDFFI :: JoystickID -> IO CString
 foreign import ccall "SDL3/SDL_joystick.h SDL_GetJoystickPathForID" getJoystickPathForIDFFI :: JoystickID -> IO CString
 foreign import ccall "SDL3/SDL_joystick.h SDL_GetJoystickPlayerIndexForID" getJoystickPlayerIndexForIDFFI :: JoystickID -> IO CInt
-foreign import ccall "SDL3/SDL_joystick.h SDL_GetJoystickGUIDForID" getJoystickGUIDForIDFFI :: JoystickID -> IO (Ptr JoystickGUID)
+foreign import ccall "SDL3/SDL_joystick.h SDL_GetJoystickGUIDForID" getJoystickGUIDForIDFFI :: JoystickID -> IO (Ptr GUID)
 foreign import ccall "SDL3/SDL_joystick.h SDL_GetJoystickVendorForID" getJoystickVendorForIDFFI :: JoystickID -> IO Word16
 foreign import ccall "SDL3/SDL_joystick.h SDL_GetJoystickProductForID" getJoystickProductForIDFFI :: JoystickID -> IO Word16
 foreign import ccall "SDL3/SDL_joystick.h SDL_GetJoystickProductVersionForID" getJoystickProductVersionForIDFFI :: JoystickID -> IO Word16
@@ -100,7 +100,7 @@ foreign import ccall "SDL3/SDL_joystick.h SDL_GetJoystickName" getJoystickNameFF
 foreign import ccall "SDL3/SDL_joystick.h SDL_GetJoystickPath" getJoystickPathFFI :: Joystick -> IO CString
 foreign import ccall "SDL3/SDL_joystick.h SDL_GetJoystickPlayerIndex" getJoystickPlayerIndexFFI :: Joystick -> IO CInt
 foreign import ccall "SDL3/SDL_joystick.h SDL_SetJoystickPlayerIndex" setJoystickPlayerIndexFFI :: Joystick -> CInt -> IO Bool
-foreign import ccall "SDL3/SDL_joystick.h SDL_GetJoystickGUID" getJoystickGUIDFFI :: Joystick -> IO (Ptr JoystickGUID)
+foreign import ccall "SDL3/SDL_joystick.h SDL_GetJoystickGUID" getJoystickGUIDFFI :: Joystick -> IO (Ptr GUID)
 foreign import ccall "SDL3/SDL_joystick.h SDL_GetJoystickVendor" getJoystickVendorFFI :: Joystick -> IO Word16
 foreign import ccall "SDL3/SDL_joystick.h SDL_GetJoystickProduct" getJoystickProductFFI :: Joystick -> IO Word16
 foreign import ccall "SDL3/SDL_joystick.h SDL_GetJoystickProductVersion" getJoystickProductVersionFFI :: Joystick -> IO Word16
@@ -135,10 +135,10 @@ foreign import ccall "SDL3/SDL_joystick.h SDL_GetJoystickConnectionState" getJoy
 foreign import ccall "SDL3/SDL_joystick.h SDL_GetJoystickPowerInfo" getJoystickPowerInfoFFI :: Joystick -> Ptr CInt -> IO PowerState
 
 -- Helper functions from sdlhelper.c
-foreign import ccall "sdlhelper.h SDLHelper_JoystickGetDeviceGUID" joystickGetDeviceGUIDFFI :: CInt -> Ptr JoystickGUID -> IO ()
-foreign import ccall "sdlhelper.h SDLHelper_JoystickGetGUID" joystickGetGUIDFFI :: Joystick -> Ptr JoystickGUID -> IO ()
-foreign import ccall "sdlhelper.h SDLHelper_JoystickGetGUIDFromString" joystickGetGUIDFromStringFFI :: CString -> Ptr JoystickGUID -> IO ()
-foreign import ccall "sdlhelper.h SDLHelper_JoystickGetGUIDString" joystickGetGUIDStringFFI :: Ptr JoystickGUID -> CString -> CInt -> IO ()
+foreign import ccall "sdlhelper.h SDLHelper_JoystickGetDeviceGUID" joystickGetDeviceGUIDFFI :: CInt -> Ptr GUID -> IO ()
+foreign import ccall "sdlhelper.h SDLHelper_JoystickGetGUID" joystickGetGUIDFFI :: Joystick -> Ptr GUID -> IO ()
+foreign import ccall "sdlhelper.h SDLHelper_JoystickGetGUIDFromString" joystickGetGUIDFromStringFFI :: CString -> Ptr GUID -> IO ()
+foreign import ccall "sdlhelper.h SDLHelper_JoystickGetGUIDString" joystickGetGUIDStringFFI :: Ptr GUID -> CString -> CInt -> IO ()
 
 -- Wrapper functions
 lockJoysticks :: MonadIO m => m ()
@@ -181,7 +181,7 @@ getJoystickPlayerIndexForID :: MonadIO m => JoystickID -> m CInt
 getJoystickPlayerIndexForID instanceId = liftIO $ getJoystickPlayerIndexForIDFFI instanceId
 {-# INLINE getJoystickPlayerIndexForID #-}
 
-getJoystickGUIDForID :: MonadIO m => JoystickID -> m (Ptr JoystickGUID)
+getJoystickGUIDForID :: MonadIO m => JoystickID -> m (Ptr GUID)
 getJoystickGUIDForID instanceId = liftIO $ getJoystickGUIDForIDFFI instanceId
 {-# INLINE getJoystickGUIDForID #-}
 
@@ -221,7 +221,7 @@ setJoystickPlayerIndex :: MonadIO m => Joystick -> CInt -> m Bool
 setJoystickPlayerIndex joystick playerIndex = liftIO $ setJoystickPlayerIndexFFI joystick playerIndex
 {-# INLINE setJoystickPlayerIndex #-}
 
-getJoystickGUID :: MonadIO m => Joystick -> m (Ptr JoystickGUID)
+getJoystickGUID :: MonadIO m => Joystick -> m (Ptr GUID)
 getJoystickGUID joystick = liftIO $ getJoystickGUIDFFI joystick
 {-# INLINE getJoystickGUID #-}
 
@@ -322,25 +322,25 @@ getJoystickPowerInfo joystick percent = liftIO $ getJoystickPowerInfoFFI joystic
 {-# INLINE getJoystickPowerInfo #-}
 
 -- Helper function wrappers
-joystickGetDeviceGUID :: MonadIO m => CInt -> m JoystickGUID
+joystickGetDeviceGUID :: MonadIO m => CInt -> m GUID
 joystickGetDeviceGUID deviceIndex = liftIO $ alloca $ \ptr -> do
   joystickGetDeviceGUIDFFI deviceIndex ptr
   peek ptr
 {-# INLINE joystickGetDeviceGUID #-}
 
-joystickGetGUID :: MonadIO m => Joystick -> m JoystickGUID
+joystickGetGUID :: MonadIO m => Joystick -> m GUID
 joystickGetGUID joystick = liftIO $ alloca $ \ptr -> do
   joystickGetGUIDFFI joystick ptr
   peek ptr
 {-# INLINE joystickGetGUID #-}
 
-joystickGetGUIDFromString :: MonadIO m => CString -> m JoystickGUID
+joystickGetGUIDFromString :: MonadIO m => CString -> m GUID
 joystickGetGUIDFromString str = liftIO $ alloca $ \ptr -> do
   joystickGetGUIDFromStringFFI str ptr
   peek ptr
 {-# INLINE joystickGetGUIDFromString #-}
 
-joystickGetGUIDString :: MonadIO m => JoystickGUID -> CString -> CInt -> m ()
+joystickGetGUIDString :: MonadIO m => GUID -> CString -> CInt -> m ()
 joystickGetGUIDString guid str len = liftIO $ do
   with guid $ \ptr -> joystickGetGUIDStringFFI ptr str len
 {-# INLINE joystickGetGUIDString #-}

@@ -79,7 +79,7 @@ module SDL.Raw.Types (
   GamepadBinding(..),
   HapticDirection(..),
   HapticEffect(..),
-  JoystickGUID(..),
+  GUID(..),
   MessageBoxButtonData(..),
   MessageBoxColor(..),
   MessageBoxColorScheme(..),
@@ -1219,30 +1219,30 @@ instance Storable HapticEffect where
       (#poke SDL_HapticEffect, custom.fade_length) ptr fade_length
       (#poke SDL_HapticEffect, custom.fade_level) ptr fade_level
 
--- JoystickGUID as a fixed-size wrapper around 16 bytes
-data JoystickGUID = JoystickGUID
-  { joystickGUID :: (Word8, Word8, Word8, Word8, Word8, Word8, Word8, Word8,
+-- GUID as a fixed-size wrapper around 16 bytes
+data GUID = GUID
+  { guid :: (Word8, Word8, Word8, Word8, Word8, Word8, Word8, Word8,
                      Word8, Word8, Word8, Word8, Word8, Word8, Word8, Word8)
   } deriving (Typeable)
 
--- Standalone deriving for the tuple and JoystickGUID
+-- Standalone deriving for the tuple and GUID
 deriving instance Eq (Word8, Word8, Word8, Word8, Word8, Word8, Word8, Word8,
                       Word8, Word8, Word8, Word8, Word8, Word8, Word8, Word8)
 deriving instance Show (Word8, Word8, Word8, Word8, Word8, Word8, Word8, Word8,
                         Word8, Word8, Word8, Word8, Word8, Word8, Word8, Word8)
-deriving instance Eq JoystickGUID
-deriving instance Show JoystickGUID
+deriving instance Eq GUID
+deriving instance Show GUID
 
-instance Storable JoystickGUID where
+instance Storable GUID where
   sizeOf _ = 16
   alignment _ = 1
   peek ptr = do
     bytes <- peekArray 16 (castPtr ptr :: Ptr Word8)  -- Explicitly read as Word8s
-    return $ JoystickGUID (bytes !! 0, bytes !! 1, bytes !! 2, bytes !! 3,
+    return $ GUID (bytes !! 0, bytes !! 1, bytes !! 2, bytes !! 3,
                            bytes !! 4, bytes !! 5, bytes !! 6, bytes !! 7,
                            bytes !! 8, bytes !! 9, bytes !! 10, bytes !! 11,
                            bytes !! 12, bytes !! 13, bytes !! 14, bytes !! 15)
-  poke ptr (JoystickGUID (b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,b10,b11,b12,b13,b14,b15)) =
+  poke ptr (GUID (b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,b10,b11,b12,b13,b14,b15)) =
     pokeArray (castPtr ptr :: Ptr Word8) [b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,b10,b11,b12,b13,b14,b15]
 
 data MessageBoxButtonData = MessageBoxButtonData
