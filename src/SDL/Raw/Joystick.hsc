@@ -9,6 +9,7 @@ module SDL.Raw.Joystick
   , openJoystick
   , getJoystickFromID
   , closeJoystick
+  , finalizeJoystick
 
   , -- Joystick properties
     getJoystickNameForID
@@ -70,7 +71,7 @@ import Data.Int (Int16)
 import Data.Word (Word8, Word16, Word32)
 import Foreign.C.Types (CInt(..))  -- Explicitly import constructor
 import Foreign.C.String (CString)
-import Foreign.Ptr (Ptr, castPtr)
+import Foreign.Ptr (Ptr, FunPtr, castPtr)
 import Foreign.Marshal.Alloc
 import Foreign.Marshal.Utils
 import Foreign.Storable (peek)
@@ -139,6 +140,9 @@ foreign import ccall "sdlhelper.h SDLHelper_JoystickGetDeviceGUID" joystickGetDe
 foreign import ccall "sdlhelper.h SDLHelper_JoystickGetGUID" joystickGetGUIDFFI :: Joystick -> Ptr GUID -> IO ()
 foreign import ccall "sdlhelper.h SDLHelper_JoystickGetGUIDFromString" joystickGetGUIDFromStringFFI :: CString -> Ptr GUID -> IO ()
 foreign import ccall "sdlhelper.h SDLHelper_JoystickGetGUIDString" joystickGetGUIDStringFFI :: Ptr GUID -> CString -> CInt -> IO ()
+
+-- Cleanup functions for Haskell
+foreign import ccall unsafe "&SDL_CloseGamepad" finalizeJoystick :: FunPtr (Ptr () -> IO ())
 
 -- Wrapper functions
 lockJoysticks :: MonadIO m => m ()

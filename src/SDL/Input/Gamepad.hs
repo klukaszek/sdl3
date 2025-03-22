@@ -88,7 +88,7 @@ openGamepad :: (Functor m, MonadIO m) => GamepadDevice -> m Gamepad
 openGamepad (GamepadDevice _ x) = liftIO $ do
   ptr <- throwIfNull "SDL.Input.Gamepad.openGamepad" "SDL_OpenGamepad" $
          Raw.openGamepad x
-  Gamepad <$> newForeignPtr Raw.finalizeGamepad ptr
+  Gamepad <$> newForeignPtr Raw.finalizeGamepad (castPtr ptr)
 
 closeGamepad :: MonadIO m => Gamepad -> m ()
 closeGamepad (Gamepad g) = liftIO $ do

@@ -5,61 +5,61 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module SDL.Input.Joystick
-  ( numJoysticks
-  , availableJoysticks
-  , JoystickDevice(..)
+  ( numJoysticks,
+    availableJoysticks,
+    JoystickDevice (..),
+    openJoystick,
+    closeJoystick,
+    getJoystickID,
+    Joystick,
+    JoyButtonState (..),
+    buttonPressed,
+    ballDelta,
+    axisPosition,
+    numAxes,
+    numButtons,
+    numBalls,
+    JoyHatPosition (..),
+    getHat,
+    numHats,
+    JoyDeviceConnection (..),
+    -- New SDL3-specific functions
+    getJoystickName,
+    getJoystickType,
+    getJoystickGUID,
+    rumbleJoystick,
+    setJoystickLED,
+    getJoystickConnectionState,
+    getJoystickPowerInfo,
+  )
+where
 
-  , openJoystick
-  , closeJoystick
-
-  , getJoystickID
-  , Joystick
-  , JoyButtonState(..)
-  , buttonPressed
-  , ballDelta
-  , axisPosition
-  , numAxes
-  , numButtons
-  , numBalls
-  , JoyHatPosition(..)
-  , getHat
-  , numHats
-  , JoyDeviceConnection(..)
-
-  -- New SDL3-specific functions
-  , getJoystickName
-  , getJoystickType
-  , getJoystickGUID
-  , rumbleJoystick
-  , setJoystickLED
-  , getJoystickConnectionState
-  , getJoystickPowerInfo
-  ) where
-
+import Control.Monad (when)
 import Control.Monad.IO.Class (MonadIO, liftIO)
+import qualified Data.ByteString as BS
 import Data.Data (Data)
 import Data.Int (Int16)
 import Data.Text (Text)
+import qualified Data.Text.Encoding as Text
 import Data.Traversable (for)
 import Data.Typeable
-import Data.Word (Word8, Word16, Word32)
-import Foreign.C.Types (CInt(..))
+import qualified Data.Vector as V
+import Data.Word (Word16, Word32, Word8)
+import Foreign.C.Types (CInt (..))
+import Foreign.ForeignPtr (withForeignPtr, newForeignPtr)
 import Foreign.Marshal.Alloc (alloca)
 import Foreign.Marshal.Array (peekArray)
-import Foreign.Ptr (Ptr, nullPtr)
+import Foreign.Ptr (Ptr, FunPtr, castPtr, nullPtr)
 import Foreign.Storable
 import GHC.Generics (Generic)
-import SDL.Vect
 import SDL.Internal.Exception
-import SDL.Internal.Types
 import SDL.Internal.Numbered
-import qualified Data.ByteString as BS
-import qualified Data.Text.Encoding as Text
-import qualified Data.Vector as V
+import SDL.Internal.Types
+import qualified SDL.Raw.Basic
+import qualified SDL.Raw.Enum as RawEnum
 import qualified SDL.Raw.Joystick as Raw
 import qualified SDL.Raw.Types as RawTypes
-import qualified SDL.Raw.Enum as RawEnum
-import qualified SDL.Raw.Basic
+import SDL.Vect
 
 #if !MIN_VERSION_base(4,8,0)
 import Control.Applicative
@@ -67,89 +67,14 @@ import Control.Applicative
 
 -- | A description of a joystick that can be opened using 'openJoystick'.
 data JoystickDevice = JoystickDevice
-  { joystickDeviceName :: Text
-  , joystickDeviceId :: RawTypes.JoystickID -- Updated to Uint32
-  } deriving (Eq, Generic, Read, Ord, Show, Typeable)
+  { joystickDeviceName :: Text,
+    joystickDeviceId :: RawTypes.JoystickID -- Updated to Uint32
+  }
+  deriving (Eq, Generic, Read, Ord, Show, Typeable)
 
 -- | Identifies the state of a joystick button.
 data JoyButtonState = JoyButtonPressed | JoyButtonReleased
   deriving (Data, Eq, Generic, Ord, Read, Show, Typeable)
-
--- | Count the number of joysticks attached to the system.
-numJoysticks :: MonadIO m => m Int
-numJoysticks = liftIO $ do
-  count <- alloca $ \ptr -> do
-    _ <- Raw.getJoysticks ptr
-    peek ptr
-  return $ fromIntegral count
-
--- | Enumerate all connected joysticks, retrieving a description of each.
-availableJoysticks :: MonadIO m => m (V.Vector JoystickDevice)
-availableJoysticks = liftIO $ do
-  alloca $ \countPtr -> do
-    joystickIds <- Raw.getJoysticks countPtr
-    if joystickIds == nullPtr
-      then return V.empty -- No joysticks or error occurred
-      else do
-        count <- peek countPtr
-        ids <- peekArray (fromIntegral count) joystickIds
-        free joystickIds -- Free the array returned by SDL_GetJoysticks
-        fmap V.fromList $ for ids $ \joystickId -> do
-          cstr <- throwIfNull "SDL.Input.Joystick.availableJoysticks" "SDL_GetJoystickNameForID" $
-            Raw.getJoystickNameForID joystickId
-          name <- Text.decodeUtf8 <$> BS.packCString cstr
-          return $ JoystickDevice name joystickId
-
--- | Open a joystick for use.
-openJoystick :: (Functor m, MonadIO m) => JoystickDevice -> m Joystick
-openJoystick (JoystickDevice _ x) = fmap Joystick $
-  throwIfNull "SDL.Input.Joystick.openJoystick" "SDL_OpenJoystick" $
-  Raw.openJoystick x
-
--- | Close a previously opened joystick.
-closeJoystick :: MonadIO m => Joystick -> m ()
-closeJoystick (Joystick j) = Raw.closeJoystick j
-
--- | Get the instance ID of an opened joystick.
-getJoystickID :: MonadIO m => Joystick -> m RawTypes.JoystickID
-getJoystickID (Joystick j) = Raw.getJoystickID j
-
--- | Determine if a given button is currently held.
-buttonPressed :: (Functor m, MonadIO m) => Joystick -> CInt -> m JoyButtonState
-buttonPressed (Joystick j) buttonIndex = do
-  pressed <- Raw.getJoystickButton j buttonIndex
-  return $ if pressed then JoyButtonPressed else JoyButtonReleased
-
--- | Get the ball axis change since the last poll.
-ballDelta :: MonadIO m => Joystick -> CInt -> m (V2 CInt)
-ballDelta (Joystick j) ballIndex = liftIO $
-  alloca $ \xptr ->
-  alloca $ \yptr -> do
-    throwIf_ (not) "SDL.Input.Joystick.ballDelta" "SDL_GetJoystickBall" $
-      Raw.getJoystickBall j ballIndex xptr yptr
-    V2 <$> peek xptr <*> peek yptr
-
--- | Get the current state of an axis control on a joystick.
-axisPosition :: MonadIO m => Joystick -> CInt -> m Int16
-axisPosition (Joystick j) axisIndex = Raw.getJoystickAxis j axisIndex
-
--- | Get the number of general axis controls on a joystick.
-numAxes :: MonadIO m => Joystick -> m CInt
-numAxes (Joystick j) = liftIO $
-  throwIfNeg "SDL.Input.Joystick.numAxes" "SDL_GetNumJoystickAxes" $
-  Raw.getNumJoystickAxes j
-
--- | Get the number of buttons on a joystick.
-numButtons :: MonadIO m => Joystick -> m CInt
-numButtons (Joystick j) = liftIO $
-  throwIfNeg "SDL.Input.Joystick.numButtons" "SDL_GetNumJoystickButtons" $
-  Raw.getNumJoystickButtons j
-
--- | Get the number of trackballs on a joystick.
-numBalls :: MonadIO m => Joystick -> m CInt
-numBalls (Joystick j) = liftIO $
-  throwIfNeg "SDL.Input.Joystick.numBalls" "SDL_GetNumJoystickBalls" $
-  Raw.getNumJoystickBalls j
 
 -- | Identifies the state of the POV hat on a joystick.
 data JoyHatPosition
@@ -177,15 +102,95 @@ instance FromNumber JoyHatPosition Word8 where
     RawEnum.SDL_HAT_LEFTDOWN -> HatLeftDown
     _ -> HatCentered
 
--- | Get current position of a POV hat on a joystick.
-getHat :: (Functor m, MonadIO m) => Joystick -> CInt -> m JoyHatPosition
-getHat (Joystick j) hatIndex = fromNumber <$> Raw.getJoystickHat j hatIndex
+numJoysticks :: (MonadIO m) => m Int
+numJoysticks = liftIO $ do
+  count <- alloca $ \ptr -> do
+    _ <- Raw.getJoysticks ptr
+    peek ptr
+  return $ fromIntegral count
 
--- | Get the number of POV hats on a joystick.
-numHats :: MonadIO m => Joystick -> m CInt
+availableJoysticks :: (MonadIO m) => m (V.Vector JoystickDevice)
+availableJoysticks = liftIO $ do
+  alloca $ \countPtr -> do
+    joystickIds <- Raw.getJoysticks countPtr
+    if joystickIds == nullPtr
+      then return V.empty
+      else do
+        count <- peek countPtr
+        ids <- peekArray (fromIntegral count) joystickIds
+        free joystickIds
+        fmap V.fromList $ for ids $ \joystickId -> do
+          cstr <-
+            throwIfNull "SDL.Input.Joystick.availableJoysticks" "SDL_GetJoystickNameForID" $
+              Raw.getJoystickNameForID joystickId
+          name <- Text.decodeUtf8 <$> BS.packCString cstr
+          return $ JoystickDevice name joystickId
+
+openJoystick :: (Functor m, MonadIO m) => JoystickDevice -> m Joystick
+openJoystick (JoystickDevice _ x) = liftIO $ do
+  ptr <-
+    throwIfNull "SDL.Input.Joystick.openJoystick" "SDL_OpenJoystick" $
+      Raw.openJoystick x
+  Joystick <$> newForeignPtr Raw.finalizeJoystick (castPtr ptr) -- Create a ForeignPtr from the raw pointer
+
+closeJoystick :: (MonadIO m) => Joystick -> m ()
+closeJoystick (Joystick j) =
+  liftIO $
+    withForeignPtr j $ \ptr -> when (ptr /= nullPtr) $ Raw.closeJoystick ptr
+
+getJoystickID :: (MonadIO m) => Joystick -> m RawTypes.JoystickID
+getJoystickID (Joystick j) =
+  liftIO $
+    withForeignPtr j Raw.getJoystickID
+
+buttonPressed :: (Functor m, MonadIO m) => Joystick -> CInt -> m JoyButtonState
+buttonPressed (Joystick j) buttonIndex = liftIO $
+  withForeignPtr j $ \ptr -> do
+    pressed <- Raw.getJoystickButton ptr buttonIndex
+    return $ if pressed then JoyButtonPressed else JoyButtonReleased
+
+ballDelta :: (MonadIO m) => Joystick -> CInt -> m (V2 CInt)
+ballDelta (Joystick j) ballIndex = liftIO $
+  withForeignPtr j $ \ptr ->
+    alloca $ \xptr ->
+      alloca $ \yptr -> do
+        throwIf_ (not) "SDL.Input.Joystick.ballDelta" "SDL_GetJoystickBall" $
+          Raw.getJoystickBall ptr ballIndex xptr yptr
+        V2 <$> peek xptr <*> peek yptr
+
+axisPosition :: (MonadIO m) => Joystick -> CInt -> m Int16
+axisPosition (Joystick j) axisIndex = liftIO $
+  withForeignPtr j $
+    \ptr -> Raw.getJoystickAxis ptr axisIndex
+
+numAxes :: (MonadIO m) => Joystick -> m CInt
+numAxes (Joystick j) = liftIO $
+  withForeignPtr j $ \ptr ->
+    throwIfNeg "SDL.Input.Joystick.numAxes" "SDL_GetNumJoystickAxes" $
+      Raw.getNumJoystickAxes ptr
+
+numButtons :: (MonadIO m) => Joystick -> m CInt
+numButtons (Joystick j) = liftIO $
+  withForeignPtr j $ \ptr ->
+    throwIfNeg "SDL.Input.Joystick.numButtons" "SDL_GetNumJoystickButtons" $
+      Raw.getNumJoystickButtons ptr
+
+numBalls :: (MonadIO m) => Joystick -> m CInt
+numBalls (Joystick j) = liftIO $
+  withForeignPtr j $ \ptr ->
+    throwIfNeg "SDL.Input.Joystick.numBalls" "SDL_GetNumJoystickBalls" $
+      Raw.getNumJoystickBalls ptr
+
+getHat :: (Functor m, MonadIO m) => Joystick -> CInt -> m JoyHatPosition
+getHat (Joystick j) hatIndex = liftIO $
+  withForeignPtr j $
+    \ptr -> fromNumber <$> Raw.getJoystickHat ptr hatIndex
+
+numHats :: (MonadIO m) => Joystick -> m CInt
 numHats (Joystick j) = liftIO $
-  throwIfNeg "SDL.Input.Joystick.numHats" "SDL_GetNumJoystickHats" $
-  Raw.getNumJoystickHats j
+  withForeignPtr j $ \ptr ->
+    throwIfNeg "SDL.Input.Joystick.numHats" "SDL_GetNumJoystickHats" $
+      Raw.getNumJoystickHats ptr
 
 -- | Identifies whether a joystick has been connected or disconnected.
 data JoyDeviceConnection = JoyDeviceAdded | JoyDeviceRemoved
@@ -198,43 +203,46 @@ instance FromNumber JoyDeviceConnection Word32 where
     0x4007 -> JoyDeviceRemoved -- SDL_JOYDEVICEREMOVED (SDL3 event code TBD)
     _ -> JoyDeviceAdded
 
--- | Get the implementation-dependent name of a joystick.
-getJoystickName :: MonadIO m => Joystick -> m Text
-getJoystickName (Joystick j) = liftIO $ do
-  cstr <- throwIfNull "SDL.Input.Joystick.getJoystickName" "SDL_GetJoystickName" $
-    Raw.getJoystickName j
-  Text.decodeUtf8 <$> BS.packCString cstr
+getJoystickName :: (MonadIO m) => Joystick -> m Text
+getJoystickName (Joystick j) = liftIO $
+  withForeignPtr j $ \ptr -> do
+    cstr <-
+      throwIfNull "SDL.Input.Joystick.getJoystickName" "SDL_GetJoystickName" $
+        Raw.getJoystickName ptr
+    Text.decodeUtf8 <$> BS.packCString cstr
 
--- | Get the type of an opened joystick.
-getJoystickType :: MonadIO m => Joystick -> m RawEnum.JoystickType
-getJoystickType (Joystick j) = Raw.getJoystickType j
+getJoystickType :: (MonadIO m) => Joystick -> m RawEnum.JoystickType
+getJoystickType (Joystick j) =
+  liftIO $
+    withForeignPtr j Raw.getJoystickType
 
--- | Get the implementation-dependent GUID for the joystick.
-getJoystickGUID :: MonadIO m => Joystick -> m RawTypes.GUID
-getJoystickGUID (Joystick j) = liftIO $ do
-  guidPtr <- Raw.getJoystickGUID j
-  peek guidPtr
+getJoystickGUID :: (MonadIO m) => Joystick -> m RawTypes.GUID
+getJoystickGUID (Joystick j) = liftIO $
+  withForeignPtr j $ \ptr -> do
+    guidPtr <- Raw.getJoystickGUID ptr
+    peek guidPtr
 
--- | Start a rumble effect on the joystick.
-rumbleJoystick :: MonadIO m => Joystick -> Word16 -> Word16 -> Word32 -> m Bool
-rumbleJoystick (Joystick j) lowFreq highFreq duration =
-  Raw.rumbleJoystick j lowFreq highFreq duration
+rumbleJoystick :: (MonadIO m) => Joystick -> Word16 -> Word16 -> Word32 -> m Bool
+rumbleJoystick (Joystick j) lowFreq highFreq duration = liftIO $
+  withForeignPtr j $
+    \ptr -> Raw.rumbleJoystick ptr lowFreq highFreq duration
 
--- | Update the joystick's LED color.
-setJoystickLED :: MonadIO m => Joystick -> Word8 -> Word8 -> Word8 -> m Bool
-setJoystickLED (Joystick j) red green blue = Raw.setJoystickLED j red green blue
+setJoystickLED :: (MonadIO m) => Joystick -> Word8 -> Word8 -> Word8 -> m Bool
+setJoystickLED (Joystick j) red green blue = liftIO $
+  withForeignPtr j $
+    \ptr -> Raw.setJoystickLED ptr red green blue
 
--- | Get the connection state of a joystick.
-getJoystickConnectionState :: MonadIO m => Joystick -> m RawEnum.JoystickConnectionState
-getJoystickConnectionState (Joystick j) = Raw.getJoystickConnectionState j
+getJoystickConnectionState :: (MonadIO m) => Joystick -> m RawEnum.JoystickConnectionState
+getJoystickConnectionState (Joystick j) =
+  liftIO $
+    withForeignPtr j Raw.getJoystickConnectionState
 
--- | Get the battery state of a joystick.
-getJoystickPowerInfo :: MonadIO m => Joystick -> m (RawEnum.PowerState, Maybe Int)
+getJoystickPowerInfo :: (MonadIO m) => Joystick -> m (RawEnum.PowerState, Maybe Int)
 getJoystickPowerInfo (Joystick j) = liftIO $
-  alloca $ \percentPtr -> do
-    state <- Raw.getJoystickPowerInfo j percentPtr
-    percent <- peek percentPtr
-    return (state, if percent >= 0 then Just (fromIntegral percent) else Nothing)
+  withForeignPtr j $ \ptr ->
+    alloca $ \percentPtr -> do
+      state <- Raw.getJoystickPowerInfo ptr percentPtr
+      percent <- peek percentPtr
+      return (state, if percent >= 0 then Just (fromIntegral percent) else Nothing)
 
--- | Free memory allocated by SDL functions (e.g., SDL_GetJoysticks).
 foreign import ccall unsafe "SDL_free" free :: Ptr a -> IO ()
