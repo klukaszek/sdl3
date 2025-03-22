@@ -43,10 +43,10 @@ import Control.Applicative
 -- Throws 'SDL.Exception.SDLException' if there are no working Vulkan drivers installed.
 vkLoadLibrary :: MonadIO m => Maybe FilePath -> m ()
 vkLoadLibrary = \case
-    Nothing       -> liftIO . testNeg $ Raw.vkLoadLibrary nullPtr
-    Just filePath -> liftIO . withCString filePath $ testNeg . Raw.vkLoadLibrary
+    Nothing       -> liftIO . testFalse $ Raw.vkLoadLibrary nullPtr
+    Just filePath -> liftIO . withCString filePath $ testFalse . Raw.vkLoadLibrary
   where
-    testNeg = throwIfNeg_ "SDL.Video.Vulkan.vkLoadLibrary" "SDL_Vulkan_LoadLibrary"
+    testFalse = throwIf_ not "SDL.Video.Vulkan.vkLoadLibrary" "SDL_Vulkan_LoadLibrary"
 
 -- | Unload the Vulkan loader library previously loaded by 'vkLoadLibrary'.
 --

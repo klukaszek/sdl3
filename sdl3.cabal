@@ -113,6 +113,7 @@ library
     SDL.Raw.OpenGL
     SDL.Raw.Platform
     SDL.Raw.Power
+    SDL.Raw.Render
     SDL.Raw.Thread
     SDL.Raw.Timer
     SDL.Raw.Types

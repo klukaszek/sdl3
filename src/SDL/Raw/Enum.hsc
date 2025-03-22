@@ -1,6 +1,7 @@
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE PatternSynonyms #-}
+{-# LANGUAGE TypeSynonymInstances #-}
 
 #if MIN_VERSION_base(4,11,0)
 -- OPTIONS_GHC -fno-warn-missing-pattern-synonym-signatures #
@@ -67,6 +68,12 @@ module SDL.Raw.Enum (
   pattern SDL_PEEKEVENT,
   pattern SDL_GETEVENT,
 
+  -- ** Renderer Flip Mode
+  FlipMode,
+  pattern SDL_FLIP_NONE,
+  pattern SDL_FLIP_HORIZONTAL,
+  pattern SDL_FLIP_VERTICAL,
+  
   -- ** Game Controller Axis
   GamepadAxis(..),
   pattern SDL_GAMEPAD_AXIS_INVALID,
@@ -431,13 +438,20 @@ module SDL.Raw.Enum (
   pattern SDL_POWERSTATE_ON_BATTERY,
   pattern SDL_POWERSTATE_NO_BATTERY,
   pattern SDL_POWERSTATE_CHARGING,
-  pattern SDL_POWERSTATE_CHARGED,
+  pattern SDL_POWERSTATE_CHARGED,  
 
-  -- ** Renderer Flip
-  RendererFlip,
-  pattern SDL_FLIP_NONE,
-  pattern SDL_FLIP_HORIZONTAL,
-  pattern SDL_FLIP_VERTICAL,
+  -- ** Renderer Logical Presentation
+  RendererLogicalPresentation,
+  pattern SDL_LOGICAL_PRESENTATION_DISABLED,
+  pattern SDL_LOGICAL_PRESENTATION_STRETCH,
+  pattern SDL_LOGICAL_PRESENTATION_LETTERBOX,
+  pattern SDL_LOGICAL_PRESENTATION_OVERSCAN,   
+  pattern SDL_LOGICAL_PRESENTATION_INTEGER_SCALE, 
+
+  -- ** Renderer Scale Mode
+  ScaleMode,
+  pattern SDL_SCALEMODE_NEAREST,
+  pattern SDL_SCALEMODE_LINEAR,
 
   -- ** Scancode
   Scancode,
@@ -874,6 +888,7 @@ module SDL.Raw.Enum (
   pattern SDL_PIXELFORMAT_YVYU,
   
   -- ** Texture Access
+  TextureAccess,
   pattern SDL_TEXTUREACCESS_STATIC,
   pattern SDL_TEXTUREACCESS_STREAMING,
   pattern SDL_TEXTUREACCESS_TARGET,
@@ -950,23 +965,15 @@ type BlendOperation = (#type SDL_BlendOperation)
 type BlendFactor = (#type SDL_BlendFactor)
 type Endian = CInt
 type EventAction = (#type SDL_EventAction)
+type FlipMode = (#type SDL_FlipMode)
 
 newtype GamepadAxis = GamepadAxis (#type SDL_GamepadAxis)
   deriving (Eq, Show)
 
-instance Storable GamepadAxis where
-  sizeOf _ = sizeOf (undefined :: Int32)
-  alignment _ = alignment (undefined :: Int32)
-  peek ptr = GamepadAxis <$> peek (castPtr ptr :: Ptr Int32)
-  poke ptr (GamepadAxis a) = poke (castPtr ptr :: Ptr Int32) a
 
 newtype GamepadButton = GamepadButton (#type SDL_GamepadButton)
   deriving (Eq, Show)
-instance Storable GamepadButton where
-  sizeOf _ = sizeOf (undefined :: CInt)
-  alignment _ = alignment (undefined :: CInt)
-  peek ptr = GamepadButton <$> peek (castPtr ptr :: Ptr Int32)
-  poke ptr (GamepadButton b) = poke (castPtr ptr :: Ptr Int32) b
+
  
 type GamepadType = (#type SDL_GamepadType)
 type GamepadButtonLabel = (#type SDL_GamepadButtonLabel)
@@ -980,9 +987,11 @@ type Keycode = (#type SDL_Keycode)
 type Keymod = (#type SDL_Keymod)
 type LogPriority = (#type SDL_LogPriority)
 type PowerState = (#type SDL_PowerState)
-type RendererFlip = (#type SDL_FlipMode)
+type RendererLogicalPresentation = (#type SDL_RendererLogicalPresentation)
+type ScaleMode = (#type SDL_ScaleMode)
 type Scancode = (#type SDL_Scancode)
 type SystemCursor = (#type SDL_SystemCursor)
+type TextureAccess = (#type SDL_TextureAccess)
 type ThreadPriority = (#type SDL_ThreadPriority)
 
 pattern SDL_AUDIO_U8 = (#const SDL_AUDIO_U8) :: AudioFormat
@@ -1392,9 +1401,18 @@ pattern SDL_POWERSTATE_NO_BATTERY = (#const SDL_POWERSTATE_NO_BATTERY) :: PowerS
 pattern SDL_POWERSTATE_CHARGING = (#const SDL_POWERSTATE_CHARGING) :: PowerState
 pattern SDL_POWERSTATE_CHARGED = (#const SDL_POWERSTATE_CHARGED) :: PowerState
 
-pattern SDL_FLIP_NONE = (#const SDL_FLIP_NONE) :: RendererFlip
-pattern SDL_FLIP_HORIZONTAL = (#const SDL_FLIP_HORIZONTAL) :: RendererFlip
-pattern SDL_FLIP_VERTICAL = (#const SDL_FLIP_VERTICAL) :: RendererFlip
+pattern SDL_FLIP_NONE = (#const SDL_FLIP_NONE) :: FlipMode
+pattern SDL_FLIP_HORIZONTAL = (#const SDL_FLIP_HORIZONTAL) :: FlipMode
+pattern SDL_FLIP_VERTICAL = (#const SDL_FLIP_VERTICAL) :: FlipMode
+
+pattern SDL_LOGICAL_PRESENTATION_DISABLED     = (#const SDL_LOGICAL_PRESENTATION_DISABLED) :: RendererLogicalPresentation
+pattern SDL_LOGICAL_PRESENTATION_STRETCH      = (#const SDL_LOGICAL_PRESENTATION_STRETCH) :: RendererLogicalPresentation
+pattern SDL_LOGICAL_PRESENTATION_LETTERBOX    = (#const SDL_LOGICAL_PRESENTATION_LETTERBOX) :: RendererLogicalPresentation
+pattern SDL_LOGICAL_PRESENTATION_OVERSCAN     = (#const SDL_LOGICAL_PRESENTATION_OVERSCAN) :: RendererLogicalPresentation
+pattern SDL_LOGICAL_PRESENTATION_INTEGER_SCALE = (#const SDL_LOGICAL_PRESENTATION_INTEGER_SCALE) :: RendererLogicalPresentation
+
+pattern SDL_SCALEMODE_NEAREST = (#const SDL_SCALEMODE_NEAREST) :: ScaleMode
+pattern SDL_SCALEMODE_LINEAR  = (#const SDL_SCALEMODE_LINEAR) :: ScaleMode
 
 pattern SDL_SCANCODE_UNKNOWN = (#const SDL_SCANCODE_UNKNOWN) :: Scancode
 pattern SDL_SCANCODE_A = (#const SDL_SCANCODE_A) :: Scancode
@@ -1786,9 +1804,9 @@ pattern SDL_PIXELFORMAT_YUY2 = (#const SDL_PIXELFORMAT_YUY2)
 pattern SDL_PIXELFORMAT_UYVY = (#const SDL_PIXELFORMAT_UYVY)
 pattern SDL_PIXELFORMAT_YVYU = (#const SDL_PIXELFORMAT_YVYU)
 
-pattern SDL_TEXTUREACCESS_STATIC = (#const SDL_TEXTUREACCESS_STATIC)
-pattern SDL_TEXTUREACCESS_STREAMING = (#const SDL_TEXTUREACCESS_STREAMING)
-pattern SDL_TEXTUREACCESS_TARGET = (#const SDL_TEXTUREACCESS_TARGET)
+pattern SDL_TEXTUREACCESS_STATIC    = (#const SDL_TEXTUREACCESS_STATIC) :: TextureAccess
+pattern SDL_TEXTUREACCESS_STREAMING = (#const SDL_TEXTUREACCESS_STREAMING) :: TextureAccess
+pattern SDL_TEXTUREACCESS_TARGET    = (#const SDL_TEXTUREACCESS_TARGET) :: TextureAccess
 
 pattern SDL_TOUCH_MOUSEID = (#const SDL_TOUCH_MOUSEID)
 
@@ -1841,3 +1859,16 @@ pattern SDL_WINDOWPOS_CENTERED_DISPLAY_14 = (#const SDL_WINDOWPOS_CENTERED_DISPL
 pattern SDL_WINDOWPOS_CENTERED_DISPLAY_15 = (#const SDL_WINDOWPOS_CENTERED_DISPLAY(15))
 
 pattern SDL_HAPTIC_CONSTANT = (#const SDL_HAPTIC_CONSTANT)
+
+-- * Storables
+instance Storable GamepadAxis where
+  sizeOf _ = sizeOf (undefined :: Int32)
+  alignment _ = alignment (undefined :: Int32)
+  peek ptr = GamepadAxis <$> peek (castPtr ptr :: Ptr Int32)
+  poke ptr (GamepadAxis a) = poke (castPtr ptr :: Ptr Int32) a
+
+instance Storable GamepadButton where
+  sizeOf _ = sizeOf (undefined :: CInt)
+  alignment _ = alignment (undefined :: CInt)
+  peek ptr = GamepadButton <$> peek (castPtr ptr :: Ptr Int32)
+  poke ptr (GamepadButton b) = poke (castPtr ptr :: Ptr Int32) b

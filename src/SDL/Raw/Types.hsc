@@ -44,6 +44,10 @@ module SDL.Raw.Types (
   GamepadBindingType,
   GestureID,
   GLContext,
+  GPUShader,
+  GPUTexture,
+  GPUBuffer,
+  GPURenderState,
   Haptic,
   IOWhence,
   IOStatus, 
@@ -79,6 +83,8 @@ module SDL.Raw.Types (
   GamepadBinding(..),
   HapticDirection(..),
   HapticEffect(..),
+  GPUTextureSamplerBinding(..),
+  GPURenderStateDesc(..),
   GUID(..),
   MessageBoxButtonData(..),
   MessageBoxColor(..),
@@ -90,6 +96,7 @@ module SDL.Raw.Types (
   Rect(..),
   FPoint(..),
   FRect(..),
+  FColor(..),
   Vertex(..),
   IOStream(..),
   IOStreamInterface(..),
@@ -125,6 +132,10 @@ type Gamepad = Ptr ()
 type GamepadBindingType = Word32
 type GestureID = Int64
 type GLContext = Ptr ()
+type GPUShader = Ptr ()
+type GPUTexture = Ptr ()
+type GPUBuffer = Ptr ()
+type GPURenderState = Ptr ()
 type Haptic = Ptr ()
 type Joystick = Ptr ()
 type JoystickID = CInt
@@ -948,6 +959,54 @@ instance Storable GamepadBinding where
       (#poke SDL_GamepadBinding, output.axis.axis_min) ptr outAxisMin
       (#poke SDL_GamepadBinding, output.axis.axis_max) ptr outAxisMax
 
+data GPUTextureSamplerBinding = GPUTextureSamplerBinding
+  { texture :: !Texture
+  , sampler :: Ptr ()
+  } deriving (Show, Eq, Generic)
+
+instance Storable GPUTextureSamplerBinding where
+  sizeOf _ = (#size SDL_GPUTextureSamplerBinding)
+  alignment _ = (#alignment SDL_GPUTextureSamplerBinding)
+  peek ptr = GPUTextureSamplerBinding
+    <$> (#peek SDL_GPUTextureSamplerBinding, texture) ptr
+    <*> (#peek SDL_GPUTextureSamplerBinding, sampler) ptr
+  poke ptr (GPUTextureSamplerBinding tex samp) = do
+    (#poke SDL_GPUTextureSamplerBinding, texture) ptr tex
+    (#poke SDL_GPUTextureSamplerBinding, sampler) ptr samp
+
+data GPURenderStateDesc = GPURenderStateDesc
+  { gpuDescVersion :: !Word32
+  , gpuDescFragmentShader :: !GPUShader
+  , gpuDescNumSamplerBindings :: !CInt
+  , gpuDescSamplerBindings :: Ptr GPUTextureSamplerBinding
+  , gpuDescNumStorageTextures :: !CInt
+  , gpuDescStorageTextures :: Ptr GPUTexture
+  , gpuDescNumStorageBuffers :: !CInt
+  , gpuDescStorageBuffers :: Ptr GPUBuffer
+  } deriving (Show, Eq, Generic)
+
+instance Storable GPURenderStateDesc where
+  sizeOf _ = (#size SDL_GPURenderStateDesc)
+  alignment _ = (#alignment SDL_GPURenderStateDesc)
+  peek ptr = GPURenderStateDesc
+    <$> (#peek SDL_GPURenderStateDesc, version) ptr
+    <*> (#peek SDL_GPURenderStateDesc, fragment_shader) ptr
+    <*> (#peek SDL_GPURenderStateDesc, num_sampler_bindings) ptr
+    <*> (#peek SDL_GPURenderStateDesc, sampler_bindings) ptr
+    <*> (#peek SDL_GPURenderStateDesc, num_storage_textures) ptr
+    <*> (#peek SDL_GPURenderStateDesc, storage_textures) ptr
+    <*> (#peek SDL_GPURenderStateDesc, num_storage_buffers) ptr
+    <*> (#peek SDL_GPURenderStateDesc, storage_buffers) ptr
+  poke ptr (GPURenderStateDesc ver fs nsb sb nst st nsb2 sb2) = do
+    (#poke SDL_GPURenderStateDesc, version) ptr ver
+    (#poke SDL_GPURenderStateDesc, fragment_shader) ptr fs
+    (#poke SDL_GPURenderStateDesc, num_sampler_bindings) ptr nsb
+    (#poke SDL_GPURenderStateDesc, sampler_bindings) ptr sb
+    (#poke SDL_GPURenderStateDesc, num_storage_textures) ptr nst
+    (#poke SDL_GPURenderStateDesc, storage_textures) ptr st
+    (#poke SDL_GPURenderStateDesc, num_storage_buffers) ptr nsb2
+    (#poke SDL_GPURenderStateDesc, storage_buffers) ptr sb2
+
 data HapticDirection = HapticDirection
   { hapticDirectionType :: !Word8
   , hapticDirectionX :: !Int32
@@ -1464,9 +1523,30 @@ instance Storable FRect where
     (#poke SDL_FRect, w) ptr w
     (#poke SDL_FRect, h) ptr h
 
+data FColor = FColor
+  { fcolorR :: !CFloat
+  , fcolorG :: !CFloat
+  , fcolorB :: !CFloat
+  , fcolorA :: !CFloat
+  } deriving (Show, Eq, Generic)
+
+instance Storable FColor where
+  sizeOf _ = (#size SDL_FColor)
+  alignment _ = (#alignment SDL_FColor)
+  peek ptr = FColor
+    <$> (#peek SDL_FColor, r) ptr
+    <*> (#peek SDL_FColor, g) ptr
+    <*> (#peek SDL_FColor, b) ptr
+    <*> (#peek SDL_FColor, a) ptr
+  poke ptr (FColor r g b a) = do
+    (#poke SDL_FColor, r) ptr r
+    (#poke SDL_FColor, g) ptr g
+    (#poke SDL_FColor, b) ptr b
+    (#poke SDL_FColor, a) ptr a
+
 data Vertex = Vertex
   { vertexPosition :: !FPoint
-  , vertexColor :: !Color
+  , vertexColor :: !FColor
   , vertexTexCoord :: !FPoint
   } deriving (Eq, Show, Typeable)
 
@@ -1540,14 +1620,15 @@ instance Storable Surface where
     format <- (#peek SDL_Surface, format) ptr
     w <- (#peek SDL_Surface, w) ptr
     h <- (#peek SDL_Surface, h) ptr
-    pixels <- (#peek SDL_Surface, pixels) ptr
     pitch <- (#peek SDL_Surface, pitch) ptr
+    pixels <- (#peek SDL_Surface, pixels) ptr
     refcount <- (#peek SDL_Surface, refcount) ptr
-    return $! Surface flags format w h pixels pitch refcount
-  poke ptr (Surface flags format w h pixels pitch refcount) = do
+    return $! Surface flags format w h pitch pixels refcount
+  poke ptr (Surface flags format w h pitch pixels refcount) = do
     (#poke SDL_Surface, flags) ptr flags
     (#poke SDL_Surface, format) ptr format
     (#poke SDL_Surface, w) ptr w
     (#poke SDL_Surface, h) ptr h
+    (#poke SDL_Surface, pitch) ptr pitch
     (#poke SDL_Surface, pixels) ptr pixels
     (#poke SDL_Surface, refcount) ptr refcount

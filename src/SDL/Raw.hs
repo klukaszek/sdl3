@@ -14,6 +14,7 @@ module SDL.Raw (
   module SDL.Raw.OpenGL,
   module SDL.Raw.Platform,
   module SDL.Raw.Power,
+  module SDL.Raw.Render,
   module SDL.Raw.Thread,
   module SDL.Raw.Timer,
   module SDL.Raw.Types,
@@ -34,6 +35,7 @@ import SDL.Raw.Joystick
 import SDL.Raw.OpenGL
 import SDL.Raw.Platform
 import SDL.Raw.Power
+import SDL.Raw.Render
 import SDL.Raw.Thread
 import SDL.Raw.Timer
 import SDL.Raw.Types
